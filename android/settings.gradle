@@ -1,0 +1,3 @@
+rootProject.name = 'AlwaysAround'
+
+include ':app'
