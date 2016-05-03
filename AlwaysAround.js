@@ -11,7 +11,7 @@ var AlwaysAround = React.createClass({
 
     getInitialState: function() {
     	return { 
-    		currentRoute: null,
+    		currentRoute: 'LOGIN_NOT_FOUND',
     	};
   	},
 
