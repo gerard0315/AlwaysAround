@@ -19,6 +19,31 @@ var {
 
 
 var RegisterPage = React.createClass({
+  getInitialState: function() {
+      return {
+        username: '',
+        password: '',
+        needToRegister: true,
+        //hidden: false,
+        loginHide: false,
+        registerHide: true,
+
+        source: require('../ios/z.png'),
+
+        userNameSlideUpPosition: new Animated.Value(400),
+        passwordSlideUpPosition: new Animated.Value(500),
+        fbLoginSlideUpPosition: new Animated.Value(600),
+        forgetPasswordSlideUpPosition: new Animated.Value(700),
+        firstVist: true,
+
+        userNameFadeIn: new Animated.Value(0),
+        passwordFadeIn: new Animated.Value(0),
+        fbLoginFadeIn: new Animated.Value(0),
+        forgetPasswordFadeIn: new Animated.Value(0)
+
+      }
+  },
+  
 	render() {
 			console.log('MainPage');
 			return <React.Text style={styles.text}>MainPage</React.Text>;

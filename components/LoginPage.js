@@ -3,7 +3,8 @@
 var React = require('react-native');
 var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
-import {Actions, Scene, Router} from 'react-native-router-flux';
+import {Actions} from 'react-native-router-flux';
+import Toggle from 'react-native-toggle';
 
 var {
   StyleSheet,
@@ -13,7 +14,8 @@ var {
   Image,
   TouchableOpacity,
   Animated,
-  Easing
+  Easing,
+  ScrollView
 } = React;
 
 var LoginPage = React.createClass({
@@ -23,18 +25,32 @@ var LoginPage = React.createClass({
 	      username: '',
 	      password: '',
         needToRegister: true,
-        source: require('../ios/z.png'), 
+        //hidden: false,
+        loginHide: false,
+        registerHide: true,
+
+        source: require('../ios/z.png'),
+
         userNameSlideUpPosition: new Animated.Value(400),
         passwordSlideUpPosition: new Animated.Value(500),
         fbLoginSlideUpPosition: new Animated.Value(600),
         forgetPasswordSlideUpPosition: new Animated.Value(700),
-        firstVist: true,
+        firstVist: false,
 
         userNameFadeIn: new Animated.Value(0),
         passwordFadeIn: new Animated.Value(0),
         fbLoginFadeIn: new Animated.Value(0),
         forgetPasswordFadeIn: new Animated.Value(0)
+
     	}
+  },
+
+  toggle: function() {
+        this.setState({
+            //hidden: !this.state.hidden
+            loginHide: !this.state.loginHide,
+            registerHide: !this.state.registerHide
+        });
   },
 
   onEmailTextChanged(event) {
@@ -115,24 +131,30 @@ var LoginPage = React.createClass({
 
   doRegister: function(){
     this.setState({firstVist:false});
-    Actions.register;
+    Actions.home;
+    this.toggle();
     console.log("jump to register Scene");
   },
+/*
+  shouldComponentUpdate: function(nextState){
+    return this.loginHide !== nextState.loginHide;
 
-
+  },
+*/
 	render: function() {
 
-    if(this.state.firstVist === false) return this.renderSecondVisit();
-
+    if(this.state.firstVist === false) return <RegisterPage/>;
+    //if(this.state.hidden === true)
 
 		return(
 			<View style={styles.container}>
 				<Image style={styles.bg} source={require('../ios/BG.png')} />
 				<TouchableOpacity style={styles.newUserRegister}
-              			onPress={Actions.register}>
+              			onPress={Actions.home}>
               		<Image style={styles.accNewUser} source={this.state.source}/>
               		<Image style={styles.accNewUser} source={require('../ios/Line_new_user.png')}/>
           		</TouchableOpacity>
+              <Toggle hidden={this.state.loginHide}>
           		<View style={styles.logoContainer}>
           			<Image source={require('../ios/logo.png')}/>
           		</View>
@@ -169,13 +191,15 @@ var LoginPage = React.createClass({
               		<Image style={styles.accForgetPW} source={require('../ios/ForgotPassword.png')}/>
               		<Image style={styles.accForgetPW} source={require('../ios/Lineforgotpassword.png')}/>
           		</TouchableOpacity>
-            </View>
+          </Toggle>
+      </View>
+
 
 
 			)
 	},
 
-
+  /*
   renderSecondVisit: function(){
     return (
       <View style={styles.container}>
@@ -224,6 +248,8 @@ var LoginPage = React.createClass({
             </View>
       )
   }
+
+  */
 	
 });
 
@@ -239,10 +265,105 @@ var RegisterPage = React.createClass({
       }
     },
 
-    render: function(){
-      return{
+    textInputFocused:function(mainView) {
+          setTimeout(() => {
+            let scrollResponder = this.refs.scrollView.getScrollResponder();
+            scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
+              React.findNodeHandle(this.refs[refName]),
+              110, //additionalOffset
+              true
+            );
+          }, 50);
 
-      }
+    },
+
+    onFirstNameChange(event) {
+      this.setState({ firstName: event.nativeEvent.text });
+    },
+
+    onLastNameInput(event) {
+      this.setState({ lastName: event.nativeEvent.text });
+    },
+
+    onRegisterEmailInput(event) {
+      this.setState({ registerEmail: event.nativeEvent.text });
+    },
+
+    onPhoneNumberInput(event) {
+      this.setState({ phoneNumber: event.nativeEvent.text });
+    },
+
+
+    render: function(){
+      return(
+        <ScrollView style={styles.container} ref = 'mainView'>
+        <Image style={styles.bg} source={require('../ios/BG.png')} />
+        <TouchableOpacity style={styles.existingUser}
+                    onPress={this.backToLogin}>
+                  <Image style={styles.accNewUser} source={require('../ios/exsiting_user.png')}/>
+                  <Image style={styles.accNewUser} source={require('../ios/Lineforgotpassword.png')}/>
+              </TouchableOpacity>
+              <View style={styles.registerLogoContainer}>
+                <Image source={require('../ios/logo.png')}/>
+              </View>
+              <TouchableOpacity style={[styles.fbLoginRegister, {opacity: this.state.fbLoginFadeIn}]}
+                    onPress={this.FBlogin}>
+                  <Image source={require('../ios/facebook.png')}/>
+              </TouchableOpacity>
+              <Animated.View style={styles.firstNameContainer}>
+                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
+                <Image style={styles.email} source={require('../ios/first_name:.png')}/>
+                <TextInput 
+                        style={styles.firstNameInput}
+                        placeholder= "firstname"
+                        placeholderTextColor="grey"
+                        value={this.state.firstName}
+                        onChange={this.onFirstNameChange}
+                        onFocus={this.textInputFocused}
+                    />
+              </Animated.View>
+              <Animated.View style={styles.lastNameContainer}>
+                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
+                <Image style={styles.email} source={require('../ios/surname:.png')}/>
+                <TextInput 
+                        style={styles.lastNameInput}
+                        placeholder= "surname"
+                        placeholderTextColor="grey"
+                        value={this.state.lastName}
+                        onChange={this.onLastNameInput}
+                        onFocus={this.textInputFocused}
+                    />
+              </Animated.View>
+              <Animated.View style={styles.registerEmailContainter}>
+                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
+                <Image style={styles.email} source={require('../ios/Email:.png')}/>
+                <TextInput 
+                        style={styles.registerEmailInput}
+                        placeholder= "email"
+                        placeholderTextColor="grey"
+                        value={this.state.registerEmail}
+                        onChange={this.onRegisterEmailInput}
+                        onFocus={this.textInputFocused}
+                    />
+              </Animated.View>
+              <Animated.View style={styles.phoneNumberContainer}>
+                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
+                <Image style={styles.email} source={require('../ios/Phone_number:.png')}/>
+                <TextInput 
+                        style={styles.phoneNumberInput}
+                        placeholder= "phone"
+                        placeholderTextColor="grey"
+                        value={this.state.phoneNumber}
+                        onChange={this.onPhoneNumberInput}
+                        onFocus={this.textInputFocused}
+                    />
+              </Animated.View>
+              <TouchableOpacity style={styles.agreement}
+                    onPress={this.agreement}>
+                  <Image style={styles.accAgreemnt} source={require('../ios/words.png')}/>
+              </TouchableOpacity>
+            </ScrollView>
+        )
     }
 
 
@@ -267,6 +388,32 @@ var styles = React.StyleSheet.create({
     newUserRegister:{
     	marginLeft: 280,
     	paddingTop: 35,
+    },
+
+    existingUser:{
+      marginLeft: 250,
+      paddingTop: 35,
+    },
+
+    registerLogoContainer:{
+      marginTop: 50,
+      alignItems: 'center',
+    },
+
+    firstNameContainer:{
+      marginTop: 10,
+    },
+
+    lastNameContainer:{
+      marginTop: 28,
+    },
+
+    registerEmailContainter:{
+      marginTop: 28,
+    },
+
+    phoneNumberContainer:{
+      marginTop: 28,
     },
 
     accNewUser:{
@@ -310,6 +457,42 @@ var styles = React.StyleSheet.create({
         fontSize: 14
     },
 
+    firstNameInput:{
+        position: 'absolute',
+        left: 205,
+        top: 17,
+        right: 0,
+        height: 20,
+        fontSize: 14
+    },
+
+    lastNameInput:{
+        position: 'absolute',
+        left: 205,
+        top: 17,
+        right: 0,
+        height: 20,
+        fontSize: 14
+    },
+
+    registerEmailInput:{
+        position: 'absolute',
+        left: 205,
+        top: 17,
+        right: 0,
+        height: 20,
+        fontSize: 14
+    },
+
+    phoneNumberInput:{
+        position: 'absolute',
+        left: 205,
+        top: 17,
+        right: 0,
+        height: 20,
+        fontSize: 14
+    },
+
     passwordWarningSign:{
     	position: 'absolute',
         top: 16,
@@ -331,6 +514,11 @@ var styles = React.StyleSheet.create({
       marginTop: 30,
     },
 
+    fbLoginRegister:{
+      alignSelf:'center',
+      marginTop: 20,
+    },
+
     forgetPassword:{
     	alignSelf:'center',
     },
@@ -338,6 +526,11 @@ var styles = React.StyleSheet.create({
     forgetPassword2:{
       alignSelf: 'center',
       marginTop: 20,
+    },
+
+    agreement:{
+      alignSelf: 'center',
+      marginTop: 25,
     },
 
     accForgetPW:{

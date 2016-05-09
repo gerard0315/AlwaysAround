@@ -21,18 +21,18 @@ const reducerCreate = params=>{
     }
 };
 
-const scenes = Actions.create(
-            <Scene key="root">
-                <Scene key="login" component={LoginPage}/>
-                <Scene key="register" component={RegisterPage}/>
-                <Scene key="home" component={MainPage}/>
-            </Scene>
-	);
-
 class App extends React.Component{
 
 	render() {
-        return <Router scenes={scenes}/>
+        return <Router createReducer={reducerCreate}>
+            <Scene key="modal" component={Modal} >
+                <Scene key="root" hideNavBar={true}>
+	                <Scene key="login" component={LoginPage}/>
+	                <Scene key="register" component={RegisterPage}/>
+	                <Scene key="home" component={MainPage}/>
+	            </Scene>
+            </Scene>
+        </Router>;
     }
 
 }
