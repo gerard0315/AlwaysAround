@@ -5,6 +5,8 @@ var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
 import Toggle from 'react-native-toggle';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 var {
   StyleSheet,
@@ -15,36 +17,54 @@ var {
   TouchableOpacity,
   Animated,
   Easing,
-  ScrollView
+  ScrollView,
+  DeviceEventEmitter
 } = React;
+
+
 
 var LoginPage = React.createClass({
 
 	getInitialState: function() {
 	    return {
+        visibleHeight: Dimensions.get('window').height,
+
 	      username: '',
 	      password: '',
         needToRegister: true,
         //hidden: false,
         loginHide: false,
         registerHide: true,
-
         source: require('../ios/z.png'),
 
+        logoSlidePosition: new Animated.Value(80),
         userNameSlideUpPosition: new Animated.Value(400),
         passwordSlideUpPosition: new Animated.Value(500),
         fbLoginSlideUpPosition: new Animated.Value(600),
         forgetPasswordSlideUpPosition: new Animated.Value(700),
-        firstVist: false,
+        firstVist: true,
 
-        userNameFadeIn: new Animated.Value(0),
-        passwordFadeIn: new Animated.Value(0),
-        fbLoginFadeIn: new Animated.Value(0),
-        forgetPasswordFadeIn: new Animated.Value(0)
+
+        firstName: '',
+        lastName:'',
+        registerEmail:'',
+        phoneNumber:'',
+
+
+        firstNamePosition: new Animated.Value(800),
+        lastNamePosition: new Animated.Value(800),
+        registerEmailPosition: new Animated.Value(800),
+        phoneNumberPosition: new Animated.Value(800),
+        registerFBLoginPosition: new Animated.Value(800),
+        agreementPosition: new Animated.Value(800),
+        //userNameFade: new Animated.Value(1),
+        //passwordFade: new Animated.Value(1),
+        //fbLoginFade: new Animated.Value(1),
+        //forgetPasswordFadeIn: new Animated.Value(1)
 
     	}
   },
-
+/*
   toggle: function() {
         this.setState({
             //hidden: !this.state.hidden
@@ -52,6 +72,17 @@ var LoginPage = React.createClass({
             registerHide: !this.state.registerHide
         });
   },
+*/
+
+  keyboardWillShow (e) {
+    let newSize = Dimensions.get('window').height - e.endCoordinates.height;
+    this.setState({visibleHeight: newSize});
+  },
+
+  keyboardWillHide (e) {
+    this.setState({visibleHeight: Dimensions.get('window').height});
+  },
+
 
   onEmailTextChanged(event) {
     	this.setState({ username: event.nativeEvent.text });
@@ -69,6 +100,22 @@ var LoginPage = React.createClass({
 
   onPasswordInput(event) {
     	this.setState({ password: event.nativeEvent.text });
+  },
+
+  onFirstNameChange(event) {
+      this.setState({ firstName: event.nativeEvent.text });
+  },
+
+  onLastNameInput(event) {
+      this.setState({ lastName: event.nativeEvent.text });
+  },
+
+  onRegisterEmailInput(event) {
+      this.setState({ registerEmail: event.nativeEvent.text });
+  },
+
+  onPhoneNumberInput(event) {
+      this.setState({ phoneNumber: event.nativeEvent.text });
   },
 
   componentDidMount: function(){
@@ -91,73 +138,221 @@ var LoginPage = React.createClass({
             delay: 50,
             easing: Easing.linear, // 动画时间
         }).start();
+
       Animated.timing(this.state.forgetPasswordSlideUpPosition, {
             toValue: 20, // 目标值
             duration: 300,
             delay: 60,
             easing: Easing.linear, // 动画时间
         }).start();
-
-
-      Animated.timing(this.state.userNameFadeIn, {
-            toValue: 1, // 目标值
-            duration: 300,
-            delay: 20,
-            easing: Easing.linear, // 动画时间
-        }).start();
-
-      Animated.timing(this.state.passwordFadeIn, {
-            toValue: 1, // 目标值
-            duration: 300,
-            delay: 20,
-            easing: Easing.linear, // 动画时间
-        }).start();
-
-      Animated.timing(this.state.fbLoginFadeIn, {
-            toValue: 1, // 目标值
-            duration: 300,
-            delay: 20,
-            easing: Easing.linear, // 动画时间
-        }).start();
-
-      Animated.timing(this.state.forgetPasswordFadeIn, {
-            toValue: 1, // 目标值
-            duration: 300,
-            delay: 20,
-            easing: Easing.linear, // 动画时间
-        }).start();
+      
 
   },
+
+  componentWillMount: function() {
+    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow);
+    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide);
+  },
+
 
   doRegister: function(){
-    this.setState({firstVist:false});
-    Actions.home;
-    this.toggle();
+    //Actions.home;
+    //this.toggle();
     console.log("jump to register Scene");
-  },
-/*
-  shouldComponentUpdate: function(nextState){
-    return this.loginHide !== nextState.loginHide;
+    //this.setState({source:require('../ios/exsiting_user.png')});
+
+    if (this.state.firstVist === true){
+
+        Animated.timing(this.state.userNameSlideUpPosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                easing: Easing.linear, // 动画时间
+            }).start();
+
+        Animated.timing(this.state.passwordSlideUpPosition, {
+                toValue: 400, // 目标值
+                duration: 10,
+                //delay: ,
+                easing: Easing.linear, // 动画时间
+            }).start();
+
+        Animated.timing(this.state.fbLoginSlideUpPosition, {
+                toValue: 400, // 目标值
+                duration: 10,
+                //delay: 50,
+                easing: Easing.linear, // 动画时间
+            }).start();
+          
+        Animated.timing(this.state.forgetPasswordSlideUpPosition, {
+                toValue: 400, // 目标值
+                duration: 10,
+                //delay: 60,
+                easing: Easing.linear, // 动画时间
+        }).start();
+
+        Animated.timing(this.state.logoSlidePosition, {
+                toValue: 50, // 目标值
+                duration: 300,
+                //delay: 60,
+                easing: Easing.linear, // 动画时间
+        }).start();
+
+
+        Animated.timing(this.state.registerFBLoginPosition, {
+                toValue: -1800, // 目标值
+                duration: 400,
+                delay: 50,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.firstNamePosition, {
+                toValue: 10, // 目标值
+                duration: 400,
+                delay: 60,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.lastNamePosition, {
+                toValue: 28, // 目标值
+                duration: 400,
+                delay: 70,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.registerEmailPosition, {
+                toValue: 28, // 目标值
+                duration: 400,
+                delay: 80,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.phoneNumberPosition, {
+                toValue: 28, // 目标值
+                duration: 400,
+                delay: 90,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.agreementPosition, {
+                toValue: 25,
+                duration: 400,
+                delay: 100,
+                easing: Easing.linear,
+
+        }).start();
+
+        this.setState({firstVist: !this.state.firstVist});
+    
+    }else{
+
+        Animated.timing(this.state.registerFBLoginPosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                //delay: 50,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.firstNamePosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                //delay: 60,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.lastNamePosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                delay: 70,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.registerEmailPosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                //delay: 80,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.phoneNumberPosition, {
+                toValue: 500, // 目标值
+                duration: 10,
+                //delay: 90,
+                easing: Easing.linear, // 动画时间
+
+        }).start();
+
+        Animated.timing(this.state.agreementPosition, {
+                toValue: 500,
+                duration: 10,
+                //delay: 100,
+                easing: Easing.linear,
+
+        }).start();
+
+        Animated.timing(this.state.userNameSlideUpPosition, {
+                toValue: 40, // 目标值
+                duration: 300,
+                delay: 40,
+                easing: Easing.linear, // 动画时间
+            }).start();
+
+        Animated.timing(this.state.passwordSlideUpPosition, {
+                toValue: 30, // 目标值
+                duration: 300,
+                delay: 50,
+                easing: Easing.linear, // 动画时间
+            }).start();
+
+        Animated.timing(this.state.fbLoginSlideUpPosition, {
+                toValue: 30, // 目标值
+                duration: 300,
+                delay: 60,
+                easing: Easing.linear, // 动画时间
+            }).start();
+          
+        Animated.timing(this.state.forgetPasswordSlideUpPosition, {
+                toValue: 20, // 目标值
+                duration: 300,
+                delay: 70,
+                easing: Easing.linear, // 动画时间
+        }).start();
+
+        Animated.timing(this.state.logoSlidePosition, {
+                toValue: 80, // 目标值
+                duration: 300,
+                //delay: 60,
+                easing: Easing.linear, // 动画时间
+        }).start();
+
+        this.setState({firstVist: !this.state.firstVist});
+
+
+    }
 
   },
-*/
+
 	render: function() {
 
-    if(this.state.firstVist === false) return <RegisterPage/>;
-    //if(this.state.hidden === true)
-
 		return(
-			<View style={styles.container}>
+			<View style={[styles.container, {height: this.state.visibleHeight}]}>
 				<Image style={styles.bg} source={require('../ios/BG.png')} />
 				<TouchableOpacity style={styles.newUserRegister}
-              			onPress={Actions.home}>
+              			onPress={this.doRegister}>
               		<Image style={styles.accNewUser} source={this.state.source}/>
               		<Image style={styles.accNewUser} source={require('../ios/Line_new_user.png')}/>
           		</TouchableOpacity>
-              <Toggle hidden={this.state.loginHide}>
-          		<View style={styles.logoContainer}>
+          		<Animated.View style={[styles.logoContainer, {marginTop: this.state.logoSlidePosition}]}>
           			<Image source={require('../ios/logo.png')}/>
-          		</View>
+          		</Animated.View>
           		<Animated.View style={{marginTop: this.state.userNameSlideUpPosition}}>
           		    <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
           			<Image style={styles.email} source={require('../ios/Email:.png')}/>
@@ -191,126 +386,14 @@ var LoginPage = React.createClass({
               		<Image style={styles.accForgetPW} source={require('../ios/ForgotPassword.png')}/>
               		<Image style={styles.accForgetPW} source={require('../ios/Lineforgotpassword.png')}/>
           		</TouchableOpacity>
-          </Toggle>
-      </View>
 
 
 
-			)
-	},
-
-  /*
-  renderSecondVisit: function(){
-    return (
-      <View style={styles.container}>
-        <Image style={styles.bg} source={require('../ios/BG.png')} />
-        <TouchableOpacity style={styles.newUserRegister}
-                    onPress={this.doRegister}>
-                  <Image style={styles.accNewUser} source={this.state.source}/>
-                  <Image style={styles.accNewUser} source={require('../ios/Line_new_user.png')}/>
-              </TouchableOpacity>
-              <View style={styles.logoContainer}>
-                <Image source={require('../ios/logo.png')}/>
-              </View>
-              <Animated.View style={[styles.userNameContainter, {opacity: this.state.userNameFadeIn}]}>
-                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
-                <Image style={styles.email} source={require('../ios/Email:.png')}/>
-                <TextInput 
-                        style={styles.emailInput}
-                        placeholder= "Input Email Here"
-                        placeholderTextColor="grey"
-                        value={this.state.username}
-                        onChange={this.onEmailTextChanged}
-                    />
-              </Animated.View>
-              <Animated.View style={[styles.passwordContainter, {opacity: this.state.passwordFadeIn}]}>
-                  <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
-                <Image style={styles.email} source={require('../ios/Password:.png')}/>
-                <TextInput 
-                        style={styles.passwordInput}
-                        secureTextEntry={true}
-                        placeholder= "Password"
-                        placeholderTextColor="grey"
-                        value={this.state.password}
-                        onChange={this.onPasswordInput}
-                    />
-                    <Image style={styles.passwordWarningSign} source={require('../ios/Page1.png')}/>
-              </Animated.View>
-              <TouchableOpacity style={[styles.fbLogin2, {opacity: this.state.fbLoginFadeIn}]}
+              <TouchableOpacity style={[styles.fbLoginRegister, {marginTop: this.state.registerFBLoginPosition}]}
                     onPress={this.FBlogin}>
                   <Image source={require('../ios/facebook.png')}/>
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.forgetPassword2, {opacity: this.state.forgetPasswordFadeIn}]}
-                    onPress={this.forgetPassword}>
-                  <Image style={styles.accForgetPW} source={require('../ios/ForgotPassword.png')}/>
-                  <Image style={styles.accForgetPW} source={require('../ios/Lineforgotpassword.png')}/>
-              </TouchableOpacity>
-            </View>
-      )
-  }
-
-  */
-	
-});
-
-
-
-var RegisterPage = React.createClass({
-    getInitialState: function(){
-      return{
-          firstName: '',
-          lastName:'',
-          registerEmail:'',
-          phoneNumber:'',
-      }
-    },
-
-    textInputFocused:function(mainView) {
-          setTimeout(() => {
-            let scrollResponder = this.refs.scrollView.getScrollResponder();
-            scrollResponder.scrollResponderScrollNativeHandleToKeyboard(
-              React.findNodeHandle(this.refs[refName]),
-              110, //additionalOffset
-              true
-            );
-          }, 50);
-
-    },
-
-    onFirstNameChange(event) {
-      this.setState({ firstName: event.nativeEvent.text });
-    },
-
-    onLastNameInput(event) {
-      this.setState({ lastName: event.nativeEvent.text });
-    },
-
-    onRegisterEmailInput(event) {
-      this.setState({ registerEmail: event.nativeEvent.text });
-    },
-
-    onPhoneNumberInput(event) {
-      this.setState({ phoneNumber: event.nativeEvent.text });
-    },
-
-
-    render: function(){
-      return(
-        <ScrollView style={styles.container} ref = 'mainView'>
-        <Image style={styles.bg} source={require('../ios/BG.png')} />
-        <TouchableOpacity style={styles.existingUser}
-                    onPress={this.backToLogin}>
-                  <Image style={styles.accNewUser} source={require('../ios/exsiting_user.png')}/>
-                  <Image style={styles.accNewUser} source={require('../ios/Lineforgotpassword.png')}/>
-              </TouchableOpacity>
-              <View style={styles.registerLogoContainer}>
-                <Image source={require('../ios/logo.png')}/>
-              </View>
-              <TouchableOpacity style={[styles.fbLoginRegister, {opacity: this.state.fbLoginFadeIn}]}
-                    onPress={this.FBlogin}>
-                  <Image source={require('../ios/facebook.png')}/>
-              </TouchableOpacity>
-              <Animated.View style={styles.firstNameContainer}>
+              <Animated.View style={{marginTop: this.state.firstNamePosition}}>
                   <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
                 <Image style={styles.email} source={require('../ios/first_name:.png')}/>
                 <TextInput 
@@ -322,7 +405,7 @@ var RegisterPage = React.createClass({
                         onFocus={this.textInputFocused}
                     />
               </Animated.View>
-              <Animated.View style={styles.lastNameContainer}>
+              <Animated.View style={{marginTop: this.state.lastNamePosition}}>
                   <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
                 <Image style={styles.email} source={require('../ios/surname:.png')}/>
                 <TextInput 
@@ -334,7 +417,7 @@ var RegisterPage = React.createClass({
                         onFocus={this.textInputFocused}
                     />
               </Animated.View>
-              <Animated.View style={styles.registerEmailContainter}>
+              <Animated.View style={{marginTop: this.state.registerEmailPosition}}>
                   <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
                 <Image style={styles.email} source={require('../ios/Email:.png')}/>
                 <TextInput 
@@ -346,7 +429,7 @@ var RegisterPage = React.createClass({
                         onFocus={this.textInputFocused}
                     />
               </Animated.View>
-              <Animated.View style={styles.phoneNumberContainer}>
+              <Animated.View style={{marginTop: this.state.phoneNumberPosition}}>
                   <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
                 <Image style={styles.email} source={require('../ios/Phone_number:.png')}/>
                 <TextInput 
@@ -358,15 +441,17 @@ var RegisterPage = React.createClass({
                         onFocus={this.textInputFocused}
                     />
               </Animated.View>
-              <TouchableOpacity style={styles.agreement}
-                    onPress={this.agreement}>
+              <TouchableOpacity style={[styles.agreement, {marginTop: this.state.agreementPosition}]}
+                    onPress={this.onRegister}>
                   <Image style={styles.accAgreemnt} source={require('../ios/words.png')}/>
               </TouchableOpacity>
-            </ScrollView>
-        )
-    }
+      </View>
 
 
+
+			)
+	},
+	
 });
 
 
@@ -374,7 +459,7 @@ var styles = React.StyleSheet.create({
 	container: {
       flexDirection: 'column',
       flex: 1,
-      backgroundColor: '#F58690',
+      //backgroundColor: '#F58690',
     },
 
     bg: {
@@ -394,35 +479,13 @@ var styles = React.StyleSheet.create({
       marginLeft: 250,
       paddingTop: 35,
     },
-
-    registerLogoContainer:{
-      marginTop: 50,
-      alignItems: 'center',
-    },
-
-    firstNameContainer:{
-      marginTop: 10,
-    },
-
-    lastNameContainer:{
-      marginTop: 28,
-    },
-
-    registerEmailContainter:{
-      marginTop: 28,
-    },
-
-    phoneNumberContainer:{
-      marginTop: 28,
-    },
-
     accNewUser:{
     	marginTop:5,
       resizeMode: 'contain',
     },
 
     logoContainer:{
-    	marginTop: 80,
+    	//marginTop: 80,
     	alignItems: 'center',
     },
     
@@ -516,7 +579,7 @@ var styles = React.StyleSheet.create({
 
     fbLoginRegister:{
       alignSelf:'center',
-      marginTop: 20,
+      //marginTop: 20,
     },
 
     forgetPassword:{
@@ -530,7 +593,7 @@ var styles = React.StyleSheet.create({
 
     agreement:{
       alignSelf: 'center',
-      marginTop: 25,
+      //marginTop: 25,
     },
 
     accForgetPW:{
