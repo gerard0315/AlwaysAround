@@ -27,8 +27,6 @@ var LoginPage = React.createClass({
 
 	getInitialState: function() {
 	    return {
-        visibleHeight: Dimensions.get('window').height,
-
 	      username: '',
 	      password: '',
         needToRegister: true,
@@ -57,6 +55,8 @@ var LoginPage = React.createClass({
         phoneNumberPosition: new Animated.Value(800),
         registerFBLoginPosition: new Animated.Value(800),
         agreementPosition: new Animated.Value(800),
+
+        contentOffset: {x: 0, y: 0},
         //userNameFade: new Animated.Value(1),
         //passwordFade: new Animated.Value(1),
         //fbLoginFade: new Animated.Value(1),
@@ -73,15 +73,6 @@ var LoginPage = React.createClass({
         });
   },
 */
-
-  keyboardWillShow (e) {
-    let newSize = Dimensions.get('window').height - e.endCoordinates.height;
-    this.setState({visibleHeight: newSize});
-  },
-
-  keyboardWillHide (e) {
-    this.setState({visibleHeight: Dimensions.get('window').height});
-  },
 
 
   onEmailTextChanged(event) {
@@ -149,10 +140,7 @@ var LoginPage = React.createClass({
 
   },
 
-  componentWillMount: function() {
-    DeviceEventEmitter.addListener('keyboardWillShow', this.keyboardWillShow);
-    DeviceEventEmitter.addListener('keyboardWillHide', this.keyboardWillHide);
-  },
+
 
 
   doRegister: function(){
@@ -340,10 +328,30 @@ var LoginPage = React.createClass({
 
   },
 
+
+  textInputFocused(event){
+    this.setState({
+      contentOffset:{
+        x: 0,
+        y: 100,
+      }
+    });
+
+  },
+
+  textInputBlur(event){
+    this.setState({
+      contentOffset:{
+        x: 0,
+        y: 0,
+      }
+    });
+  },
+
 	render: function() {
 
 		return(
-			<View style={[styles.container, {height: this.state.visibleHeight}]}>
+			<ScrollView style={styles.container} scrollEnabled={false} contentOffset = {this.state.contentOffset}>
 				<Image style={styles.bg} source={require('../ios/BG.png')} />
 				<TouchableOpacity style={styles.newUserRegister}
               			onPress={this.doRegister}>
@@ -403,6 +411,7 @@ var LoginPage = React.createClass({
                         value={this.state.firstName}
                         onChange={this.onFirstNameChange}
                         onFocus={this.textInputFocused}
+                        onBlur={this.textInputBlur}
                     />
               </Animated.View>
               <Animated.View style={{marginTop: this.state.lastNamePosition}}>
@@ -415,6 +424,7 @@ var LoginPage = React.createClass({
                         value={this.state.lastName}
                         onChange={this.onLastNameInput}
                         onFocus={this.textInputFocused}
+                        onBlur={this.textInputBlur}
                     />
               </Animated.View>
               <Animated.View style={{marginTop: this.state.registerEmailPosition}}>
@@ -427,6 +437,7 @@ var LoginPage = React.createClass({
                         value={this.state.registerEmail}
                         onChange={this.onRegisterEmailInput}
                         onFocus={this.textInputFocused}
+                        onBlur={this.textInputBlur}
                     />
               </Animated.View>
               <Animated.View style={{marginTop: this.state.phoneNumberPosition}}>
@@ -439,13 +450,14 @@ var LoginPage = React.createClass({
                         value={this.state.phoneNumber}
                         onChange={this.onPhoneNumberInput}
                         onFocus={this.textInputFocused}
+                        onBlur={this.textInputBlur}
                     />
               </Animated.View>
               <TouchableOpacity style={[styles.agreement, {marginTop: this.state.agreementPosition}]}
                     onPress={this.onRegister}>
                   <Image style={styles.accAgreemnt} source={require('../ios/words.png')}/>
               </TouchableOpacity>
-      </View>
+      </ScrollView>
 
 
 
