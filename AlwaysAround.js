@@ -7,7 +7,7 @@ import LoginPage from './components/LoginPage.js'
 import MainPage from './components/MainPage.js'
 
 
-var AlwaysAround = React.createClass({
+var AlwaysAroundApp = React.createClass({
 
     getInitialState: function() {
     	return { 
@@ -51,4 +51,4 @@ var AlwaysAround = React.createClass({
 
 });
 
-module.exports = AlwaysAround;
+module.exports = AlwaysAroundApp;

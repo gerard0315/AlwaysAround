@@ -5,6 +5,7 @@ var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
 import Toggle from 'react-native-toggle';
+import MainPage from './MainPage.js'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
@@ -21,6 +22,16 @@ var {
   DeviceEventEmitter
 } = React;
 
+const source1 = require('../ios/z.png');
+const source2 = require('../ios/continue.png');
+const source3 = require('../ios/exsiting_user.png');
+
+
+const assets = {
+      source1 : require('../ios/z.png'),
+      source2 : require('../ios/continue.png'),
+      source3 : require('../ios/exsiting_user.png'),
+}
 
 
 var LoginPage = React.createClass({
@@ -33,7 +44,9 @@ var LoginPage = React.createClass({
         //hidden: false,
         loginHide: false,
         registerHide: true,
-        source: require('../ios/z.png'),
+        //source: require('../ios/z.png'),
+        //source: require('image!newUserRegister'),
+        source : source1,
 
         logoSlidePosition: new Animated.Value(80),
         userNameSlideUpPosition: new Animated.Value(400),
@@ -78,13 +91,13 @@ var LoginPage = React.createClass({
   onEmailTextChanged(event) {
     	this.setState({ username: event.nativeEvent.text });
 
-      if(this.state.username != ''){
+      if(this.state.username === ''){
       this.setState({ needToRegister: false});
-      this.setState({ source: require('../ios/z.png')});
+      this.setState({ source: source1});
       console.log('continue');
     }else{
       this.setState({ needToRegister: true});
-      this.setState({ source: require('../ios/continue.png')});
+      this.setState({ source: source2});
       console.log('register');
     }
   },
@@ -144,13 +157,12 @@ var LoginPage = React.createClass({
 
 
   doRegister: function(){
-    //Actions.home;
     //this.toggle();
     console.log("jump to register Scene");
     //this.setState({source:require('../ios/exsiting_user.png')});
+    Actions.home();
 
     if (this.state.firstVist === true){
-
         Animated.timing(this.state.userNameSlideUpPosition, {
                 toValue: 500, // 目标值
                 duration: 10,
@@ -184,7 +196,6 @@ var LoginPage = React.createClass({
                 //delay: 60,
                 easing: Easing.linear, // 动画时间
         }).start();
-
 
         Animated.timing(this.state.registerFBLoginPosition, {
                 toValue: -1800, // 目标值
@@ -235,6 +246,7 @@ var LoginPage = React.createClass({
         }).start();
 
         this.setState({firstVist: !this.state.firstVist});
+        this.setState({source: assets.source3});
     
     }else{
 
@@ -322,6 +334,9 @@ var LoginPage = React.createClass({
         }).start();
 
         this.setState({firstVist: !this.state.firstVist});
+        this.setState({source: source1});
+        //console.log(this.state.source);
+        console.log('source above');
 
 
     }
@@ -357,7 +372,7 @@ var LoginPage = React.createClass({
               			onPress={this.doRegister}>
               		<Image style={styles.accNewUser} source={this.state.source}/>
               		<Image style={styles.accNewUser} source={require('../ios/Line_new_user.png')}/>
-          		</TouchableOpacity>
+        </TouchableOpacity>
           		<Animated.View style={[styles.logoContainer, {marginTop: this.state.logoSlidePosition}]}>
           			<Image source={require('../ios/logo.png')}/>
           		</Animated.View>
@@ -455,7 +470,7 @@ var LoginPage = React.createClass({
               </Animated.View>
               <TouchableOpacity style={[styles.agreement, {marginTop: this.state.agreementPosition}]}
                     onPress={this.onRegister}>
-                  <Image style={styles.accAgreemnt} source={require('../ios/words.png')}/>
+                  <Image style={styles.accAgreemnt} source={require('../ios/z.png')}/>
               </TouchableOpacity>
       </ScrollView>
 
@@ -483,7 +498,7 @@ var styles = React.StyleSheet.create({
     },
 
     newUserRegister:{
-    	marginLeft: 280,
+    	marginLeft: 260,
     	paddingTop: 35,
     },
 
@@ -491,9 +506,12 @@ var styles = React.StyleSheet.create({
       marginLeft: 250,
       paddingTop: 35,
     },
+
     accNewUser:{
     	marginTop:5,
-      resizeMode: 'contain',
+      //resizeMode: 'contain',
+      //alignItems: 'center',
+      //justifyContent: 'center',
     },
 
     logoContainer:{

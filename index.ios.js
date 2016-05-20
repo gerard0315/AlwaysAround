@@ -3,7 +3,7 @@
 var React = require('react-native');
 var {AppRegistry, Navigator, StyleSheet,Text,View} = React;
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
-import AlwaysAround from './AlwaysAround.js';
+import AlwaysAroundApp from './AlwaysAround.js';
 import LoginPage from './components/LoginPage.js'
 import MainPage from './components/MainPage.js'
 import RegisterPage from './components/RegisterPage.js'
@@ -21,14 +21,14 @@ const reducerCreate = params=>{
     }
 };
 
-class App extends React.Component{
+class AlwaysAround extends React.Component{
 
 	render() {
+        console.log('this is index');
         return <Router createReducer={reducerCreate}>
             <Scene key="modal" component={Modal} >
                 <Scene key="root" hideNavBar={true}>
-	                <Scene key="login" component={LoginPage}/>
-	                <Scene key="register" component={RegisterPage}/>
+	                <Scene key="choose" component={AlwaysAroundApp} initial={true}/>
 	                <Scene key="home" component={MainPage}/>
 	            </Scene>
             </Scene>
