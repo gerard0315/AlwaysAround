@@ -6,7 +6,7 @@ var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
 import Toggle from 'react-native-toggle';
 import MainPage from './MainPage.js'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 var {
@@ -92,13 +92,13 @@ var LoginPage = React.createClass({
     	this.setState({ username: event.nativeEvent.text });
 
       if(this.state.username === ''){
-      this.setState({ needToRegister: false});
-      this.setState({ source: source1});
-      console.log('continue');
-    }else{
       this.setState({ needToRegister: true});
-      this.setState({ source: source2});
+      this.setState({ source: source1});
       console.log('register');
+    }else{
+      this.setState({ needToRegister: false});
+      this.setState({ source: source2});
+      console.log('continue');
     }
   },
 
@@ -158,9 +158,13 @@ var LoginPage = React.createClass({
 
   doRegister: function(){
     //this.toggle();
-    console.log("jump to register Scene");
+    //console.log("jump to register Scene");
     //this.setState({source:require('../ios/exsiting_user.png')});
-    Actions.home();
+
+    if (this.state.needToRegister == false){
+        Actions.home();
+        console.log('logging in');
+    }else{
 
     if (this.state.firstVist === true){
         Animated.timing(this.state.userNameSlideUpPosition, {
@@ -337,9 +341,8 @@ var LoginPage = React.createClass({
         this.setState({source: source1});
         //console.log(this.state.source);
         console.log('source above');
-
-
-    }
+      }
+  }
 
   },
 
