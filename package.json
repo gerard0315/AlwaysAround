@@ -8,10 +8,16 @@
   "dependencies": {
     "react": "^0.14.8",
     "react-native": "^0.24.1",
+    "react-native-checkbox": "^1.0.9",
     "react-native-drawer": "^2.2.2",
+    "react-native-dropdown": "0.0.6",
+    "react-native-floating-label-text-input": "0.0.9",
+    "react-native-icons": "^0.7.1",
+    "react-native-item-checkbox": "^1.0.4",
     "react-native-keyboard-aware-scroll-view": "0.0.6",
     "react-native-router-flux": "^3.26.0",
     "react-native-toggle": "^1.0.3",
+    "react-native-vector-icons": "^2.0.3",
     "reflux": "^0.4.1"
   }
 }

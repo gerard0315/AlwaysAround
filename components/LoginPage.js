@@ -473,7 +473,7 @@ var LoginPage = React.createClass({
               </Animated.View>
               <TouchableOpacity style={[styles.agreement, {marginTop: this.state.agreementPosition}]}
                     onPress={this.onRegister}>
-                  <Image style={styles.accAgreemnt} source={require('../ios/z.png')}/>
+                  <Image style={styles.accAgreemnt} source={require('../ios/words.png')}/>
               </TouchableOpacity>
       </ScrollView>
 

@@ -4,9 +4,10 @@ var React = require('react-native');
 var {AppRegistry, Navigator, StyleSheet,Text,View} = React;
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
 import AlwaysAroundApp from './AlwaysAround.js';
-import LoginPage from './components/LoginPage.js'
-import MainPage from './components/MainPage.js'
-import RegisterPage from './components/RegisterPage.js'
+import LoginPage from './components/LoginPage.js';
+import MainPage from './components/MainPage.js';
+import AddDog from './components/newDogPage.js';
+//import RegisterPage from './components/RegisterPage.js'
 
 
 var {
@@ -29,7 +30,8 @@ class AlwaysAround extends React.Component{
             <Scene key="modal" component={Modal} >
                 <Scene key="root" hideNavBar={true}>
 	                <Scene key="choose" component={AlwaysAroundApp} initial={true}/>
-	                <Scene key="home" component={MainPage}/>
+	                <Scene key="home" component={MainPage} panHandlers={null}/>
+                    <Scene key="addDog" component={AddDog} panHandlers={null}/>
 	            </Scene>
             </Scene>
         </Router>;
