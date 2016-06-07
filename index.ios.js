@@ -4,7 +4,8 @@ var React = require('react-native');
 var {AppRegistry, Navigator, StyleSheet,Text,View} = React;
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
 import AlwaysAroundApp from './AlwaysAround.js';
-import LoginPage from './components/LoginPage.js';
+//import LoginPage from './components/LoginPage.js';
+import LoginPage from './components/Login.js'
 import MainPage from './components/MainPage.js';
 import AddDog from './components/newDogPage.js';
 //import RegisterPage from './components/RegisterPage.js'

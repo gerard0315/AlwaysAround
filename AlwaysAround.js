@@ -3,7 +3,7 @@
 import React, {AppRegistry, Navigator, StyleSheet, Text, View} from 'react-native'
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
 
-import LoginPage from './components/LoginPage.js'
+import LoginPage from './components/Login.js'
 import MainPage from './components/MainPage.js'
 
 

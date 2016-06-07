@@ -141,12 +141,15 @@ var MainPage = React.createClass({
               </TouchableOpacity>
             </Animated.View>
           </View>}
+        captureGestures = {true}
         panOpenMask = {20}
         openDrawerOffset={0.4} // 20% gap on the right side of drawer
         panCloseMask={0.2}
         closedDrawerOffset={-3}
         negotiatePan={false}
         style = {styles.drawerStyles}
+        acceptTap = {true}
+        tapToClose={true}
         tweenHandler={(ratio) => ({
           main: { opacity:(2-ratio)/2 }
         })}

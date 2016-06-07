@@ -27,11 +27,7 @@ const source2 = require('../ios/continue.png');
 const source3 = require('../ios/exsiting_user.png');
 
 
-const assets = {
-      source1 : require('../ios/z.png'),
-      source2 : require('../ios/continue.png'),
-      source3 : require('../ios/exsiting_user.png'),
-}
+
 
 
 var LoginPage = React.createClass({
@@ -44,9 +40,6 @@ var LoginPage = React.createClass({
         //hidden: false,
         loginHide: false,
         registerHide: true,
-        //source: require('../ios/z.png'),
-        //source: require('image!newUserRegister'),
-        source : source1,
 
         logoSlidePosition: new Animated.Value(80),
         userNameSlideUpPosition: new Animated.Value(400),
@@ -168,7 +161,7 @@ var LoginPage = React.createClass({
 
     if (this.state.firstVist === true){
         Animated.timing(this.state.userNameSlideUpPosition, {
-                toValue: 500, // 目标值
+                toValue: 56, // 目标值
                 duration: 10,
                 easing: Easing.linear, // 动画时间
             }).start();
@@ -195,7 +188,7 @@ var LoginPage = React.createClass({
         }).start();
 
         Animated.timing(this.state.logoSlidePosition, {
-                toValue: 50, // 目标值
+                toValue: 118, // 目标值
                 duration: 300,
                 //delay: 60,
                 easing: Easing.linear, // 动画时间
@@ -371,28 +364,34 @@ var LoginPage = React.createClass({
 		return(
 			<ScrollView style={styles.container} scrollEnabled={false} contentOffset = {this.state.contentOffset}>
 				<Image style={styles.bg} source={require('../ios/BG.png')} />
-				<TouchableOpacity style={styles.newUserRegister}
+        <View style = {styles.loginRegitser}>
+				  <TouchableOpacity style = {styles.leftButtonContainer}
               			onPress={this.doRegister}>
-              		<Image style={styles.accNewUser} source={this.state.source}/>
-              		<Image style={styles.accNewUser} source={require('../ios/Line_new_user.png')}/>
-        </TouchableOpacity>
+                    <Text style = {styles.leftButton}>{(this.state.needToRegister) ?  "NEW USER":"EXISTING USER" }</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style = {styles.rightButtonContainer}
+                    onPress={this.doRegister}>
+                    <Text style = {styles.rightButton}>NEXT</Text>
+          </TouchableOpacity>
+        </View>
           		<Animated.View style={[styles.logoContainer, {marginTop: this.state.logoSlidePosition}]}>
           			<Image source={require('../ios/logo.png')}/>
           		</Animated.View>
+
+              <Animated.View style = {[styles.loginContainer, {marginTop: this.state.loginSlideUpPosition}]}>
+                <TextInput
+                  style = {style.email.}
+                        >
           		<Animated.View style={{marginTop: this.state.userNameSlideUpPosition}}>
-          		    <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
-          			<Image style={styles.email} source={require('../ios/Email:.png')}/>
           			<TextInput 
                         style={styles.emailInput}
-                        placeholder= "Input Email Here"
+                        placeholder= "Email"
                         placeholderTextColor="grey"
                         value={this.state.username}
                         onChange={this.onEmailTextChanged}
                     />
           		</Animated.View>
           		<Animated.View style={{marginTop: this.state.passwordSlideUpPosition}}>
-          		    <Image style={styles.userNameBG} source={require('../ios/address.png')}/>
-          			<Image style={styles.email} source={require('../ios/Password:.png')}/>
           			<TextInput 
                         style={styles.passwordInput}
                         secureTextEntry={true}
@@ -410,9 +409,7 @@ var LoginPage = React.createClass({
           		<TouchableOpacity style={[styles.forgetPassword, {marginTop: this.state.forgetPasswordSlideUpPosition}]}
               			onPress={this.forgetPassword}>
               		<Image style={styles.accForgetPW} source={require('../ios/ForgotPassword.png')}/>
-              		<Image style={styles.accForgetPW} source={require('../ios/Lineforgotpassword.png')}/>
           		</TouchableOpacity>
-
 
 
               <TouchableOpacity style={[styles.fbLoginRegister, {marginTop: this.state.registerFBLoginPosition}]}
@@ -500,38 +497,52 @@ var styles = React.StyleSheet.create({
         height: windowSize.height
     },
 
-    newUserRegister:{
-    	marginLeft: 260,
-    	paddingTop: 35,
+    loginRegitser:{
+      flexDirection: 'row',
+      marginLeft: 19,
+      marginTop: 40,
     },
 
-    existingUser:{
-      marginLeft: 250,
-      paddingTop: 35,
+    leftButtonContainer:{
+      alignSelf: 'flex-start',
     },
 
-    accNewUser:{
-    	marginTop:5,
-      //resizeMode: 'contain',
-      //alignItems: 'center',
-      //justifyContent: 'center',
+    leftButton:{
+      color: '#FCC31B',
+      fontSize: 14,
+      //marginLeft: 0,
+      //marginTop: 0,
+      //alignSelf: 'flex-start',
+      fontFamily: 'SanFranciscoDisplay-Medium',
+    },
+
+    rightButtonContainer:{
+      position: 'absolute',
+      top: 0,
+      right: 19,
+      //alignSelf: 'flex-end',
+    },
+
+    rightButton:{
+      color: '#FCC31B',
+      fontSize: 14,
+      fontFamily: 'SanFranciscoDisplay-Medium',
     },
 
     logoContainer:{
-    	//marginTop: 80,
     	alignItems: 'center',
     },
     
     userNameContainter:{
-    	marginTop: 40,
-    },
-    
-    userNameBG:{
-    	alignSelf:'center',
+    	marginTop: 0,
+      backgroundColor: 'white',
+      height: 47,
+      width: 337,
+      borderRadius: 2,
     },
 
     email:{
-    	marginTop: -35,
+    	marginTop: 56,
     	marginLeft: 90,
     },
 
@@ -545,12 +556,8 @@ var styles = React.StyleSheet.create({
     },
 
     emailInput:{
-        position: 'absolute',
-        left: 140,
-        top: 17,
-        right: 0,
-        height: 20,
-        fontSize: 14
+      height: 34,
+      width: 337,
     },
 
     firstNameInput:{

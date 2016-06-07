@@ -59,9 +59,7 @@ var AddDog = React.createClass({
   	},
 
   	onDogNameInput: function(event) {
-  		//console.log('editing Name');
       	this.setState({ dogName: event.nativeEvent.text });
-      	//console.log(this.state.dogName);
       	console.log('name above');
   	},
 
