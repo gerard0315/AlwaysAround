@@ -2,7 +2,6 @@
 
 var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
-var ListPopover = require('react-native-list-popover');
 var FloatLabelTextInput = require('react-native-floating-label-text-input');
 import {Actions} from 'react-native-router-flux';
 
@@ -19,22 +18,8 @@ import React, {
   TouchableHighlight,
   SegmentedControlIOS,
   ScrollView,
+  StatusBar,
 } from 'react-native';
-
-var ItemCheckbox = require('react-native-item-checkbox');
-const DropDown = require('react-native-dropdown');
-
-const {
-  Select,
-  Option,
-  OptionList,
-  updatePosition
-} = DropDown;
-
-
-var breed = ["breed 1", "breed 2"];
-var year = [2014, 2015, 2016];
-var	size = ["small", "medium", "large"];
 
 exports.framework = 'React';
 
@@ -126,12 +111,17 @@ var AddDog = React.createClass({
 		//console.log(this.state._Friendly);
 	},
 
+	onBackPressed: function(event){
+		Actions.pop();
+		StatusBar.setHidden(false, null);
+	},
+
 	render(){
 		return(
 			<ScrollView style = {styles.container} scrollEnabled={false} contentOffset = {this.state.contentOffset}>
 				<View style = {styles.topBar}>
 					<TouchableOpacity style = {styles.buttonBack} 
-						onPress = {Actions.pop}>
+						onPress = {this.onBackPressed}>
 						<Text style = {styles.backText}>BACK</Text>
 					</TouchableOpacity>
 					<Text style = {styles.pageTitle}>New Dog</Text>

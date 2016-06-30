@@ -17,7 +17,7 @@
                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LoadingBG" translatesAutoresizingMaskIntoConstraints="NO" id="71S-iV-br7">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Loading" translatesAutoresizingMaskIntoConstraints="NO" id="71S-iV-br7">
                     <rect key="frame" x="0.0" y="0.0" width="482" height="480"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LoadingIcon" translatesAutoresizingMaskIntoConstraints="NO" id="dCV-KI-FVu">
@@ -46,7 +46,7 @@
         </view>
     </objects>
     <resources>
-        <image name="LoadingBG" width="375" height="667"/>
+        <image name="Loading" width="375" height="667"/>
         <image name="LoadingIcon" width="74" height="78"/>
     </resources>
 </document>

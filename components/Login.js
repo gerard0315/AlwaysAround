@@ -4,10 +4,6 @@ var React = require('react-native');
 var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
-import Toggle from 'react-native-toggle';
-import MainPage from './MainPage.js'
-//import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-
 
 var {
   StyleSheet,
@@ -19,7 +15,8 @@ var {
   Animated,
   Easing,
   ScrollView,
-  DeviceEventEmitter
+  DeviceEventEmitter,
+  StatusBar,
 } = React;
 
 var LoginPage = React.createClass({
@@ -51,6 +48,9 @@ var LoginPage = React.createClass({
   },
 
   componentDidMount: function(){
+
+    StatusBar.setHidden(false, null);
+
       Animated.timing(this.state.topBarOpacity, {
           toValue: 1,
           duration: 400,
