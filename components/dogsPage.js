@@ -35,7 +35,7 @@ var Dogs = [
 
     'Behaviours':{
       'Commands': 'Peking!',
-      'Child-friendly': true,
+      'Child_friendly': true,
       'Digs': true,
       'Jumps': true,
       'Chipped': true,
@@ -44,18 +44,17 @@ var Dogs = [
     'Health':{
       'OnMeds': 'None',
       'Allergies': 'None',
-    },
+      'Veterinary':{
+        'Name': 'Godard Veterinary Group, Mile End',
+        'Address': '47 Burdett Road, Bow, London, E3 4TN',
+        'Phone': '020 8981 5535',
+      },
 
-    'Veterinary':{
-      'Name': 'Godard Veterinary Group, Mile End',
-      'Address': '47 Burdett Road, Bow, London, E3 4TN',
-      'Phone': '020 8981 5535',
+      'Insurance':{
+        'Name': 'PetPlan',
+        'Number': 'NH 472469216'
+      },
     },
-
-    'Insurance':{
-      'Name': 'PetPlan',
-      'Number': 'NH 472469216'
-    }
   }
 ];
 
@@ -76,7 +75,6 @@ export default class MyDogs extends Component{
     this.state = {
         dataSource: ds.cloneWithRows([Dogs[0]]),
         nowYear: data,
-
     };
   }
 
@@ -169,24 +167,24 @@ var styles = StyleSheet.create({
   topBarContainer:{
     marginTop: 0,
     marginLeft: 0,
-    height: 71,
+    height: 74,
     width: 375,
     backgroundColor: '#EA4D4E',
     //opacity: 0.9,
     //justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    shadowRadius: 0.5,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 1}
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0.5}
   },
 
   topBarText:{
-    marginTop: 15,
+    marginTop: 10,
     marginLeft: 120,
     color: 'white',
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'SanFranciscoDisplay-Medium',
     backgroundColor: 'transparent',
   },

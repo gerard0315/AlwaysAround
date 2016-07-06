@@ -1,17 +1,8 @@
 'use strict';
 import {Actions} from 'react-native-router-flux';
 
-import React, {
-  Component,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  Navigator,
-  ListView,
-  TextInput,
-} from 'react-native';
+import React, {Component} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity, Image, Navigator, ListView, TextInput} from 'react-native';
 
 var seacrhListImage = {
 	currentLocation: require('../ios/locationGuess.png'),
@@ -19,16 +10,17 @@ var seacrhListImage = {
 
 };
 
-var SearchPage = React.createClass({
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-	getInitialState: function(){
-		var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        return {
-          dataSource: ds.cloneWithRows(['Aldgate Tower','Russel Square','Oxford Circle','Soho London']),
-        };
-	},
-	
-	_renderRow: function(rowData: string, sectionID: number, rowID: number){
+export default class SearchPage extends Component{
+	constructor(props){
+		super(props);
+		this.state= {
+			dataSource: ds.cloneWithRows(['Aldgate Tower','Russel Square','Oxford Circle','Soho London']),
+		};
+	};
+
+	_renderRow =  (rowData: string, sectionID: number, rowID: number) => {
 
 			return (
 		        <TouchableOpacity
@@ -44,7 +36,7 @@ var SearchPage = React.createClass({
 		          </View>
 		        </TouchableOpacity>
 		    	);
-	},
+	}
 
 	render(){
 		return(
@@ -79,10 +71,10 @@ var SearchPage = React.createClass({
 			        dataSource={this.state.dataSource}
           			renderRow={this._renderRow}/>
 		</View>
-	)},
-});
+	)}
+}
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
 
 	container: {
 		flexDirection: 'column',
@@ -97,20 +89,24 @@ var styles = React.StyleSheet.create({
 	topBarContainer:{
 		marginTop: 0,
 		marginLeft: 0,
-		height: 71,
+		height: 74,
 		width: 375,
-		backgroundColor: '#ED6464',
-		opacity: 0.9,
+		backgroundColor: '#EA4D4E',
+		//opacity: 0.9,
 		//justifyContent: 'center',
 		alignItems: 'center',
 		flexDirection: 'row',
+	    shadowRadius: 0.6,
+	    shadowOpacity: 0.2,
+	    shadowColor: 'black',
+	    shadowOffset: {width: 0, height: 0.5},
 	},
 
 	topBarText:{
-        marginTop: 15,
+        marginTop: 10,
         marginLeft: 92,
         color: 'white',
-        fontSize: 18,
+        fontSize: 20,
         fontFamily: 'SanFranciscoDisplay-Medium',
         backgroundColor: 'transparent',
 	},
@@ -131,7 +127,7 @@ var styles = React.StyleSheet.create({
 		backgroundColor: 'white',
 		borderRadius: 2,
 		borderWidth: 1,
-		borderColor: '#646464',
+		borderColor: '#727272',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center'
@@ -142,7 +138,7 @@ var styles = React.StyleSheet.create({
 		width: 311,
 		fontSize: 18,
 		fontFamily: 'SanFranciscoDisplay-Regular',
-		color: '#646464'
+		color: '#727272'
 	},
 
 	searchResult:{
@@ -156,19 +152,17 @@ var styles = React.StyleSheet.create({
 		marginLeft: 19,
 		marginTop: 10,
 		marginBottom: 10,
-	    width: 21,
-	    height: 21,
+	  width: 21,
+	  height: 21,
 	},
 
 	row: {
-	    flexDirection: 'row',
-	    justifyContent: 'center',
-	    alignItems: 'center',
-	    //padding: 10,
-	    backgroundColor: 'white',
+	  flexDirection: 'row',
+	  justifyContent: 'center',
+	  alignItems: 'center',
+	  //padding: 10,
+	  backgroundColor: 'white',
 	},
 
 
 });
-
-module.exports = SearchPage;

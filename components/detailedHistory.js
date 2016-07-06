@@ -211,7 +211,7 @@ var styles = React.StyleSheet.create({
 	topBarContainer:{
 		marginTop: 0,
 		marginLeft: 0,
-		height: 71,
+		height: 74,
 		width: 375,
 		backgroundColor: '#EA4D4E',
 		//opacity: 0.9,
@@ -221,10 +221,10 @@ var styles = React.StyleSheet.create({
 	},
 
 	topBarText:{
-        marginTop: 15,
+        marginTop: 10,
         marginLeft: 92,
         color: 'white',
-        fontSize: 18,
+        fontSize: 20,
         fontFamily: 'SanFranciscoDisplay-Medium',
         backgroundColor: 'transparent',
 	},

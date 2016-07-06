@@ -5,6 +5,9 @@ import {Actions} from 'react-native-router-flux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Dimensions from 'Dimensions';
 import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS} from 'react-native';
+import BasicsPage from './Basics.js';
+import BehavioursPage from './Behaviours.js';
+import HealthPage from './health.js';
 
 export default class DogDetails extends Component{
     static propTypes = {
@@ -27,7 +30,7 @@ export default class DogDetails extends Component{
 	          <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 	            source = {require('../ios/goBack.png')}/>
 	        </TouchableOpacity>
-	        <Text style = {styles.topBarText}>My Dogs</Text>
+	        <Text style = {styles.topBarText}>{this.props.Data.Basics.Name}</Text>
 	      </View>
 	      	<View style = {styles.tabBarPadding}/>
 			<ScrollableTabView
@@ -36,11 +39,10 @@ export default class DogDetails extends Component{
 			   	tabBarBackgroundColor = '#EA4D4E'
 		     	tabBarActiveTextColor = '#FCC31B'
 		      	tabBarInactiveTextColor = 'white'
-		      	tabBarTextStyle = {styles.tabBarText}
-		      	>
-     		    <BasicsPage data ={this.props.Data.Basics}style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Basics'/>
-				<BehavioursPage data ={this.props.Data.Behaviours}style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Behaviours'/>
-				<HealthPage data ={this.props.Data.Basics}style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Health'/>
+		      	tabBarTextStyle = {styles.tabBarText}>
+     		    <BasicsPage data ={this.props.Data.Basics} style = {{marginTop: 24, backgroundColor: 'transparent'}} tabLabel='Basics'/>
+				<BehavioursPage data ={this.props.Data.Behaviours} style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Behaviours'/>
+				<HealthPage data ={this.props.Data.Health} style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Health'/>
 			</ScrollableTabView>
 	    </View>
 			)
@@ -48,109 +50,22 @@ export default class DogDetails extends Component{
 
 }
 
-class BasicsPage extends React.Component{
-    static propTypes = {
-        data: React.PropTypes.object.isRequired,
-    }; 
-
-    constructor(props){
-    	super(props);
-    	this.state = {
-        	name: this.props.data.Name,
-        	gender: this.props.data.Gender,
-      		breed: this.props.data.Breed,
-      		birth: this.props.data.YoB,
-      		size: this.props.data.Size,
-	      	vacinated: this.props.data.Vacination,
-	  		spayed: this.props.data.Spayed,
-	      	friendly: this.props.data.Friendly,
-
-    	};
-  	}
-
-  	render(){
-  		return(
-  		<View style = {{marginTop: 24, flex: 1}}>
-  			<Text>{this.state.name}</Text>
-  		</View>
-  	)}
-
-}
-
-class BehavioursPage extends React.Component{
-    static propTypes = {
-        data: React.PropTypes.object.isRequired,
-    }; 
-
-    constructor(props){
-    	super(props);
-    	this.state = {
-        	name: this.props.data.Name,
-        	gender: this.props.data.Gender,
-      		breed: this.props.data.Breed,
-      		birth: this.props.data.YoB,
-      		size: this.props.data.Size,
-	      	vacinated: this.props.data.Vacination,
-	  		spayed: this.props.data.Spayed,
-	      	friendly: this.props.data.Friendly,
-
-    	};
-  	}
-
-  	render(){
-  		return(
-  		<View style = {{marginTop: 24, flex: 1}}>
-  			<Text>{this.state.name}</Text>
-  		</View>
-  	)}
-
-}
-
-class HealthPage extends React.Component{
-    static propTypes = {
-        data: React.PropTypes.object.isRequired,
-    }; 
-
-    constructor(props){
-    	super(props);
-    	this.state = {
-        	name: this.props.data.Name,
-        	gender: this.props.data.Gender,
-      		breed: this.props.data.Breed,
-      		birth: this.props.data.YoB,
-      		size: this.props.data.Size,
-	      	vacinated: this.props.data.Vacination,
-	  		spayed: this.props.data.Spayed,
-	      	friendly: this.props.data.Friendly,
-
-    	};
-  	}
-
-  	render(){
-  		return(
-  		<View style = {{marginTop: 24, flex: 1}}>
-  			<Text>{this.state.name}</Text>
-  		</View>
-  	)}
-
-}
-
 
 var styles = StyleSheet.create({
-container: {
+  container: {
     flexDirection: 'column',
     position: 'absolute',
     left: 0,
     top: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
 
   topBarContainer:{
     marginTop: 0,
     marginLeft: 0,
-    height: 71,
+    height: 74,
     width: 375,
     backgroundColor: '#EA4D4E',
     //opacity: 0.9,
@@ -160,10 +75,10 @@ container: {
   },
 
   topBarText:{
-    marginTop: 15,
-    marginLeft: 120,
+    marginTop: 10,
+    marginLeft: 125,
     color: 'white',
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'SanFranciscoDisplay-Medium',
     backgroundColor: 'transparent',
   },
@@ -181,10 +96,6 @@ container: {
     right: 0,
     height: 23,
  	backgroundColor: '#EA4D4E',
- 	shadowRadius: 0.5,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 1}
   }
 
 });

@@ -156,24 +156,25 @@ var styles = React.StyleSheet.create({
 	topBarContainer:{
 		marginTop: 0,
 		marginLeft: 0,
-		height: 71,
+		height: 74,
 		width: 375,
 		backgroundColor: '#EA4D4E',
 		alignItems: 'center',
 		flexDirection: 'row',
-    	shadowRadius: 0.5,
-    	shadowOpacity: 0.5,
+    	shadowRadius: 0.6,
+    	shadowOpacity: 0.2,
     	shadowColor: 'gray',
-    	shadowOffset: {width: 0, height: 1}
+    	shadowOffset: {width: 0, height: 0.5}
 	},
 
 	topBarText:{
-        marginTop: 15,
-        marginLeft: 120,
+        marginTop: 10,
+        marginLeft: 115,
         color: 'white',
-        fontSize: 18,
+        fontSize: 20,
         fontFamily: 'SanFranciscoDisplay-Medium',
         backgroundColor: 'transparent',
+        //backgroundColor: 'green'
 	},
 
 	cellContainer:{

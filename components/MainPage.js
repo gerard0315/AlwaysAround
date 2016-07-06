@@ -37,9 +37,11 @@ var MainPage = React.createClass({
       timeSelectHeight: new Animated.Value(0),
       numberOpacity: new Animated.Value(0),
       timeSelectOpacity: new Animated.Value(0),
+      timeSelectDisabled: true,
+      numberSelectDisabled: true,
       numberText: 'Select Dog',
       numberSelected: false,
-      timeText: 'Time Estimate',
+      timeText: 'Time Est.',
       timeSelected: false,
 
       sliderPosition: new Animated.Value(202.5),
@@ -73,10 +75,14 @@ var MainPage = React.createClass({
       twoClicked: false,
       threeClicked: false,
       fourClicked: false,
-      optionTextColor: '#646464',
+      firstClicked: false,
+      secondClicked: false,
+      thridClicked: false,
+      fourthClicked: false,
+      optionTextColor: '#727272',
 
       carerColor: 'white',
-      shelterColor: '#FCC31B',
+      shelterColor: '#FFC927',
       locationText: 'Aldgate Tower',
     };
   },
@@ -178,10 +184,10 @@ var MainPage = React.createClass({
   },
 
   openNameSelector: function(){
+    this.setState({numberSelectDisabled: false});
     Animated.timing(this.state.numberSelectHeight, {
-      toValue: 120, 
+      toValue: 124, 
       duration: 120,
-          //delay: ,
       easing: Easing.linear,
     }).start();
 
@@ -194,6 +200,7 @@ var MainPage = React.createClass({
   },
 
   closeNameSelector: function(){
+    this.setState({numberSelectDisabled: true});
     Animated.timing(this.state.numberSelectHeight, {
       toValue: 0, 
       duration: 100,
@@ -209,8 +216,9 @@ var MainPage = React.createClass({
   },
 
   openTimeSelector: function(){
+    this.setState({timeSelectDisabled: false});
     Animated.timing(this.state.timeSelectHeight, {
-      toValue: 120, 
+      toValue: 124, 
       duration: 120,
           //delay: ,
       easing: Easing.linear,
@@ -225,8 +233,9 @@ var MainPage = React.createClass({
   },
 
   closeTimeSelector: function(){
+    this.setState({timeSelectDisabled: true});
     Animated.timing(this.state.timeSelectHeight, {
-      toValue: 0, 
+      toValue: -50, 
       duration: 100,
           //delay: ,
       easing: Easing.linear,
@@ -241,6 +250,7 @@ var MainPage = React.createClass({
 
   onDogNumberClicked:function(event){
     this.setState({dogNumberSelected: !this.state.dogNumberSelected});
+    //this.setState({numberSelectDisabled: !this.state.numberSelectDisabled});
     if (this.state.dogNumberSelected === true){
         this.setState({numberText: 'Done'});
         this.openNameSelector();
@@ -260,6 +270,7 @@ var MainPage = React.createClass({
 
   onEstimateTimeClicked: function(event){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
+    //this.setState({timeSelectDisabled: !this.state.timeSelectDisabled});
     if (this.state.estimateTimeSelected === true){
         this.openTimeSelector();
     }else{
@@ -320,37 +331,61 @@ var MainPage = React.createClass({
       };
   },
 
-  onChosenFirst: function(){
+  onPressInFirst: function(){
+    this.setState({firstClicked: !this.state.firstClicked});
+    this.setState({secondClicked: false});
+    this.setState({thridClicked: false});
+    this.setState({fourthClicked: false});
+  },
+
+  onPressOutFirst: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '0.5 Hour'});
-    this.closeTimeSelector();
   },
 
-  onChosenSecond: function(){
+  onPressInSecond: function(){
+    this.setState({secondClicked: !this.state.secondClicked});
+    this.setState({firstClicked: false});
+    this.setState({thridClicked: false});
+    this.setState({fourthClicked: false});    
+  },
+
+  onPressOutSecond: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '1 Hour'});
-    this.closeTimeSelector();
   },
 
-  onChosenThird: function(){
+  onPressInThird: function(){
+    this.setState({thridClicked: !this.state.thridClicked});
+    this.setState({firstClicked: false});
+    this.setState({secondClicked: false});
+    this.setState({fourthClicked: false});
+  },
+
+  onPressOutThird: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '2 Hours'});
-    this.closeTimeSelector();
   },
 
-  onChosenFourth: function(){
+  onPressInForth: function(){
+    this.setState({fourthClicked: !this.state.fourthClicked});
+    this.setState({firstClicked: false});
+    this.setState({thridClicked: false});
+    this.setState({secondClicked: false});
+  },
+
+  onPressOutForth: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '3 Hours'});
-    this.closeTimeSelector();
   },
 
   onPressInCarer: function(event){
     this.setState({shelterColor: 'white'});
-    this.setState({carerColor: '#FCC31B'});
+    this.setState({carerColor: '#FFC927'});
   },
 
   onPressInShelter: function(event){
-    this.setState({shelterColor: '#FCC31B'});
+    this.setState({shelterColor: '#FFC927'});
     this.setState({carerColor: 'white'});
   },
 
@@ -360,38 +395,38 @@ var MainPage = React.createClass({
     this.setState({carerClicked: !this.state.carerClicked});
     
     Animated.timing(this.state.sliderPosition, {
-      toValue: 52.5, // 目标值
+      toValue: 52.5, 
       duration: 200,
-      easing: Easing.linear, // 动画时间
+      easing: Easing.linear, 
     }).start();
 
     Animated.timing(this.state.shelterTextLeft, {
-      toValue: -500, // 目标值
+      toValue: -500, 
       duration: 200,
-      easing: Easing.linear, // 动画时间
+      easing: Easing.linear, 
     }).start();
 
     Animated.timing(this.state.carerTextLeft, {
-      toValue: 100, // 目标值
+      toValue: 100, 
       duration: 200,
-      easing: Easing.linear, // 动画时间
+      easing: Easing.linear, 
     }).start();
 
     if ((this.state.carerClicked === false && this.state.descriptionDisplay === 0)){
       this.setState({descriptionDisplay: 1});
       this.setState({shelterClicked: false});
       Animated.timing(this.state.descriptionHeight, {
-        toValue: 60, // 目标值
+        toValue: 60, 
         duration: 100,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
       }).start();      
     }else if(this.state.carerClicked === true && this.state.descriptionDisplay === 1){
       this.setState({descriptionDisplay: 0});
       this.setState({shelterClicked: true});
       Animated.timing(this.state.descriptionHeight, {
-        toValue: 0, // 目标值
+        toValue: 0, 
         duration: 100,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
       }).start();       
     }else if(this.state.carerClicked === true && this.state.descriptionDisplay === 0){
       this.setState({shelterClicked: true});
@@ -405,38 +440,38 @@ var MainPage = React.createClass({
     console.log('carerClicked' + this.state.carerClicked);
     this.setState({shelterClicked: !this.state.shelterClicked});
     Animated.timing(this.state.sliderPosition, {
-        toValue: 202.5, // 目标值
+        toValue: 202.5, 
         duration: 200,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
     }).start();
 
     Animated.timing(this.state.shelterTextLeft, {
-        toValue: 0, // 目标值
+        toValue: 0, 
         duration: 200,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
     }).start();
 
     Animated.timing(this.state.carerTextLeft, {
-        toValue: 500, // 目标值
+        toValue: 500, 
         duration: 200,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
     }).start();
 
     if (this.state.shelterClicked === true){
       this.setState({descriptionDisplay: 1});
       this.setState({carerClicked: true});
       Animated.timing(this.state.descriptionHeight, {
-        toValue: 60, // 目标值
+        toValue: 60, 
         duration: 100,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
       }).start();   
     }else if(this.state.shelterClicked === false){
       this.setState({descriptionDisplay: 0});
       this.setState({carerClicked: false});
       Animated.timing(this.state.descriptionHeight, {
-        toValue: 0, // 目标值
+        toValue: 0, 
         duration: 100,
-        easing: Easing.linear, // 动画时间
+        easing: Easing.linear, 
       }).start();
     };
     
@@ -485,14 +520,13 @@ var MainPage = React.createClass({
           </TouchableOpacity>
           <Text style = {{
               marginTop: 30,
-              marginLeft: 92,
+              marginLeft: 80,
               color: 'white',
-              fontSize: 18,
+              fontSize: 20,
               fontFamily: 'SanFranciscoDisplay-Medium',
               backgroundColor: 'transparent',
           }}>Always Around</Text>
         </View>
-
         <View style = {styles.selectService}>
           <View style = {{marginTop: 0, marginLeft: 52.5, height: 73}}/>
           <TouchableOpacity style = {styles.serviceButton} 
@@ -521,12 +555,12 @@ var MainPage = React.createClass({
           <Animated.Text style = {{
             fontSize: 12,
             fontFamily: 'SanFranciscoDisplay-Regular',
-            color: '#949494',
-            marginTop: 10,
+            color: '#B6B6B6',
+            marginTop: 8,
             marginLeft: 19,
             backgroundColor: 'transparent',
             opacity: this.state.descriptionDisplay,
-          }}>Description</Animated.Text>
+          }}>DESCRIPTION</Animated.Text>
           <ScrollView style={{marginTop: 2, marginLeft: 24, height: 10}}>
             <Animated.View style= {{flexDirection: 'row'}}>
               <Animated.Text style = {[styles.descriptionText, {marginLeft: this.state.shelterTextLeft}]}>Designed By LunaBaetylus Studio London.{"\n"}This is AlwaysAround Shelter
@@ -557,8 +591,10 @@ var MainPage = React.createClass({
           activeOpacity = {0.9}
           >
           <Image style = {{
-            width: 38,
-            height: 38
+            marginTop: 0,
+            width: 32,
+            height: 32,
+            //opacity: 0.9
             }}
             source = {require('../ios/location.png')}
           />
@@ -593,58 +629,99 @@ var MainPage = React.createClass({
         </View>
 
         <Animated.View style = {[styles.timeSelectContainer, {height: this.state.timeSelectHeight}, {opacity: this.state.timeSelectOpacity}]}>
-          <TouchableHighlight onPress = {this.onChosenFirst} activeOpacity={0.1} underlayColor = {'#999999'}>
+          <TouchableOpacity onPress = {this.closeTimeSelector} onPressIn = {this.onPressInFirst} onPressOut = {this.onPressOutFirst}
+            activeOpacity={0.9} disabled = {this.state.timeSelectDisabled}>
             <View style = {styles.timeOptionContainer}>
-              <Text style ={styles.timeOptionText}>0:30</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.firstClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2}]}>0:30</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress = {this.onChosenSecond} activeOpacity={0.1} underlayColor = {'#999999'}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {this.closeTimeSelector} onPressIn = {this.onPressInSecond} onPressOut = {this.onPressOutSecond}
+            activeOpacity={0.9} disabled = {this.state.timeSelectDisabled}>
             <View style = {styles.timeOptionContainer}>
-              <Text style ={styles.timeOptionText}>1:00</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.secondClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2}]}> 1:00</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress = {this.onChosenThird} activeOpacity={0.1} underlayColor = {'#999999'}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {this.closeTimeSelector} onPressIn = {this.onPressInThird} onPressOut = {this.onPressOutThird}
+            activeOpacity={0.9} disabled = {this.state.timeSelectDisabled}>
             <View style = {styles.timeOptionContainer}>
-              <Text style ={styles.timeOptionText}>2:00</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.thridClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2}]}>2:00</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight onPress = {this.onChosenFourth} activeOpacity={0.1} underlayColor = {'#999999'}>
+          </TouchableOpacity>
+          <TouchableOpacity onPress = {this.closeTimeSelector} onPressIn = {this.onPressInForth} onPressOut = {this.onPressOutForth}
+            activeOpacity={0.9} disabled = {this.state.timeSelectDisabled}>
             <View style = {styles.timeOptionContainer}>
-              <Text style ={styles.timeOptionText}>3:00</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.fourthClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2}]}>3:00</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
+          <View style = {{height: 12, backgroundColor: 'transparent'}}/>
         </Animated.View>
 
-        <Animated.View style = {[styles.numberSelectContainer,
-          {height: this.state.numberSelectHeight}, {opacity: this.state.numberOpacity}]}>
-          <TouchableHighlight style = {{backgroundColor: this.state.oneClicked? '#E0E0E0' : 'transparent'}} onPress = {this.onChosenOne} activeOpacity={0.1} underlayColor = {'#CCCCCC'}>
+        <Animated.View style = {[styles.numberSelectContainer, {height: this.state.numberSelectHeight}, {opacity: this.state.numberOpacity}]}>
+          <TouchableOpacity style = {{backgroundColor: 'transparent'}} onPress = {this.onChosenOne} 
+            activeOpacity={0.9} disabled = {this.state.numberSelectDisabled}>
             <View style = {styles.nameOptionContainer}>
-              <Text style ={styles.timeOptionText}>LunaBaetylus</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.oneClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -3}]}>LunaBaetylus</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight style = {{backgroundColor: this.state.twoClicked? '#E0E0E0' : 'transparent'}} onPress = {this.onChosenTwo} activeOpacity={0.1} underlayColor = {'#CCCCCC'}>
+          </TouchableOpacity>
+          <TouchableOpacity style = {{backgroundColor:'transparent'}} onPress = {this.onChosenTwo} 
+            activeOpacity={0.9} underlayColor = {'transparent'} disabled = {this.state.numberSelectDisabled}>
             <View style = {styles.nameOptionContainer}>
-              <Text style ={styles.timeOptionText}>Yiran Tao</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.twoClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2}]}>Yiran Tao</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight style = {{backgroundColor: this.state.threeClicked? '#E0E0E0' : 'transparent'}} onPress = {this.onChosenThree} activeOpacity={0.1} underlayColor = {'#CCCCCC'}>
+          </TouchableOpacity>
+          <TouchableOpacity style = {{backgroundColor: 'transparent'}} onPress = {this.onChosenThree} 
+            activeOpacity={0.9} underlayColor = {'#CCCCCC'} disabled = {this.state.numberSelectDisabled}>
             <View style = {styles.nameOptionContainer}>
-              <Text style ={styles.timeOptionText}>Shibo Wang</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.threeClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2.5}]}>Shibo Wang</Text>
             </View>
-          </TouchableHighlight>
-          <TouchableHighlight style = {{backgroundColor: this.state.fourClicked? '#E0E0E0' : 'transparent'}} onPress = {this.onChosenFour} activeOpacity={0.1} underlayColor = {'#CCCCCC'}>
+          </TouchableOpacity>
+          <TouchableOpacity style = {{backgroundColor:'transparent'}} onPress = {this.onChosenFour} 
+            activeOpacity={0.9} underlayColor = {'#CCCCCC'} disabled = {this.state.numberSelectDisabled}>
             <View style = {styles.nameOptionContainer}>
-              <Text style ={styles.timeOptionText}>Peking Wang</Text>
+              <View style = {[styles.checkBoxBorder, {backgroundColor: this.state.fourClicked? '#62C6C6':'transparent'}]}>
+                <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
+                  source = {require('../ios/uncheck_green.png')}/>
+              </View>
+              <Text style ={[styles.timeOptionText, {paddingTop: -2.5}]}>Peking Wang</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
+          <View style = {{height: 12, backgroundColor: 'transparent'}}/>
         </Animated.View>
 
         <View style = {styles.pickUpPadding}/>
 
         <View style = {styles.pickUpLocationContainer}>
-          <TouchableOpacity style = {{marginLeft: 0, marginTop: 0, height: 34, flexDirection: 'row'}} activeOpacity = {1.0}
+          <TouchableOpacity style = {{marginLeft: 0, marginTop: 0, height: 34, flexDirection: 'row', alignItems: 'center'}} activeOpacity = {1.0}
             onPress = {Actions.search}>
-            <Image style = {{marginLeft: 0, marginTop: 9, height: 20, resizeMode: 'stretch'}}
+            <Image style = {{marginLeft: 0 , width: 20, height: 20, resizeMode: 'stretch'}}
                 source = {require('../ios/Oval.png')}/>
             <View style = {{marginTop: 0, marginLeft: -40, width: 375, height: 34}}>
               <Text style = {{
@@ -653,14 +730,14 @@ var MainPage = React.createClass({
                 textAlign: 'center', 
                 fontSize: 20,
                 fontFamily: 'SanFranciscoDisplay-Regular',
-                color: '#646464',
+                color: '#727272',
                 backgroundColor: 'transparent'
                 }}>{this.state.locationText}</Text>
             </View>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style = {styles.pickUpButton} opacity = {0.9}>
-          <Image style = {{marginTop: 5, marginLeft: 0, width: 337}}
+          <Image style = {{marginTop: 5, marginLeft: 0, width: 337, opacity: 0.9}}
             source = {require('../ios/pick_up.png')}/>
         </TouchableOpacity>
       </View>
@@ -685,31 +762,32 @@ var styles = React.StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 51,
+    height: 54,
     flexDirection:'row',
-    opacity: 0.9
+    opacity: 0.95
   },
 
   selectService:{
     position: 'absolute',
     backgroundColor: '#EA4D4E',
-    top: 51,
+    top: 54,
     left: 0,
     right: 0,
-    height: 87,
+    height: 91,
     flexDirection: 'row',
-    opacity: 0.9,
+    opacity: 0.95,
   },
 
   serviceType: {
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'SanFranciscoDisplay-Medium',
     textAlign: 'center',
     marginTop: 10,
   },
 
   estimatedTime: {
-    fontSize: 12,
+    fontSize: 14,
+    paddingTop: -1,
     fontFamily: 'SanFranciscoDisplay-Regular',
     textAlign: 'center'
   },
@@ -717,14 +795,14 @@ var styles = React.StyleSheet.create({
   description: {
     position: 'absolute',
     backgroundColor: 'white',
-    top: 143,
+    top: 150,
     left: 0,
     right: 0,
     opacity: 0.8,
-    shadowRadius: 1,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0.5},
     flexDirection: 'column',
   },
 
@@ -737,27 +815,27 @@ var styles = React.StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    opacity: 0.9,
+    opacity: 0.95,
   },
 
   sliderContainer: {
     position: 'absolute',
-    top: 138,
+    top: 145,
     left: 0,
     right: 0,
     height: 5,
     backgroundColor: '#EA4D4E',
     flexDirection: 'row',
     shadowRadius: 0.5,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 1},
-    opacity: 0.9
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0.6},
+    opacity: 0.95
   },
 
   slider: {
     marginTop: 0,
-    backgroundColor: '#FCC31B',
+    backgroundColor: '#FFC927',
     width: 120,
     height: 5,
   },
@@ -765,8 +843,8 @@ var styles = React.StyleSheet.create({
   descriptionText: {
     fontSize: 12,
     fontFamily: 'SanFranciscoDisplay-Regular',
-    color: '#646464',
-    marginTop: 2,
+    color: '#727272',
+    paddingTop: 0,
     //height: 20,
     width: 400,
     //marginLeft: 0,
@@ -782,7 +860,7 @@ var styles = React.StyleSheet.create({
 
   toolbarButton:{
     
-    marginTop:36,
+    marginTop:35,
     marginLeft: 19,
     //alignItems:'center'
   },
@@ -877,6 +955,10 @@ var styles = React.StyleSheet.create({
     position: 'absolute',
     right: 19,
     bottom: 166,
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
   },
 
   buttonSetPickUp:{
@@ -907,16 +989,16 @@ var styles = React.StyleSheet.create({
 
   pickUpPadding: {
     position: 'absolute',
-    top: 567,
+    bottom: 0,
     left: 0,
     right: 0,
     height: 100,
     backgroundColor: 'white',
     opacity: 0.8,
     flexDirection: 'column',
-    shadowRadius: 0.5,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
     shadowOffset: {width: 0, height: -0.5}
   },
 
@@ -927,15 +1009,16 @@ var styles = React.StyleSheet.create({
     right: 19,
     height: 34,
     //backgroundColor: 'white'
-
+    justifyContent: 'center'
   },
 
   pickUpButton: {
     position: 'absolute',
-    top: 597,
+    top: 596,
     left: 19,
     right: 19,
-    height: 70,
+    height: 56,
+    opacity: 0.95,
     //backgroundColor: 'white'
   },
 
@@ -943,17 +1026,13 @@ var styles = React.StyleSheet.create({
     position: 'absolute',
     left: 19,
     bottom: 166,
-    //height: 120,
-    //marginLeft: 19,
-    //marginTop: 425,
-    width: 130,
-    height: 120,
+    width: 140,
     backgroundColor: 'white',
-    //borderRadius: 6,
-    shadowRadius: 1,
-    shadowOpacity: 0.5,
+    borderRadius: 6,
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
     shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
     justifyContent: 'space-around'
   }, 
@@ -962,14 +1041,16 @@ var styles = React.StyleSheet.create({
     position: 'absolute',
     left: 193,
     bottom: 166,
-    width: 69,
-    height: 120,
+    width: 80,
+    //height: 120,
+    borderRadius: 6,
     backgroundColor: 'white',
-    shadowRadius: 1,
-    shadowOpacity: 0.5,
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
     shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
+    justifyContent: 'space-around'
   },
 
   selectDogNumber:{
@@ -979,11 +1060,12 @@ var styles = React.StyleSheet.create({
     backgroundColor: 'white',
     width: 163,
     flexDirection: 'row',
-    shadowRadius: 1,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 2}, 
-    flexDirection: 'row'
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0}, 
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
 
   selectTime:{
@@ -993,45 +1075,62 @@ var styles = React.StyleSheet.create({
     backgroundColor: 'white',
     width: 163,
     flexDirection:'row',
-    shadowRadius: 0.1,
-    shadowOpacity: 0.5,
-    shadowColor: 'gray',
-    shadowOffset: {width: 0, height: 2} 
+    shadowRadius: 0.6,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+    justifyContent: 'center' 
   },
 
   optionText:{
     //marginTop: 13,
     alignSelf: 'center',
     textAlign: 'center',
-    color: '#646464',
-    fontSize: 16,
+    color: '#727272',
+    fontSize: 18,
     fontFamily: 'SanFranciscoDisplay-Regular',
     backgroundColor: 'transparent',
   },
 
   timeOptionContainer:{
-    height: 30, 
-    width: 69, 
+    height: 28, 
+    width: 70, 
     borderRadius: 6, 
-    backgroundColor: 'transparent', 
-    justifyContent: 'center'
+    //backgroundColor: 'red', 
+    //justifyContent: 'center',
+    flexDirection: 'row'
   },
 
   timeOptionText:{
-    textAlign: 'center', 
-    fontSize: 16, 
+    marginLeft: 6,
+    //textAlign: 'center', 
+    fontSize: 16,
+    marginTop: 12, 
     fontFamily: 'SanFranciscoDisplay-Regular', 
-    color: '#646464',
+    color: '#727272',
+    flexDirection: 'row'
   },
 
   nameOptionContainer:{
-    height: 30, 
-    width: 130, 
+    height: 28, 
+    width: 140, 
     borderRadius: 6, 
-    backgroundColor: 'transparent', 
-    justifyContent: 'center'
+    //backgroundColor: 'red', 
+    //justifyContent: 'center',
+    flexDirection: 'row'
   },
 
+  checkBoxBorder: {
+    marginTop: 12, 
+    marginLeft: 8, 
+    height: 16, 
+    width: 16, 
+    borderRadius: 8, 
+    borderWidth: 1, 
+    borderColor: '#62C6C6',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
 
 });
 

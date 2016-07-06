@@ -116,7 +116,7 @@ var LoginPage = React.createClass({
         }).start();
 
       Animated.timing(this.state.orLineSlideUpPosition, {
-          toValue: 88, // 目标值
+          toValue: 96, // 目标值
           duration: 400,
           //delay: 400,
           easing: Easing.linear, // 动画时间
@@ -149,7 +149,7 @@ var LoginPage = React.createClass({
         }).start();
 
       Animated.timing(this.state.orLineSlideUpPosition, {
-          toValue: 9, // 目标值
+          toValue: 11, // 目标值
           duration: 400,
           //delay: 400,
           easing: Easing.linear, // 动画时间
@@ -220,7 +220,7 @@ var LoginPage = React.createClass({
           </TouchableOpacity>
           <TouchableOpacity style = {styles.rightButtonContainer}
                     onPress={this.onPressNext}>
-                    <Text style = {styles.rightButton}>NEXT</Text>
+                    <Text style = {styles.rightButton}>DONE</Text>
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={[styles.logoContainer, {marginTop: this.state.logoSlidePosition}]}>
@@ -249,20 +249,21 @@ var LoginPage = React.createClass({
         <Animated.View style = {[styles.registerContainer, {left: this.state.registerSlideHoriziontalPosition}]}>
           <View style = {styles.registerInputContainer}>
             <Text style = {{
-              marginLeft: 9,
-              fontSize: 16,
-              color: '#646464',
+              marginLeft: 12,
+              fontSize: 18,
+              color: '#727272',
               fontFamily: 'SanFranciscoDisplay-Medium',
-              marginTop: 8,
+              //marginTop: 8,
             }}>First Name</Text>
             <TextInput style = {{
               width: 230,
-              height: 34,
+              height: 36,
               //backgroundColor: 'blue',
-              marginLeft: 29,
+              marginLeft: 8,
               marginTop: 1,
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: 'SanFranciscoDisplay-Medium',
+              color: '#727272'
               }}
               value={this.state.firstName}
               onChange = {this.onFirstNameInput}
@@ -271,20 +272,21 @@ var LoginPage = React.createClass({
           <View style = {styles.lineContainer}/>
           <View style = {styles.registerInputContainer}>
             <Text style = {{
-              marginLeft: 11,
-              fontSize: 16,
-              color: '#646464',
+              marginLeft: 14,
+              fontSize: 18,
+              color: '#727272',
               fontFamily: 'SanFranciscoDisplay-Medium',
-              marginTop: 8,
+              //marginTop: 8,
             }}>Last Name</Text>
             <TextInput style = {{
               width: 230,
-              height: 34,
+              height: 36,
               //backgroundColor: 'blue',
-              marginLeft: 29,
+              marginLeft: 8,
               marginTop: 1,
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: 'SanFranciscoDisplay-Medium',
+              color: '#727272'
               }}
               value={this.state.lastName}
               onChange = {this.onLastNameInput}
@@ -293,45 +295,47 @@ var LoginPage = React.createClass({
           <View style = {styles.lineContainer}/>
           <View style = {styles.registerInputContainer}>
             <Text style = {{
-              marginLeft: 46,
-              fontSize: 16,
-              color: '#646464',
+              marginLeft: 54,
+              fontSize: 18,
+              color: '#727272',
               fontFamily: 'SanFranciscoDisplay-Medium',
-              marginTop: 8,
+              //marginTop: 6,
             }}>Email</Text>
             <TextInput style = {{
               width: 230,
-              height: 34,
+              height: 36,
               //backgroundColor: 'blue',
-              marginLeft: 29,
+              marginLeft: 8,
               marginTop: 1,
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: 'SanFranciscoDisplay-Medium',
+              color: '#727272'
               }}
               value={this.state.registerEmail}
               onChange = {this.onRegisterEmailInput}
               placeholder = "name@example.com"
-              placeholderTextColor = '#969696'
+              placeholderTextColor = '#B6B6B6'
               keyboardType = {'email-address'}
               />
           </View>
           <View style = {styles.lineContainer}/>
           <View style = {styles.registerInputContainer}>
             <Text style = {{
-              marginLeft: 37,
-              fontSize: 16,
-              color: '#646464',
+              marginLeft: 45,
+              fontSize: 18,
+              color: '#727272',
               fontFamily: 'SanFranciscoDisplay-Medium',
-              marginTop: 8,
+              //marginTop: 8,
             }}>Mobile</Text>
             <TextInput style = {{
               width: 230,
-              height: 34,
+              height: 36,
               //backgroundColor: 'blue',
-              marginLeft: 29,
+              marginLeft: 8,
               marginTop: 1,
-              fontSize: 16,
+              fontSize: 18,
               fontFamily: 'SanFranciscoDisplay-Medium',
+              color: '#727272'
               }}
               value={this.state.phoneNumber}
               onChange = {this.onPhoneNumberInput}
@@ -341,22 +345,25 @@ var LoginPage = React.createClass({
           <View style = {styles.lineContainer}/>
           <View style = {styles.registerInputContainer}>
             <Text style = {{
-              marginLeft: 16,
-              fontSize: 16,
-              color: '#646464',
+              marginLeft: 20,
+              fontSize: 18,
+              color: '#727272',
               fontFamily: 'SanFranciscoDisplay-Medium',
-              marginTop: 8,}}>Password</Text>
+              paddingTop: -1
+              }}>Password</Text>
             <TextInput style = {{
               width: 230,
-              height: 34,
+              height: 36,
               //backgroundColor: 'blue',
-              marginLeft: 29,
+              marginLeft: 8,
               marginTop: 2,
               fontSize: 16,
               fontFamily: 'SanFranciscoDisplay-Medium',
+              color: '#727272',
+              paddingTop: -1
               }}
               placeholder = "Min 5 Characters"
-              placeholderTextColor = '#969696'
+              placeholderTextColor = '#B6B6B6'
               secureTextEntry={true}
               value={this.state.registerPassword}
               onChange = {this.onRegisterPasswordInput}
@@ -373,7 +380,7 @@ var LoginPage = React.createClass({
         </TouchableOpacity>
 
         <TouchableOpacity style = {styles.forgetPassword}>
-          <Text style = {styles.forgetPasswordText}>FORGET PASSWORD?</Text>
+          <Text style = {styles.forgetPasswordText}>{(this.state.needToRegister) ?  "FORGET PASSWORD?":"By continue you agree to our terms, conditions and privacy policy" }</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -412,7 +419,7 @@ var styles = React.StyleSheet.create({
     loginRegitser:{
       flexDirection: 'row',
       marginLeft: 19,
-      marginTop: 40,
+      marginTop: 30,
     },
 
     leftButtonContainer:{
@@ -420,8 +427,8 @@ var styles = React.StyleSheet.create({
     },
 
     leftButton:{
-      color: '#FCC31B',
-      fontSize: 15,
+      color: '#FFC927',
+      fontSize: 16,
       fontFamily: 'SanFranciscoDisplay-Medium',
     },
 
@@ -433,8 +440,8 @@ var styles = React.StyleSheet.create({
     },
 
     rightButton:{
-      color: '#FCC31B',
-      fontSize: 15,
+      color: '#FFC927',
+      fontSize: 16,
       fontFamily: 'SanFranciscoDisplay-Medium',
     },
 
@@ -442,18 +449,18 @@ var styles = React.StyleSheet.create({
       marginLeft: 19,
       marginRight: 19,
       marginTop: 56,
-      height: 70,
+      height: 73,
       //width: 337,
       borderRadius: 2,
       backgroundColor: 'white',
-      shadowOpacity: 0.4,
-      shadowRadius: 1,
-      shadowColor: 'gray',
-      shadowOffset: {width: 0, height: 2} 
+      shadowOpacity: 0.2,
+      shadowRadius: 0.6,
+      shadowColor: 'black',
+      shadowOffset: {width: 0, height: 0.5} 
     },
 
     lineContainer:{
-      backgroundColor: '#969696',
+      backgroundColor: '#B6B6B6',
       width: 337,
       height: 1,
       alignSelf: 'center',
@@ -463,21 +470,23 @@ var styles = React.StyleSheet.create({
     loginInputsContainer:{
       flexDirection: 'row',
       width: 337,
-      height:34,
+      height:36,
+      alignItems: 'center'
       //backgroundColor: 'blue',
     },
 
     emailText: {
-      marginLeft: 39,
-      fontSize: 16,
-      color: '#646464',
+      marginLeft: 46,
+      fontSize: 18,
+      color: '#727272',
       fontFamily: 'SanFranciscoDisplay-Medium',
-      marginTop: 8,
+      //marginTop: 8,
+      backgroundColor: 'transparent'
     },
 
     emailInput:{
       width: 230,
-      height: 34,
+      height: 36,
       //backgroundColor: 'blue',
       marginLeft: 29,
       marginTop: 1,
@@ -486,21 +495,23 @@ var styles = React.StyleSheet.create({
     },
 
     passwordText:{
-      marginLeft: 9,
-      fontSize: 16,
-      color: '#646464',
+      marginLeft: 12,
+      fontSize: 18,
+      color: '#727272',
       fontFamily: 'SanFranciscoDisplay-Medium',
-      marginTop: 8,
+      paddingTop: -1,
+      backgroundColor: 'transparent'
     },
 
     passwordInput:{
       width: 230,
-      height: 34,
+      height: 36,
       //backgroundColor: 'red',
       marginLeft: 29,
       marginTop: 1.5,
       fontSize: 16,
       fontFamily: 'SanFranciscoDisplay-Medium',
+      //justifyContent: 'center'
     },
 
 
@@ -512,43 +523,47 @@ var styles = React.StyleSheet.create({
       //marginLeft: -500,
       //marginRight: 19,
       //marginTop: 27,
-      height: 179,
+      height: 184,
       width: 337,
       borderRadius: 2,
       backgroundColor: 'white',
-      shadowOpacity: 0.4,
-      shadowRadius: 1,
-      shadowColor: 'gray',
-      shadowOffset: {width: 0, height: 2} 
+      shadowOpacity: 0.2,
+      shadowRadius: 0.6,
+      shadowColor: 'black',
+      shadowOffset: {width: 0, height: 0.5} 
     },
 
     registerInputContainer:{
       flexDirection: 'row',
       width: 337,
-      height:35,
+      height:36,
+      alignItems: 'center'
     },
 
     orLine:{
-      marginTop: 10,
+      marginTop: 11,
       alignSelf:'center',
     },
 
     fbLogin:{
       marginLeft: 19,
-      marginTop: 8,
+      marginTop: 9,
       justifyContent: 'center'
     },
 
     forgetPassword:{
-      marginTop: 10,
+      marginTop: 9,
       justifyContent: 'center',
       alignItems: 'center',
     },
 
     forgetPasswordText:{
-      color: '#FCC31B',
+      color: '#FFC927',
       fontSize: 12,
-      fontFamily: 'SanFranciscoDisplay-Regular'
+      fontFamily: 'SanFranciscoDisplay-Regular',
+      width: 125,
+      flexWrap: 'wrap',
+      textAlign: 'center'
     },
 
 
