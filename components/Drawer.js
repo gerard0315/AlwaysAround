@@ -38,16 +38,18 @@ var ControlPanel = React.createClass({
         paymentSource: require('../ios/payment.png'),
 	      promotionsColor: '#EA4D4E',
 	      promotionsTextColor: 'white',
+        promotionSource: require('../ios/promotions.png'),
 	      settingsColor: '#EA4D4E',
 	      settingsTextColor: 'white',
+        settingsSource: require('../ios/settings.png'),
 	      helpColor: '#EA4D4E',
 	      helpTextColor: 'white',
 	  };
 	},
 
   onPressInMyDogs: function(){
-    this.setState({myDogsColor: '#FCC31B'});
-    this.setState({myDogsTextColor: '#FCC31B'});
+    this.setState({myDogsColor: '#FFC927'});
+    this.setState({myDogsTextColor: '#FFC927'});
     this.setState({myDogsSource: require('../ios/dog_yellow.png')});
   },
 
@@ -64,8 +66,8 @@ var ControlPanel = React.createClass({
   },
 
   onPressInHistory: function(){
-    this.setState({historyColor: '#FCC31B'});
-    this.setState({historyTextColor: '#FCC31B'});
+    this.setState({historyColor: '#FFC927'});
+    this.setState({historyTextColor: '#FFC927'});
     this.setState({historySource: require('../ios/history_yellow.png')});
   },
 
@@ -82,8 +84,8 @@ var ControlPanel = React.createClass({
   },
 
   onPressInPayment: function(){
-    this.setState({paymentColor: '#FCC31B'});
-    this.setState({paymentTextColor: '#FCC31B'});
+    this.setState({paymentColor: '#FFC927'});
+    this.setState({paymentTextColor: '#FFC927'});
     this.setState({paymentSource: require('../ios/payment_yellow.png')});
   },
 
@@ -97,6 +99,42 @@ var ControlPanel = React.createClass({
     StatusBar.setHidden(false, null);
     this.props.closeDrawer();
     Actions.paymentPage();
+  },
+
+  onPressInPromotions: function () {
+    this.setState({promotionsColor: '#FFC927'});
+    this.setState({promotionsTextColor: '#FFC927'});
+    this.setState({promotionSource: require('../ios/promotions_yellow.png')});
+  },
+
+  onPressOutPromotions: function(){
+    this.setState({promotionsColor: '#EA4D4E'});
+    this.setState({promotionsTextColor: 'white'});
+    this.setState({promotionSource: require('../ios/promotions.png')});
+  },
+
+  openPromotions: function(){
+    StatusBar.setHidden(false, null);
+    this.props.closeDrawer();
+    Actions.promotions();
+  },
+
+  onPressInSettings: function(){
+    this.setState({settingsColor: '#FFC927'});
+    this.setState({settingsTextColor: '#FFC927'});
+    this.setState({settingsSource: require('../ios/settings_yellow.png')});    
+  },
+
+  onPressOutSettings: function(){
+    this.setState({settingsColor: '#EA4D4E'});
+    this.setState({settingsTextColor: 'white'});
+    this.setState({settingsSource: require('../ios/settings.png')});
+  },
+
+  openSettings: function(){
+    StatusBar.setHidden(false, null);
+    this.props.closeDrawer();
+    Actions.settings();
   },
 	
 	render(){
@@ -160,10 +198,13 @@ var ControlPanel = React.createClass({
             </Animated.View>
             <Animated.View style = {styles.drawerButtons}>
               <TouchableOpacity style = {{flexDirection: 'row', marginLeft: 0, marginTop: 0, height: 50, alignItems: 'center'}} 
-                activeOpacity = {0.9}>
+                activeOpacity = {0.9}
+                onPressIn = {this.onPressInPromotions}
+                onPressOut = {this.onPressOutPromotions}
+                onPress = {this.openPromotions}>
                 <View style = {{height: 50, width:5, marginLeft: 0, backgroundColor: this.state.promotionsColor}}/>
                 <Image style = {{marginLeft: 15, width: 18,}}
-                  source = {require('../ios/promotions.png')}/>
+                  source = {this.state.promotionSource}/>
                 <View style = {{alignItems: 'center', marginTop: 0, marginLeft: 0}}>
                   <Text style = {[styles.menuItem, {color: this.state.promotionsTextColor}]}>PROMOTIONS</Text>
                 </View>
@@ -171,10 +212,13 @@ var ControlPanel = React.createClass({
             </Animated.View>
             <Animated.View style = {styles.drawerButtons}>
               <TouchableOpacity style = {{flexDirection: 'row', marginLeft: 0, marginTop: 0, height: 50, alignItems: 'center'}} 
-                activeOpacity = {0.9}>
+                activeOpacity = {0.9}
+                onPressIn = {this.onPressInSettings}
+                onPressOut = {this.onPressOutSettings}
+                onPress = {this.openSettings}>
                 <View style = {{height: 50, width:5, marginLeft: 0, backgroundColor: this.state.settingsColor}}/>
                 <Image style = {{marginLeft: 15, width: 18}}
-                  source = {require('../ios/settings.png')}/>
+                  source = {this.state.settingsSource}/>
                 <View style = {{alignItems: 'center', marginTop: 0, marginLeft: 0}}>
                   <Text style = {[styles.menuItem, {color: this.state.settingsTextColor}]}>SETTINGS</Text>
                 </View>
@@ -183,7 +227,7 @@ var ControlPanel = React.createClass({
             <Animated.View style = {styles.drawerButtons}>
               <TouchableOpacity style = {{flexDirection: 'row', marginLeft: 0, marginTop: 0, height: 50, alignItems: 'center'}} 
                 activeOpacity = {0.9}>
-                <View style = {{height: 50, width:5, marginLeft: 0, backgroundColor: '#FCC31B'}}/>
+                <View style = {{height: 50, width:5, marginLeft: 0, backgroundColor: '#FFC927'}}/>
                 <Image style = {{marginLeft: 15, width: 18,}}
                   source = {require('../ios/help.png')}/>
                 <View style = {{alignItems: 'center', marginTop: 0, marginLeft: 0}}>

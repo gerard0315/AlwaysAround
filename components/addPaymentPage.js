@@ -155,9 +155,9 @@ var AddPaymentPage = React.createClass({
 					</View>
 				</View>
 			</View>
-			<Image style = {{marginTop: 10, marginLeft: 19, width: 337}}
+			<Image style = {{marginTop: 11, marginLeft: 19, width: 337}}
 				source = {require('../ios/OR_gray.png')}/>
-			<TouchableOpacity style = {{marginTop: 8, marginLeft: 19, width: 337, height: 46}}>
+			<TouchableOpacity style = {{marginTop: 10, marginLeft: 19, width: 337, height: 46}}>
 				<Image style = {{marginTop: 0, marginLeft: 0, width: 337, height: 46, resizeMode: 'stretch'}}
 					source = {require('../ios/add_paypal.png')}/>
 			</TouchableOpacity>

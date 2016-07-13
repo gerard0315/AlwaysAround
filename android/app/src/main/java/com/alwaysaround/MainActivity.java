@@ -1,6 +1,8 @@
 package com.alwaysaround;
 
 import com.facebook.react.ReactActivity;
+import com.AirMaps.AirPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import cl.json.RNSharePackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.facebook.react.ReactPackage;
@@ -37,6 +39,8 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new AirPackage(),
+            new RCTCameraPackage(),
             new RNSharePackage(),
             new VectorIconsPackage()
         );

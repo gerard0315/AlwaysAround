@@ -148,7 +148,7 @@ var styles = StyleSheet.create({
 	titleBar:{
 		//marginTop: 15,
 		marginLeft: 0, 
-		height: 29,
+		height: 30,
 		width: 375,
 		backgroundColor: '#EA4D4E',
 		justifyContent: 'center'

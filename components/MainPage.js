@@ -139,6 +139,7 @@ var MainPage = React.createClass({
     this.setState({numberSelectHeight: 0});
     this.setState({drawerClosed: true});
     this._drawer.close();
+    TimerMixin.clearInterval(this.timer)
     //StatusBar.setHidden(false, null);
   },
 
@@ -489,7 +490,7 @@ var MainPage = React.createClass({
         onOpen = {this.onDrawerOpen}
         onClose = {this.onDrawerClose}
         panOpenMask = {20}
-        openDrawerOffset={0.33} // 20% gap on the right side of drawer
+        openDrawerOffset={0.33}
         panCloseMask={0.2}
         closedDrawerOffset={0}
         negotiatePan={false}
@@ -498,7 +499,7 @@ var MainPage = React.createClass({
         acceptPan = {true}
         tapToClose={true}
         tweenHandler={(ratio) => ({
-          main: { opacity:(2-ratio)/2 }
+          main: {opacity:(2-ratio)/2 }
         })}
         >
       <View style = {styles.container}>
@@ -603,7 +604,7 @@ var MainPage = React.createClass({
         <View style = {styles.optionsContainer}>
             <TouchableOpacity style = {styles.selectDogNumber}
                   onPress = {this.onDogNumberClicked}
-                  activeOpacity = {0.9}>
+                  activeOpacity = {0.8}>
                 <Image style = {{
                      marginTop: 11,
                      marginLeft: 11, 
@@ -616,7 +617,7 @@ var MainPage = React.createClass({
 
             <TouchableOpacity style = {styles.selectTime} 
               onPress = {this.onEstimateTimeClicked}
-              activeOpacity = {0.9}>
+              activeOpacity = {0.8}>
               <Image style = {{
                 marginLeft: 11,
                 marginTop: 11,
@@ -721,7 +722,7 @@ var MainPage = React.createClass({
         <View style = {styles.pickUpLocationContainer}>
           <TouchableOpacity style = {{marginLeft: 0, marginTop: 0, height: 34, flexDirection: 'row', alignItems: 'center'}} activeOpacity = {1.0}
             onPress = {Actions.search}>
-            <Image style = {{marginLeft: 0 , width: 20, height: 20, resizeMode: 'stretch'}}
+            <Image style = {{marginLeft: 0 , width: 20, height: 20, resizeMode: 'stretch', opacity: 0.8}}
                 source = {require('../ios/Oval.png')}/>
             <View style = {{marginTop: 0, marginLeft: -40, width: 375, height: 34}}>
               <Text style = {{
@@ -872,9 +873,11 @@ var styles = React.StyleSheet.create({
   },
 
   drawerStyles:{
-    shadowColor: '#000000', 
+    shadowColor: 'black', 
     shadowOpacity: 0.8, 
-    shadowRadius: 3
+    shadowRadius: 3,
+    //backgroundColor: 'black'
+    //shadowOffset:{x: 10, y: 0}
   },
 
   text: {
@@ -1034,7 +1037,8 @@ var styles = React.StyleSheet.create({
     shadowColor: 'gray',
     shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    opacity: 0.8
   }, 
 
   timeSelectContainer:{
@@ -1050,7 +1054,8 @@ var styles = React.StyleSheet.create({
     shadowColor: 'gray',
     shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    opacity: 0.8
   },
 
   selectDogNumber:{
@@ -1065,7 +1070,8 @@ var styles = React.StyleSheet.create({
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0}, 
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    opacity: 0.8
   },
 
   selectTime:{
@@ -1079,7 +1085,8 @@ var styles = React.StyleSheet.create({
     shadowOpacity: 0.2,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
-    justifyContent: 'center' 
+    justifyContent: 'center',
+    opacity: 0.8
   },
 
   optionText:{

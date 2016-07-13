@@ -34,7 +34,7 @@ var LoginPage = React.createClass({
       logoSlidePosition: new Animated.Value(219),
       loginSlideUpPosition: new Animated.Value(400),
       loginSlideHorizontalPosition: new Animated.Value(0),
-      orLineSlideUpPosition: new Animated.Value(10),
+      orLineSlideUpPosition: new Animated.Value(11),
 
       registerSlideHoriziontalPosition: new Animated.Value(-500),
       firstName: '',

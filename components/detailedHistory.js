@@ -146,7 +146,7 @@ var DetailedHistory = React.createClass({
 			<View style = {{marginLeft: 19, marginTop: 0, width: 327, flexWrap: 'wrap', alignItems: 'flex-start'}}>
 				<Text style = {[styles.addressText, {marginLeft: 29}]}>{this.state.end_address}</Text>
 			</View>
-			<View style = {{height: 29, width: 375, marginLeft: 0, marginTop: 20, backgroundColor: '#EA4D4E', justifyContent:'center'}}>
+			<View style = {{height: 30, width: 375, marginLeft: 0, marginTop: 20, backgroundColor: '#EA4D4E', justifyContent:'center'}}>
 				<Text style={styles.receiptInfo}>{this.props.clientData[this.props.index].service_detail.type.toUpperCase() + ' RECEIPT'}</Text>
 			</View>
 			<View style = {{height: 126, width: 375, marginTop: 0, marginLeft: 0, flexDirection: 'row'}}>
@@ -333,8 +333,8 @@ var styles = React.StyleSheet.create({
 		marginTop: 25,
 		marginLeft: 0,
 		width: 375,
-		height: 29,
-		backgroundColor: '#FCC31B'
+		height: 30,
+		backgroundColor: '#FFC927'
 	}
 });
 

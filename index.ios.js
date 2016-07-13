@@ -16,7 +16,12 @@ import DetailedHistory from './components/detailedHistory.js';
 import PaymentPage from './components/payment.js';
 import AddPaymentPage from './components/addPaymentPage.js';
 import EditPaymentPage from './components/editPayment.js';
-//import RegisterPage from './components/RegisterPage.js'
+import PromotionsPage from './components/Promotions.js';
+import SettingsPage from './components/Settings.js';
+import EditAccount from './components/editAccount.js';
+import CameraView from './components/Camera.js';
+import CameraRollPage from './components/CameraRollPageView.js';
+import ImageCropping from './components/ImageCrop.js';
 
 
 var {
@@ -34,7 +39,6 @@ const reducerCreate = params=>{
 class AlwaysAround extends React.Component{
 
 	render() {
-        console.log('this is index');
         return <Router createReducer={reducerCreate}>
             <Scene key="modal" component={Modal} >
                 <Scene key="root" hideNavBar={true}>
@@ -48,6 +52,12 @@ class AlwaysAround extends React.Component{
                     <Scene key="paymentPage" component = {PaymentPage} panHandlers={null}/>
                     <Scene key="addPayment" component = {AddPaymentPage} panHandlers = {null}/>
                     <Scene key="editPayment" component = {EditPaymentPage} panHandlers = {null}/>
+                    <Scene key="promotions" component = {PromotionsPage} panHandlers = {null}/>
+                    <Scene key="settings" component = {SettingsPage} panHandlers = {null}/>
+                    <Scene key="editAccount" component = {EditAccount} panHandlers = {null}/>
+                    <Scene key="camera" component = {CameraView} panHandlers = {null}/>
+                    <Scene key='cameraRoll' component = {CameraRollPage} panHandlers = {null}/>
+                    <Scene key='crop' component = {ImageCropping} panHandlers = {null}/>
 	            </Scene>
             </Scene>
         </Router>;
