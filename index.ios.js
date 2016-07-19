@@ -22,6 +22,7 @@ import EditAccount from './components/editAccount.js';
 import CameraView from './components/Camera.js';
 import CameraRollPage from './components/CameraRollPageView.js';
 import ImageCropping from './components/ImageCrop.js';
+import EditDog from './components/editDogPage.js';
 
 
 var {
@@ -58,6 +59,7 @@ class AlwaysAround extends React.Component{
                     <Scene key="camera" component = {CameraView} panHandlers = {null}/>
                     <Scene key='cameraRoll' component = {CameraRollPage} panHandlers = {null}/>
                     <Scene key='crop' component = {ImageCropping} panHandlers = {null}/>
+                    <Scene key='editDogs' component = {EditDog} panHandlers = {null}/>
 	            </Scene>
             </Scene>
         </Router>;

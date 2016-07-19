@@ -11,11 +11,15 @@ export default class BehavioursPage extends Component{
     constructor(props){
     	super(props);
     	this.state = {
-	      commands: this.props.data.Commands,
-	      childFriendly: this.props.data.Child_friendly,
-	      digs: this.props.data.Digs,
-	      jumps: this.props.data.Jumps,
-	      chipped: this.props.data.Chipped,
+	      commands: this.props.data.Behaviours.Commands,
+	      inSeason: this.props.data.Behaviours.InSeason,
+	      childFriendly: this.props.data.Behaviours.Child_friendly,
+	      digs: this.props.data.Behaviours.Digs,
+	      jumps: this.props.data.Behaviours.Jumps,
+	      chipped: this.props.data.Behaviours.Chipped,
+	      pulls: this.props.data.Behaviours.Pulls,
+	      bark: this.props.data.Behaviours.Barks,
+	      idTag: this.props.data.Behaviours.IDtag,
     	};
   	}
 
@@ -39,16 +43,44 @@ export default class BehavioursPage extends Component{
     			<Text style = {styles.title}>The Dog</Text>
     		</View>
     		<View style = {{marginTop: 0, marginLeft: 0, height: 5}}/>
+    		<InSeason data  = {this.state.inSeason}/>
     		<ChildFriendly data = {this.state.childFriendly}/>
+    		<PullsOnLead data = {this.state.pulls}/>
+    		<Bark data = {this.state.bark}/>
     		<Dig data = {this.state.digs}/>
     		<Jump data = {this.state.jumps}/>
     		<Chip data = {this.state.chipped}/>
+    		<Tag data = {this.state.idTag}/>
     		<TouchableOpacity style = {styles.butonEdit}
-    			activeOpacity = {0.8}>
+    			activeOpacity = {0.8}
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 1, data: this.props.data})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
     	</View>
 	)}
+}
+
+class InSeason extends React.Component{
+    static propTypes = {
+        data: React.PropTypes.bool.isRequired,
+    }; 
+
+	render(){
+		if(this.props.data === true){
+		return(
+			<View>
+		    	<View style = {styles.sectionContainer}>
+		    		<Text style = {styles.sectionTitle}>Is in season</Text>
+		    		<Text style = {styles.sectionContent}>Yes</Text>
+		    	</View>
+		    	<View style = {styles.sectionDivider}/>
+	    	</View>
+		)}else{
+			return(
+			<View style = {{marginLeft: 0, marginTop: 0, height: 1, }}/>
+			)
+		}
+	}
 }
 
 
@@ -63,6 +95,52 @@ class ChildFriendly extends React.Component{
 			<View>
 		    	<View style = {styles.sectionContainer}>
 		    		<Text style = {styles.sectionTitle}>Is child-friendly</Text>
+		    		<Text style = {styles.sectionContent}>Yes</Text>
+		    	</View>
+		    	<View style = {styles.sectionDivider}/>
+	    	</View>
+		)}else{
+			return(
+			<View style = {{marginLeft: 0, marginTop: 0, height: 1, }}/>
+			)
+		}
+	}
+}
+
+class PullsOnLead extends React.Component{
+    static propTypes = {
+        data: React.PropTypes.bool.isRequired,
+    }; 
+
+	render(){
+		if(this.props.data === true){
+		return(
+			<View>
+		    	<View style = {styles.sectionContainer}>
+		    		<Text style = {styles.sectionTitle}>Pulls on the lead</Text>
+		    		<Text style = {styles.sectionContent}>Yes</Text>
+		    	</View>
+		    	<View style = {styles.sectionDivider}/>
+	    	</View>
+		)}else{
+			return(
+			<View style = {{marginLeft: 0, marginTop: 0, height: 1, }}/>
+			)
+		}
+	}
+}
+
+class Bark extends React.Component{
+    static propTypes = {
+        data: React.PropTypes.bool.isRequired,
+    }; 
+
+	render(){
+		if(this.props.data === true){
+		return(
+			<View>
+		    	<View style = {styles.sectionContainer}>
+		    		<Text style = {styles.sectionTitle}>Barks</Text>
 		    		<Text style = {styles.sectionContent}>Yes</Text>
 		    	</View>
 		    	<View style = {styles.sectionDivider}/>
@@ -135,6 +213,29 @@ class Chip extends React.Component{
 			<View>
 		    	<View style = {styles.sectionContainer}>
 		    		<Text style = {styles.sectionTitle}>Is micro-chipped</Text>
+		    		<Text style = {styles.sectionContent}>Yes</Text>
+		    	</View>
+		    	<View style = {styles.sectionDivider}/>
+	    	</View>
+		)}else{
+			return(
+			<View style = {{marginLeft: 0, marginTop: 0, height: 1, }}/>
+			)
+		}
+	}
+}
+
+class Tag extends React.Component{
+    static propTypes = {
+        data: React.PropTypes.bool.isRequired,
+    }; 
+
+	render(){
+		if(this.props.data === true){
+		return(
+			<View>
+		    	<View style = {styles.sectionContainer}>
+		    		<Text style = {styles.sectionTitle}>Has ID tags</Text>
 		    		<Text style = {styles.sectionContent}>Yes</Text>
 		    	</View>
 		    	<View style = {styles.sectionDivider}/>

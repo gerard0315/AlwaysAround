@@ -140,7 +140,7 @@ var MainPage = React.createClass({
     this.setState({drawerClosed: true});
     this._drawer.close();
     TimerMixin.clearInterval(this.timer)
-    //StatusBar.setHidden(false, null);
+    StatusBar.setHidden(false, null);
   },
 
   componentWillMount: function(){
@@ -491,7 +491,7 @@ var MainPage = React.createClass({
         onClose = {this.onDrawerClose}
         panOpenMask = {20}
         openDrawerOffset={0.33}
-        panCloseMask={0.2}
+        panCloseMask={0}
         closedDrawerOffset={0}
         negotiatePan={false}
         style = {styles.drawerStyles}

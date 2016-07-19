@@ -31,14 +31,19 @@ var Dogs = [
       'Vacination': true,
       'Spayed': true,
       'Friendly': true,
+      'Intro': null,
     },
 
     'Behaviours':{
       'Commands': 'Peking!',
+      'InSeason': true,
       'Child_friendly': true,
+      'Pulls': true,
+      'Barks': true,
       'Digs': true,
       'Jumps': true,
       'Chipped': true,
+      'IDtag': true,
     },
 
     'Health':{
@@ -58,6 +63,44 @@ var Dogs = [
   }
 ];
 
+var emptyObj = [
+  {
+    'Basics' :{
+      'Pic': '',
+      'Name': null,
+      'Gender': null,
+      'Breed': null,
+      'YoB': null,
+      'Size': null,
+      'Vacination': false,
+      'Spayed': false,
+      'Friendly': false,
+    },
+
+    'Behaviours':{
+      'Commands': null,
+      'Child_friendly': false,
+      'Digs': false,
+      'Jumps': false,
+      'Chipped': false,
+    },
+
+    'Health':{
+      'OnMeds': null,
+      'Allergies': null,
+      'Veterinary':{
+        'Name': null,
+        'Address': null,
+        'Phone': null,
+      },
+
+      'Insurance':{
+        'Name': null,
+        'Number': null,
+      },
+    },
+  }
+];
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 var swipeoutBtns = [
   {
@@ -81,6 +124,10 @@ export default class MyDogs extends Component{
   componentWillMount(){
    // this.setState({nowYear: data});
     console.log(this.state.nowYear);
+  }
+
+  onPressAddDog(){
+    Actions.editDog({title: 'Add Dog'});
   }
 
   _renderRow = (rowData: string, sectionID: number, rowID: number, _rowData: string) => {
@@ -139,7 +186,8 @@ export default class MyDogs extends Component{
                 renderRow={this._renderRow}/>
       </View>
       <TouchableOpacity style = {styles.buttonAdd}
-        activeOpacity = {0.9}>
+        activeOpacity = {0.9}
+        onPress = {()=>Actions.editDogs({title: 'Add Dog', initialPage: 0, data: emptyObj[0]})}>
           <Image style= {{height: 46, width: 337, marginLeft: 0, marginTop: 0, resizeMode: 'stretch'}}
             source = {require('../ios/add_dog.png')}/>
       </TouchableOpacity>

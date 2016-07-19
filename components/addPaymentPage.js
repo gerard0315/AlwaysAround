@@ -16,9 +16,11 @@ import React, {
   PropTypes,
 } from 'react-native';
 
-var AddPaymentPage = React.createClass({
-	getInitialState: function(){
-        return {
+
+export default class AddPaymentPage extends Component{
+    constructor(props){
+    	super(props);
+    	this.state = {
         	cardNumber: null,
         	cardNumberText: "",
         	expiryDate: "",
@@ -26,10 +28,10 @@ var AddPaymentPage = React.createClass({
         	cvv: 0,
         	postCode: "",
         	buttonOpacity: 0.5,
-        };
-	},
+    	};
+  	}
 
-	onInputCardNumber:function(event){
+	onInputCardNumber(event){
 		var previousState = this.state.cardNumberText;
 		this.setState({cardNumberText: event.nativeEvent.text});
 		var thisState = this.state.cardNumberText;
@@ -62,9 +64,9 @@ var AddPaymentPage = React.createClass({
 		}else if(thisState.length !== 0){
 			this.setState({buttonOpacity: 1})
 		};
-	},
+	}
 
-	onInputExpiryDate: function(event){
+	onInputExpiryDate(event){
 		var previousState = this.state.expiryDate;
 		this.setState({expiryDate: event.nativeEvent.text});
 		var thisState = this.state.expiryDate;
@@ -89,11 +91,15 @@ var AddPaymentPage = React.createClass({
 			this.setState({dateColor: '#727272'});
 		};
 
-	},
+	}
 
-	onInputPostCode: function(event){
+	onInputPostCode(event){
 		this.setState({postCode: event.nativeEvent.text.toUpperCase()});
-	},
+	}
+
+	onInputCCV(event){
+		this.setState({ccv: event.nativeEvent.text});	
+	}
 
 	render(){
 		return(
@@ -115,7 +121,7 @@ var AddPaymentPage = React.createClass({
 							keyboardType = {"numeric"}
 							maxLength = {20}
 							value = {this.state.cardNumberText}
-							onChange = {this.onInputCardNumber}
+							onChange = {this.onInputCardNumber.bind(this)}
 							/>
 						<Image style = {{marginLeft: 10, height: 20, width: 29, resizeMode: 'stretch'}}
 							source = {require('../ios/card_type.png')}/>
@@ -128,7 +134,7 @@ var AddPaymentPage = React.createClass({
 								keyboardType = {"numeric"}
 								maxLength = {5}
 								value = {this.state.expiryDate}
-								onChange = {this.onInputExpiryDate}
+								onChange = {this.onInputExpiryDate.bind(this)}
 							/>
 						</View>
 						<View style = {{marginLeft: 0, marginTop: 0, height: 36, width: 10, backgroundColor: 'transparent'}}/>
@@ -139,7 +145,7 @@ var AddPaymentPage = React.createClass({
 								maxLength = {3}
 								keyboardType = {"numeric"}
 								value = {this.state.cvvValue}
-								onChange = {this.onInputCCV}
+								onChange = {this.onInputCCV.bind(this)}
 							/>
 						</View>
 						<View style = {{marginLeft: 0, marginTop: 0, height: 36, width: 10, backgroundColor: 'transparent'}}/>
@@ -149,7 +155,7 @@ var AddPaymentPage = React.createClass({
 								placeholderTextColor = {"#B6B6B6"}
 								//maxLength = {3}
 								value = {this.state.postCode}
-								onChange = {this.onInputPostCode}
+								onChange = {this.onInputPostCode.bind(this)}
 							/>
 						</View>
 					</View>
@@ -173,8 +179,9 @@ var AddPaymentPage = React.createClass({
 
 		</ScrollView>
 		)
+
 	}
-});
+}
 
 var styles = React.StyleSheet.create({
 	container: {

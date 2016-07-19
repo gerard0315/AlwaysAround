@@ -1,19 +1,8 @@
 'use strict';
+import React, {Component, PropTypes} from 'react';
 import {Actions} from 'react-native-router-flux';
-var moment = require('moment');
-
-import React, {
-  Component,
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  Image,
-  Navigator,
-  ListView,
-  TextInput,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, ScrollView} from 'react-native';
+import moment from 'moment';
 
 var dataset = [
 	"000001",
@@ -57,37 +46,38 @@ var driverData = {
 	"Rating": "4.7",
 };
 
-//var now = Date.now();
 
-var HistoryPage = React.createClass({
-	getInitialState: function(){
-		var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        return {
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+export default class HistoryPage extends Component{
+    constructor(props){
+    	super(props);
+    	this.state = {
           	dataSource: ds.cloneWithRows([dataset[0], dataset[1], dataset[2]]),
            	dateText: '',
         	timeText: '',
         	durationText: '',
         	nowDate: 0,
         	nowMonth: 0,
-        };
-	},
 
-	componentWillMount: function(){
+    	};
+  	}
+
+	componentWillMount(){
 		var now = Date.now();
 		var _now_date = moment(now).get('date');
 		var _now_month = moment(now).get('month');
 		//console.log(_now_date);
 		this.setState({nowDate: _now_date});
 		this.setState({nowMonth: _now_month});
-	  },
+	  }
 
-	toDetail: function(passToNext){
+	toDetail(passToNext){
 		//console.log(passToNext);
 		console.log(".................................");
 		Actions.detailHistory({title: passToNext});
-	},
+	}
 
-	_renderRow: function(rowData: string, sectionID: number, rowID: number){
+	_renderRow = (rowData: string, sectionID: number, rowID: number, _rowData: string) =>{
 		var row = parseInt(dataset[0]) - 1;
 		var result = receiptData[row].ID;
 		var charge = receiptData[row].payment_info.Total;
@@ -208,8 +198,8 @@ var HistoryPage = React.createClass({
 		}else{
 			return(<View style ={{backgroundColor: 'transparent'}}/>);
 		}*/
-	},
-		
+	}
+
 	render(){
 		return (
 		<View style = {styles.container}>
@@ -228,11 +218,11 @@ var HistoryPage = React.createClass({
 			</View>
 		</View>
 			)
-	},
-});
+	}
 
+}
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
 
 	container: {
 		flexDirection: 'column',

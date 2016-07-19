@@ -1,20 +1,18 @@
 'use strict';
-
+import React, {Component, PropTypes} from 'react';
 import {Actions} from 'react-native-router-flux';
 
-import React, {
-  Component,
+import {
   StyleSheet,
+  MapView,
   Text,
   View,
   TouchableOpacity,
-  TouchableHighlight,
   Image,
   Navigator,
   ListView,
-  TextInput,
+  TouchableHighlight,
   ScrollView,
-  PropTypes,
 } from 'react-native';
 
 var dataset = [
@@ -69,16 +67,17 @@ var detail = [
 
 ];
 
-var PaymentPage = React.createClass({
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-	getInitialState: function(){
-		var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-        return {
-          	dataSource: ds.cloneWithRows([ dataset[0], dataset[1], dataset[2], dataset[3] ]),
-        };
-	},
+export default class PaymentPage extends Component{
+  	constructor(props){
+    	super(props);
+    	this.state = {
+        	dataSource: ds.cloneWithRows([ dataset[0], dataset[1], dataset[2], dataset[3] ]),
+    	};
+  	}
 
-	componentWillMount: function(){
+	componentWillMount(){
 		var len = detail.length;
 		console.log(len);
 		for (var i = 0; i< len; i ++){
@@ -92,10 +91,14 @@ var PaymentPage = React.createClass({
 				detail[i].detail.icon = require('../ios/Paypal-dark.png');
 			}
 		};
-	},
+	}
+
+	onPressCell(_row){
+		Actions.editPayment({cardDetail:detail[_row].detail});		
+	}
 
 
-	_renderRow: function(rowData: string, sectionID: number, rowID: number, _rowData: string){
+	_renderRow = (rowData: string, sectionID: number, rowID: number, _rowData: string) => {
 		var _row = parseInt(rowData) - 1;
 		console.log(_row);
 		var _last_four_digit = detail[_row].detail.card_number.substr(detail[_row].detail.card_number.length - 4);
@@ -103,7 +106,7 @@ var PaymentPage = React.createClass({
 			<View style = {styles.cellsContainer}>
 				<TouchableOpacity style = {{height: 50, marginLeft: 0, marginTop: 0, flexDirection: 'row', alignItems: 'center'}} 
 					activeOpacity = {0.9}
-					onPress = {()=>Actions.editPayment({cardDetail:detail[_row].detail})}>
+					onPress = {this.onPressCell.bind(this, _row)}>
 					<Image style = {{marginLeft: 19, height: 20, width: 34, resizeMode: 'stretch'}}
 						source = {detail[_row].detail.icon}/>
 					<Text style = {[styles.cardNumber, {color: '#727272'}]}>{"••••   " + _last_four_digit}</Text>
@@ -111,7 +114,7 @@ var PaymentPage = React.createClass({
 				<View style = {{height: 1, marginTop: 0, marginLeft: 0, width: 375, backgroundColor: '#B6B6B6'}}/>
 			</View>
 			)
-	},
+	}
 
 	render(){
 		return (
@@ -131,7 +134,7 @@ var PaymentPage = React.createClass({
           	</View>
           	<TouchableOpacity style = {[styles.cellsContainer, {height:50, flexDirection: 'row', alignItems: 'center'}]}
           		activeOpacity = {0.9}
-          		onPress = {()=>Actions.addPayment()}>
+          		onPress = {Actions.addPayment}>
 				<Image style = {{marginLeft: 19, height: 20, width: 34, resizeMode: 'stretch'}}
 						source = {require('../ios/add.png')}/>
           		<Text style = {[styles.cardNumber, {color: '#EA4D4E'}]}>Add Payment</Text>
@@ -139,10 +142,10 @@ var PaymentPage = React.createClass({
           	<View style = {{height: 1, marginTop: 0, marginLeft: 0, width: 375, backgroundColor: '#B6B6B6'}}/>
 		</View>
 	)}
-})
+}
 
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
 	container: {
 		flexDirection: 'column',
 		position: 'absolute',
@@ -191,5 +194,3 @@ var styles = React.StyleSheet.create({
 		marginLeft: 14
 	},
 });
-
-module.exports = PaymentPage;

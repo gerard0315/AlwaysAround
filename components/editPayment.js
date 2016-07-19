@@ -17,13 +17,15 @@ import React, {
 	Modal,
 } from 'react-native';
 
-var EditPaymentPage = React.createClass({
-	propTypes: {
-		cardDetail: PropTypes.object.isRequired,
-  	},
 
-	getInitialState: function(){
-        return {
+export default class EditPaymentPage extends Component{
+    static propTypes = {
+        cardDetail: PropTypes.object.isRequired,
+    }; 
+
+    constructor(props){
+    	super(props);
+    	this.state = {
         	cardNumber: null,
         	cardNumberText: null,
         	cardNumberCache: null,
@@ -34,14 +36,15 @@ var EditPaymentPage = React.createClass({
         	postCode: null,
         	dateColor: '#727272',
         	modalVisible: false,
-        };
-	},
 
-	onInputCardNumber:function(event){
+    	};
+  	}
+
+	onInputCardNumber(event){
 		this.setState({cardNumberText: event.nativeEvent.text});
-	},
+	}
 
-	onInputExpiryDate: function(event){
+	onInputExpiryDate(event){
 		var previousState = this.state.expiryDate;
 		this.setState({expiryDate: event.nativeEvent.text});
 		var thisState = this.state.expiryDate;
@@ -65,13 +68,13 @@ var EditPaymentPage = React.createClass({
 		}else{
 			this.setState({dateColor: '#727272'});
 		};
-	},
+	}
 
-	onInputPostCode: function(event){
+	onInputPostCode(event){
 		this.setState({postCode: event.nativeEvent.text.toUpperCase()});
-	},
+	}
 
-	componentWillMount: function(event){
+	componentWillMount(event){
 		console.log(this.props.cardDetail);
 		var card = this.props.cardDetail;
 		if(card.type === "visa"){
@@ -90,33 +93,40 @@ var EditPaymentPage = React.createClass({
 		this.setState({expiryDate: card.expiry_date});
 		this.setState({cvv: card.cvv});
 		this.setState({postCode: card.post_code});
-	},
+	}
 
 	_setModalVisible(visible) {
 	    this.setState({modalVisible: visible});
-	},
+	}
 
-	onDeleteMethod: function(event){
+	onDeleteMethod(event){
 		this._setModalVisible(false);
 		Actions.pop();
-	},
+	}
+
+	onFocus(){
+
+	}
+
+	onBlur(){
+
+	}
+
+	onInputCCV(event){
+		this.setState({ccv: event.nativeEvent.text});	
+	}
 
 	render(){
 	    var modalBackgroundStyle = {
 	      backgroundColor: 'rgba(0, 0, 0, 0.8)',
 	    };
-	    /*
-	    var innerContainerTransparentStyle = {
-	    	backgroundColor: '#fff', padding: 20
-	    };
-	    */
-		return(
+	    return(
 		<ScrollView style = {styles.container} scrollEnabled={false}>
 	        <Modal
 	          animationType={'fade'}
 	          transparent={true}
 	          visible={this.state.modalVisible}
-	          onRequestClose={() => {this._setModalVisible(false)}}
+	          onRequestClose={() => {this._setModalVisible.bind(this, false)}}
 	          >
 	          <View style={[styles.modalContainer, modalBackgroundStyle]}>
 	          	<View style = {styles.alertContainer}>
@@ -126,12 +136,12 @@ var EditPaymentPage = React.createClass({
 	          		<View style = {{height: 1, backgroundColor: '#B6B6B6', width: 301, marginTop: 0, marginLeft: 0}}/>
 	          		<View style = {{height: 43, marginTop: 0, marginLeft: 0, width: 301, flexDirection: 'row', alignItems: 'center'}}>
 	          			<TouchableOpacity style = {{marginLeft: 0, marginTop: 0, width: 150, height: 43, justifyContent:'center'}}
-	          				onPress= {this.onDeleteMethod}>
+	          				onPress= {this.onDeleteMethod.bind(this, false)}>
 	          				<Text style = {[styles.alertChoice, {color: '#EA4D4E'}]}>DELETE</Text>
 	          			</TouchableOpacity>
 	          			<View style = {{height: 43, width: 1, marginLeft: 0, marginTop: 0, backgroundColor: '#B6B6B6'}}/>
 	          			<TouchableOpacity style = {{marginLeft: 0, marginTop: 0, width: 150, height: 43, justifyContent: 'center'}}
-	          				onPress= {()=>this._setModalVisible(false)}>
+	          				onPress= {()=>this._setModalVisible.bind(this, false)}>
 	          				<Text style = {[styles.alertChoice, {color: '#727272'}]}>CANCEL</Text>
 	          			</TouchableOpacity>
 	          		</View>
@@ -161,9 +171,9 @@ var EditPaymentPage = React.createClass({
 								keyboardType = {"numeric"}
 								maxLength = {5}
 								value = {this.state.expiryDate}
-								onChange = {this.onInputExpiryDate}
-								onFocus = {this.onFocus}
-								onBlur = {this.onBlur}
+								onChange = {this.onInputExpiryDate.bind(this)}
+								onFocus = {this.onFocus.bind(this)}
+								onBlur = {this.onBlur.bind(this)}
 							/>
 						</View>
 						<View style = {{marginLeft: 0, marginTop: 0, height: 36, width: 10, backgroundColor: 'transparent'}}/>
@@ -174,9 +184,9 @@ var EditPaymentPage = React.createClass({
 								keyboardType = {"numeric"}
 								maxLength = {3}
 								value = {this.state.cvvValue}
-								onChange = {this.onInputCCV}
-								onFocus = {this.onFocus}
-								onBlur = {this.onBlur}
+								onChange = {this.onInputCCV.bind(this)}
+								onFocus = {this.onFocus.bind(this)}
+								onBlur = {this.onBlur.bind(this)}
 							/>
 						</View>
 						<View style = {{marginLeft: 0, marginTop: 0, height: 36, width: 10, backgroundColor: 'transparent'}}/>
@@ -186,9 +196,9 @@ var EditPaymentPage = React.createClass({
 								placeholderTextColor = {"#B6B6B6"}
 								//maxLength = {3}
 								value = {this.state.postCode}
-								onChange = {this.onInputPostCode}
-								onFocus = {this.onFocus}
-								onBlur = {this.onBlur}
+								onChange = {this.onInputPostCode.bind(this)}
+								onFocus = {this.onFocus.bind(this)}
+								onBlur = {this.onBlur.bind(this)}
 							/>
 						</View>
 					</View>
@@ -209,11 +219,13 @@ var EditPaymentPage = React.createClass({
 			</TouchableOpacity>
 
 		</ScrollView>
-		)
+	    )		
 	}
-});
 
-var styles = React.StyleSheet.create({
+}
+
+
+var styles = StyleSheet.create({
 	container: {
 		flexDirection: 'column',
 		position: 'absolute',
@@ -331,5 +343,3 @@ var styles = React.StyleSheet.create({
 		textAlign: 'center'
 	}
 });
-
-module.exports = EditPaymentPage;

@@ -13,13 +13,13 @@ export default class HealthPage extends Component{
     constructor(props){
     	super(props);
     	this.state = {
-    		onMeds: this.props.data.OnMeds,
-    		allergies: this.props.data.Allergies,
-    		vetName: this.props.data.Veterinary.Name,
-    		vetAddress: this.props.data.Veterinary.Address,
-    		vetPhone: this.props.data.Veterinary.Phone,
-    		insuName: this.props.data.Insurance.Name,
-    		insuNumber: this.props.data.Insurance.Number,
+    		onMeds: this.props.data.Health.OnMeds,
+    		allergies: this.props.data.Health.Allergies,
+    		vetName: this.props.data.Health.Veterinary.Name,
+    		vetAddress: this.props.data.Health.Veterinary.Address,
+    		vetPhone: this.props.data.Health.Veterinary.Phone,
+    		insuName: this.props.data.Health.Insurance.Name,
+    		insuNumber: this.props.data.Health.Insurance.Number,
     	};
   	}
 
@@ -76,7 +76,8 @@ export default class HealthPage extends Component{
     		</View>
     		<View style = {styles.sectionDivider}/>
     		<TouchableOpacity style = {styles.butonEdit}
-    			activeOpacity = {0.8}>
+    			activeOpacity = {0.8}
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 2, data: this.props.data})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
     	</View>

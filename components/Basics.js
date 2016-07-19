@@ -12,17 +12,18 @@ export default class BasicsPage extends Component{
     constructor(props){
     	super(props);
     	this.state = {
-        	name: this.props.data.Name,
-        	gender: this.props.data.Gender,
-      		breed: this.props.data.Breed,
-      		birth: this.props.data.YoB,
-      		size: this.props.data.Size,
-	      	vacinated: this.props.data.Vacination,
-	  		spayed: this.props.data.Spayed,
-	      	friendly: this.props.data.Friendly,
+        	name: this.props.data.Basics.Name,
+        	gender: this.props.data.Basics.Gender,
+      		breed: this.props.data.Basics.Breed,
+      		birth: this.props.data.Basics.YoB,
+      		size: this.props.data.Basics.Size,
+	      	vacinated: this.props.data.Basics.Vacination,
+	  		spayed: this.props.data.Basics.Spayed,
+	      	friendly: this.props.data.Basics.Friendly,
 
     	};
   	}
+
 
   	render(){
   		return(
@@ -62,8 +63,9 @@ export default class BasicsPage extends Component{
     		<Vacination data = {this.state.vacinated}/>
     		<Spayed data = {this.state.spayed}/>
     		<Friendly data = {this.state.friendly}/>
-    		<TouchableOpacity style = {styles.butonEdit}
-    			activeOpacity = {0.8}>
+    		<TouchableOpacity style = {styles.buttonEdit}
+    			activeOpacity = {0.8}
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 0, data: this.props.data})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
 	    </View>
@@ -264,7 +266,7 @@ var styles = StyleSheet.create({
 		flexDirection: 'row'
 	},
 
-	butonEdit:{
+	buttonEdit:{
 		position: 'absolute',
 		left: 19,
 		right: 19,

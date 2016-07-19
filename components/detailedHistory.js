@@ -18,15 +18,17 @@ import React, {
 } from 'react-native';
 
 
-var DetailedHistory = React.createClass({
-	propTypes: {
+export default class DetailedHistory extends Component{
+    static propTypes = {
     	title: PropTypes.string.isRequired,
     	clientData: PropTypes.array.isRequired,
     	driver: PropTypes.object.isRequired,
     	index: PropTypes.number.isRequired
-  	},
-	getInitialState: function(){
-        return {
+    }; 
+
+    constructor(props){
+    	super(props);
+    	this.state = {
 			rating_starsource: null,  
 			start_hour: null,
 			start_minute: null,
@@ -40,10 +42,11 @@ var DetailedHistory = React.createClass({
 			credit: 0,
 			total: 0,
 			unit_price: 0,
-			card_info: null,    	
-        };
-	},
-	
+			card_info: null, 
+
+    	};
+  	}
+
 	componentWillMount(){
 		var rating = parseInt(this.props.clientData[this.props.index].service_detail.rated);
 
@@ -81,7 +84,7 @@ var DetailedHistory = React.createClass({
 		this.setState({total: this.props.clientData[this.props.index].payment_info.Total});
 		this.setState({unit_price: this.props.clientData[this.props.index].payment_info.price_per_dog});
 		this.setState({card_info: this.props.clientData[this.props.index].payment_info.card});
-	},
+	}
 
 	render(){
 		return (
@@ -191,13 +194,14 @@ var DetailedHistory = React.createClass({
 			</TouchableOpacity>	
 			</ScrollView>
 		</View>
-			)
-	},
-
-});
+			)		
+	}
 
 
-var styles = React.StyleSheet.create({
+}
+
+
+var styles = StyleSheet.create({
 	container: {
 		flexDirection: 'column',
 		position: 'absolute',
@@ -337,5 +341,3 @@ var styles = React.StyleSheet.create({
 		backgroundColor: '#FFC927'
 	}
 });
-
-module.exports = DetailedHistory;

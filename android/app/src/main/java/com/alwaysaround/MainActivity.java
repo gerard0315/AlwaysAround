@@ -1,6 +1,8 @@
 package com.alwaysaround;
 
 import com.facebook.react.ReactActivity;
+import com.reactnative.imagepicker.PickerPackage;
+import com.smixx.reactnativeicons.ReactNativeIcons;
 import com.AirMaps.AirPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import cl.json.RNSharePackage;
@@ -39,6 +41,8 @@ public class MainActivity extends ReactActivity {
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
+            new PickerPackage(),
+            new ReactNativeIcons(),
             new AirPackage(),
             new RCTCameraPackage(),
             new RNSharePackage(),
