@@ -3,7 +3,7 @@
 import React, {Component, PropTypes} from 'react';
 import {Actions} from 'react-native-router-flux';
 import Swipeout from 'react-native-swipeout';
-var moment = require('moment');
+import moment from 'moment';
 
 import {
   StyleSheet,
@@ -130,6 +130,11 @@ export default class MyDogs extends Component{
     Actions.editDog({title: 'Add Dog'});
   }
 
+  onPressDog(rowData){
+    console.log('to dogDetails');
+    Actions.dogDetails({Data: rowData});
+  }
+
   _renderRow = (rowData: string, sectionID: number, rowID: number, _rowData: string) => {
     //var dataSet = JSON.parse(rowData);
     console.log(this.state.nowYear);
@@ -145,7 +150,7 @@ export default class MyDogs extends Component{
         backgroundColor = {'white'}>
         <TouchableOpacity style = {{height: 70, marginLeft: 19, marginTop: 0, flexDirection: 'row', alignItems: 'center'}} 
           activeOpacity = {0.9}
-          onPress = {()=>Actions.dogDetails({Data: rowData})}>
+          onPressIn = {this.onPressDog.bind(this, rowData)}>
           <Image style = {{marginLeft: 0, height: 54, width: 54, borderRadius:27, resizeMode: 'stretch'}}
             source = {require('../ios/dog_pic.png')}/>
           <View style ={{marginLeft: 14, marginTop: 11, width: 249, height: 42, backgroundColor: 'white', flexDirection: 'column'}}>

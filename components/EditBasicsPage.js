@@ -2,13 +2,10 @@
 import React, {Component, PropTypes} from 'react';
 import {Actions} from 'react-native-router-flux';
 import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS, TextInput} from 'react-native';
-//import DropDown, {Select, Option, OptionList, updatePosition} from 'react-native-dropdown';
-import Menu, {
-  MenuContext,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger
-} from 'react-native-menu';
+import SimplePicker from 'react-native-simple-picker';
+
+const optionYears = ['2016', '2015', '2014', '2013', '2012', '2011', '2010'];
+const optionSizes = ['Small, 0-20lb (0-10kg)', 'Medium, 21-40lb (10-20kg)', 'Large, 41-80lb (20-40kg)', 'Extra Large, 81lb and above (40kg and above)']
 
 export default class EditBasics extends Component{
     static propTypes = {
@@ -34,21 +31,21 @@ export default class EditBasics extends Component{
         _Vaccination: this.props.data.Vacination,
         _Spay: this.props.data.Spayed,
         _Friendly: this.props.data.Friendly,
-
+        selectedYearValue: null,
+        selectedYoB: false,
+        selectedSizeValue: null,
+        selectedSize: false,
     	};
   	}
 
     componentWillMount(){
       if (this.state.gender === 'Male'){
         this.setState({male: true});
-        this.setState({selectedSize: true});
-        this.setState({selectedYoB: true});
+        
       }else if(this.state.gender === 'Female'){
         this.setState({male: false});
-        this.setState({selectedSize: false});
-        this.setState({selectedYoB: false});
       }
-      console.log(this.state._Vaccination);
+
       if (this.state._Vaccination === false){
         this.setState({source_v: require('../ios/BLANK_ICON.png')});
       }else if(this.state._Vaccination === true){
@@ -63,6 +60,20 @@ export default class EditBasics extends Component{
         this.setState({source_f: require('../ios/BLANK_ICON.png')});
       }else if(this.state._Friendly === true){
         this.setState({source_f: require('../ios/check_green.png')});
+      }
+
+      if (this.state.yearOfBirth === null){
+        this.setState({selectedYearValue: 'Year of birth*'});
+      }else{
+        this.setState({selectedYearValue: this.state.yearOfBirth});
+        this.setState({selectedYoB: true});
+      }
+
+      if (this.state.dogSize === null){
+        this.setState({selectedSizeValue: "Dog's Size*"});
+      }else{
+        this.setState({selectedSizeValue: this.state.dogSize});
+        this.setState({selectedSize: true});
       }
 
     }
@@ -94,22 +105,12 @@ export default class EditBasics extends Component{
       this.setState({male: false});
     }
 
-    onSelectYoB(value){
-      this.setState({ yearOfBirth: value});
-      if(this.state.yearOfBirth != 'Year of birth*'){
-        this.setState({selectedYoB: true});
-      }else{
-        this.setState({selectedYoB: false});
-      }
-    }
-
     render(){
       return(
       <View style = {styles.container}>
         <View style = {styles.shadow}/>
         <Image style = {styles.bg} source = {require('../ios/BG.png')}/>
         <View style = {{marginTop: 0, marginLeft: 0, width: 375, height: 5, backgroundColor: 'transparent'}}/>
-        <MenuContext style = {{flex: 1}}>
         <View style = {styles.avatarName}>
           <TouchableOpacity style = {styles.avatarContainer}>
             <Image style = {styles.avatar} source = {this.state.avatarSource}/>
@@ -125,10 +126,10 @@ export default class EditBasics extends Component{
           <TouchableOpacity style = {[styles.genderSelecor, {backgroundColor: (this.state.male)? '#62C6C6': 'white' }]} 
             activeOpacity = {1}
             onPress = {this.onPressMale.bind(this)}>
-            <Text style = {[styles.genderText, {color: (this.state.male)? 'white': '#F49A9A'}]}>Male</Text>
+            <Text style = {[styles.genderText, {color: (this.state.male)? 'white': '#62C6C6'}]}>Male</Text>
           </TouchableOpacity>
           <View style ={{marginLeft: 0, width: 9}}/>
-          <TouchableOpacity style = {[styles.genderSelecor, {backgroundColor: (this.state.male)? 'white': '#62C6C6' }]}
+          <TouchableOpacity style = {[styles.genderSelecor, {backgroundColor: (this.state.male)? 'white': '#F49A9A' }]}
             activeOpacity = {1}
             onPress = {this.onPressFemale.bind(this)}>
             <Text style = {[styles.genderText, {color: (this.state.male)? '#F49A9A': 'white'}]}>Female</Text>
@@ -140,85 +141,48 @@ export default class EditBasics extends Component{
               placeholder = {"Breed*"}
               placeholderColor= {'#B6B6B6'}/>
         </View>
-          <View style = {styles.infoInputContainer}>
-            <Menu style={styles.dropdown} onSelect={(value) => this.setState({ yearOfBirth: value, selectedYoB: true})}>
-                <MenuTrigger>
-                <Text style = {styles.infoInput, {marginLeft: -7, fontSize: 16, fontFamily: 'SanFranciscoDisplay-Medium', color: (this.state.selectedYoB)? '#727272': '#B6B6B6'}}>{this.state.yearOfBirth}</Text>
-                </MenuTrigger>
-                <MenuOptions optionsContainerStyle={styles.dropdownOptions}
-                  renderOptionsContainer={(options) => <ScrollView><Text style = {[styles.optionText, {marginLeft: 10, marginTop: 10}]}>CHOOSE YEAR OF BIRTH</Text>{options}</ScrollView>}>
-                  <MenuOption value="2012">
-                    <Text style = {styles.optionText}>2012</Text>
-                  </MenuOption>
-                  <MenuOption value="2015">
-                    <Text style = {styles.optionText}>2015</Text>
-                  </MenuOption>
-                  <MenuOption value="2016">
-                    <Text style = {styles.optionText}>2016</Text>
-                  </MenuOption>
-                </MenuOptions>
-              </Menu>
-          </View>
-          <View style = {styles.infoInputContainer}>
-            <Menu style={styles.dropdown} onSelect={(value) => this.setState({ dogSize: value, selectedSize: true})}>
-                <MenuTrigger>
-                <Text style = {styles.infoInput, {marginLeft: -7, fontSize: 16, fontFamily: 'SanFranciscoDisplay-Medium', color: (this.state.selectedSize)? '#727272': '#B6B6B6'}}>{this.state.dogSize}</Text>
-                </MenuTrigger>
-                <MenuOptions optionsContainerStyle={styles.dropdownOptions}
-                  renderOptionsContainer={(options) => <ScrollView><Text style = {[styles.optionText, {marginLeft: 10, marginTop: 10}]}>CHOOSE DOG'S SIZE</Text>{options}</ScrollView>}>
-                  <MenuOption value="Small">
-                    <Text style = {styles.optionText}>Small</Text>
-                  </MenuOption>
-                  <MenuOption value="Medium">
-                    <Text style = {styles.optionText}>Medium</Text>
-                  </MenuOption>
-                  <MenuOption value="Large">
-                    <Text style = {styles.optionText}>Large</Text>
-                  </MenuOption>
-                </MenuOptions>
-              </Menu>
-          </View>
+        <View style = {styles.infoInputContainer}>
+            <Text style = {[styles.infoInput, {backgroundColor: 'transparent', marginLeft: -165, color: (this.state.selectedYoB)? '#727272':'#B6B6B6'}]} onPress = {() => {this.refs.pickerYear.show();}}>{this.state.selectedYearValue}</Text>
+        </View>
+        <View style = {styles.infoInputContainer}>
+            <Text style = {[styles.infoInput, {backgroundColor: 'transparent', marginLeft: -165, color: (this.state.selectedSize)? '#727272':'#B6B6B6'}]} onPress = {() => {this.refs.pickerSize.show();}}>{this.state.selectedSizeValue}</Text>
+        </View>
         <View style = {{marginTop: 10, width: 337, height:1, backgroundColor: 'white', marginLeft: 19}}/>
-          <View style= {styles.checkBoxCol}>
-            <Text style = {styles.infoText}>Vaccination</Text>
-              <View style = {styles.checkBoxStyle}>
-                <TouchableOpacity 
-                  style = {styles.checkBox}
-                  onPress = {this.onPressV.bind(this)}
-                  activeOpacity = {1}
-                  >            
+          <TouchableOpacity style= {styles.checkBoxCol}
+            onPress = {this.onPressV.bind(this)}
+            activeOpacity = {1} >
+              <Text style = {styles.infoText}>Vaccination</Text>
+                <View style = {styles.checkBoxStyle}>
+                <View style = {styles.checkBox}>            
                   <Image style = {styles.checkImage}
                       source = {this.state.source_v}/>
-                </TouchableOpacity>
-          
-            </View>
-          </View>
-          <View style= {styles.checkBoxCol}>
+                </View>
+              </View>
+          </TouchableOpacity>
+
+          <TouchableOpacity style= {styles.checkBoxCol}
+            onPress = {this.onPressS.bind(this)}
+            activeOpacity = {1}>
             <Text style = {styles.infoText}>Neutered/Spayed</Text>
               <View style = {styles.checkBoxStyle}>
-                <TouchableOpacity 
-                  style = {styles.checkBox}
-                  onPress = {this.onPressS.bind(this)}
-                  activeOpacity = {1}
-                  >            
+                <View style = {styles.checkBox}>            
                   <Image style = {styles.checkImage}
                       source = {this.state.source_s}/>
-                </TouchableOpacity>
+                </View>
             </View>
-          </View>
-          <View style= {styles.checkBoxCol}>
+          </TouchableOpacity>
+
+          <TouchableOpacity style= {styles.checkBoxCol}
+            onPress = {this.onPressF.bind(this)}
+            activeOpacity = {1}>
             <Text style = {styles.infoText}>Friendly With Other Dogs</Text>
               <View style = {styles.checkBoxStyle}>
-                <TouchableOpacity 
-                  style = {styles.checkBox}
-                  onPress = {this.onPressF.bind(this)}
-                  activeOpacity = {1}
-                  >            
+                <View style = {styles.checkBox}>            
                   <Image style = {styles.checkImage}
                       source = {this.state.source_f}/>
-                </TouchableOpacity>
+                </View>
             </View>
-          </View>
+          </TouchableOpacity>
         <View style = {{marginTop: 10, width: 337, height:1, backgroundColor: 'white', marginLeft: 19}}/>
         <TextInput style = {styles.introInput}
             multiline = {true}
@@ -229,7 +193,29 @@ export default class EditBasics extends Component{
           activeOpacity = {0.8}>
           <Image source = {require('../ios/save.png')}/>
         </TouchableOpacity>
-      </MenuContext>
+
+        <SimplePicker
+          ref={'pickerYear'}
+          options={optionYears}
+          onSubmit={(option) => {
+            this.setState({
+              selectedYearValue: option,
+              selectedYoB: true
+            });
+          }}
+        />
+
+        <SimplePicker
+          ref={'pickerSize'}
+          options={optionSizes}
+          onSubmit={(option) => {
+            this.setState({
+              selectedSizeValue: option,
+              selectedSize: true
+            });
+          }}
+        />
+
       </View>
     )}
 
@@ -328,8 +314,8 @@ var styles = StyleSheet.create({
     height: 36,
     width: 164,
     borderRadius: 2,
-    borderWidth: 1,
-    borderColor: '#B6B6B6',
+    //borderWidth: 1,
+    //borderColor: 'white',
     marginLeft: 0,
     marginTop: 0,
     alignItems: 'center',
@@ -369,7 +355,7 @@ var styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#B6B6B6',
+    borderColor: '#62C6C6',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white'

@@ -1,8 +1,8 @@
 'use strict';
 import {Actions} from 'react-native-router-flux';
-
-import React, {
-  Component,
+import React, {Component, PropTypes} from 'react';
+import {
+  //Component,
   StyleSheet,
   Text,
   View,
@@ -13,7 +13,7 @@ import React, {
   ListView,
   TextInput,
   ScrollView,
-  PropTypes,
+  //PropTypes,
 } from 'react-native';
 
 
@@ -183,7 +183,7 @@ export default class AddPaymentPage extends Component{
 	}
 }
 
-var styles = React.StyleSheet.create({
+var styles =StyleSheet.create({
 	container: {
 		flexDirection: 'column',
 		position: 'absolute',

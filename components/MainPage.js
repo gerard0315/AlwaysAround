@@ -1,14 +1,11 @@
 'use strict';
-
-var Dimensions = require('Dimensions');
-var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
 import Drawer from 'react-native-drawer';
-var TimerMixin = require('react-timer-mixin');
+//import MapView from 'react-native-maps';
+import React, {Component, propTypes} from 'react';
 import ControlPanel from './Drawer.js';
-
-import React, {
-  Component,
+import Qs from 'qs';
+import {
   StyleSheet,
   MapView,
   Text,
@@ -23,13 +20,19 @@ import React, {
   TouchableHighlight,
   StatusBar,
   ScrollView,
+  ActivityIndicator,
+  Dimensions,
+  AlertIOS
 } from 'react-native';
 
 exports.framework = 'React';
+var key = 'AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g';
+var src = "https://maps.googleapis.com/maps/api/js?key=" + key+ "&libraries=places";
+
+var selected = [];
 
 var MainPage = React.createClass({
   watchID: (null: ?number),
-  mixins: [TimerMixin],
 
   getInitialState: function() {
     return {
@@ -43,6 +46,7 @@ var MainPage = React.createClass({
       numberSelected: false,
       timeText: 'Time Est.',
       timeSelected: false,
+      descriptionOpacity: 0,
 
       sliderPosition: new Animated.Value(202.5),
       carerTextLeft: new Animated.Value(400),
@@ -50,7 +54,9 @@ var MainPage = React.createClass({
       descriptionDisplay: 0,
       descriptionHeight: new Animated.Value(0),
       shelterClicked : false,
+      onShelter: true,
       carerClicked: false,
+      //onCarer: false,
 
       drawerClosed: true,
 
@@ -80,17 +86,20 @@ var MainPage = React.createClass({
       thridClicked: false,
       fourthClicked: false,
       optionTextColor: '#727272',
+      timeChosen: 0,
 
       carerColor: 'white',
       shelterColor: '#FFC927',
-      locationText: 'Aldgate Tower',
+      locationText: null,
+      isLoading: true,
     };
   },
 
   componentDidMount: function() {
     StatusBar.setHidden(false, null);
-    this.setTimeout(
-      () => {        
+    this.timer = setTimeout(
+      () => {
+       
           navigator.geolocation.getCurrentPosition(
             (position) => {
               var initialPosition = JSON.stringify(position);
@@ -98,7 +107,7 @@ var MainPage = React.createClass({
               console.log(initialPosition);
             },
             (error) => alert(error.message),
-            {enableHighAccuracy: true, timeout: 200000, maximumAge: 2000000}
+            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
           );
           this.watchID = navigator.geolocation.watchPosition((position) => {
             var lastPosition = JSON.stringify(position);
@@ -116,30 +125,79 @@ var MainPage = React.createClass({
                 longitudeDelta: 0.008,
               }
             });
-            
-            console.log("longitude:", this.state.longitude);
-            console.log("latitude:", this.state.latitude);
+
+            if(this.state.coordinate.longitude != 0){
+              console.log("in willmount");
+              this._requestNearby();
+            }else{
+              console.log('getting ready!!');
+            }
           });
       },
-      1000
+      500
     );
 
-  this.setState({ 
-    coordinate:{
-      longitude: this.state.longitude,
-      latitude: this.state.latitude,
-      }
+    this.setState({ 
+      coordinate:{
+        longitude: this.state.longitude,
+        latitude: this.state.latitude,
+        }
     });
-  this.setState({drawerClosed: false});
-  this.setState({locationText: 'Aldgate Tower'});
+    this.setState({drawerClosed: false});
+    navigator.geolocation.clearWatch(this.watchID);
   },
 
+  _checkForEmpty: function(){
+    console.log(selected);
+    for (var i = 0; i < selected.length; i++){
+      if (selected[i] === ' '){
+        selected.splice(i, 1);
+      }
+    }
+  },
+
+  _requestNearby: function(){
+    this.setState({ isLoading: true});
+    this.setState({locationText: ''});
+    var _request = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.state.latitude + "," + this.state.longitude + "&result_type=street_address&key=AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g";
+    //console.log(_request);
+    fetch(_request, {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) => {
+          //console.log(typeof responseData.results[0] === "undefined");
+          
+          if(typeof responseData.results[0] === "undefined"){
+            console.log('error!!');
+            this.setState({ isLoading: true});
+            this.setState({locationText: ''});
+          }else if(typeof responseData.results[0] === "object"){
+            var address = responseData.results[0].formatted_address;
+            var _add = address.split(", ");
+            this.setState({locationText: _add[0]});
+            this.setState({ isLoading: false});
+          };
+          
+        })
+        .done();
+  },
+
+
   componentWillUnmount: function() {
+    this.setState({drawerClosed: true});
+    this.setState({oneClicked: false});
+    this.setState({twoClicked: false});
+    this.setState({threeClicked: false});
+    this.setState({fourClicked: false});
+    this.setState({firstClicked: false});
+    this.setState({secondClicked: false});
+    this.setState({thridClicked: false});
+    this.setState({fourthClicked: false});
+    selected = [];
+    console.log('unmountinggggggggggggggggggg');
     navigator.geolocation.clearWatch(this.watchID);
     this.setState({numberSelectHeight: 0});
-    this.setState({drawerClosed: true});
     this._drawer.close();
-    TimerMixin.clearInterval(this.timer)
+    this.timer && clearTimeout(this.timer);
     StatusBar.setHidden(false, null);
   },
 
@@ -148,6 +206,7 @@ var MainPage = React.createClass({
     //this.setState({sliderPosition: 202.5})
   },
 
+
   openDrawer: function(){
     this._drawer.open();
     //StatusBar.setHidden(true, null);
@@ -155,14 +214,14 @@ var MainPage = React.createClass({
   },
 
   onDrawerOpen: function(event){
-  this.setTimeout(
+  this.timer = setTimeout(
       () => {
     StatusBar.setHidden(true, null);
   }, 10);
   },
 
   onDrawerClose: function(event){
-  this.setTimeout(
+  this.timer = setTimeout(
       () => {
     StatusBar.setHidden(false, null);
   }, 10);
@@ -181,6 +240,40 @@ var MainPage = React.createClass({
         latitude: region.latitude,
       }
     });
+    this.setState({ isLoading: true});
+    this.setState({locationText: ''});
+  },
+
+
+  onRegionChangeComplete: function(region){
+    this.setState({
+      coordinate: {
+        longitude: region.longitude,
+        latitude: region.latitude,
+      }
+    });
+    this.setState({ isLoading: true});
+    this.setState({locationText: ''});
+    var _request = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.state.coordinate.latitude + "," + this.state.coordinate.longitude + "&result_type=street_address&key=AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g";
+    //console.log(_request);
+    fetch(_request, {method: "GET"})
+        .then((response) => response.json())
+        .then((responseData) => {
+          //console.log(typeof responseData.results[0] === "undefined");
+          
+          if(typeof responseData.results[0] === "undefined"){
+            console.log('error!!');
+            this.setState({ isLoading: true});
+            this.setState({locationText: ''});
+          }else if(typeof responseData.results[0] === "object"){
+            var address = responseData.results[0].formatted_address;
+            var _add = address.split(", ");
+            this.setState({locationText: _add[0]});
+            this.setState({ isLoading: false});
+          };
+          
+        })
+        .done();
 
   },
 
@@ -193,7 +286,7 @@ var MainPage = React.createClass({
     }).start();
 
     Animated.timing(this.state.numberOpacity, {
-      toValue: 1, // 目标值
+      toValue: 0.8, // 目标值
       duration: 20,
       delay: 80,
       easing: Easing.linear, // 动画时间
@@ -226,7 +319,7 @@ var MainPage = React.createClass({
     }).start();
 
     Animated.timing(this.state.timeSelectOpacity, {
-      toValue: 1, // 目标值
+      toValue: 0.8, // 目标值
       duration: 20,
       delay: 80,
       easing: Easing.linear, // 动画时间
@@ -252,7 +345,7 @@ var MainPage = React.createClass({
   onDogNumberClicked:function(event){
     this.setState({dogNumberSelected: !this.state.dogNumberSelected});
     //this.setState({numberSelectDisabled: !this.state.numberSelectDisabled});
-    if (this.state.dogNumberSelected === true){
+    if (this.state.dogNumberSelected === false){
         this.setState({numberText: 'Done'});
         this.openNameSelector();
     }else{
@@ -272,7 +365,7 @@ var MainPage = React.createClass({
   onEstimateTimeClicked: function(event){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     //this.setState({timeSelectDisabled: !this.state.timeSelectDisabled});
-    if (this.state.estimateTimeSelected === true){
+    if (this.state.estimateTimeSelected === false){
         this.openTimeSelector();
     }else{
         this.closeTimeSelector();
@@ -283,10 +376,12 @@ var MainPage = React.createClass({
     console.log('back to location');
     this.setState({
       mapRegion: {
-        latitude: this.state.latitude,
-        longitude: this.state.longitude,
-        latitudeDelta: 0.008,
-        longitudeDelta: 0.008,
+        //latitude: this.state.coordinate.latitude,
+        //longitude: this.state.coordinate.longitude,
+        //latitudeDelta: 0.008,
+        //longitudeDelta: 0.008,
+        latitude: 51.5148623,
+        longitude: -0.0722211,
       },
     });
     console.log(this.state.mapRegion.latitude);
@@ -298,37 +393,69 @@ var MainPage = React.createClass({
 
   onChosenOne: function(event){
     this.setState({oneClicked: !this.state.oneClicked});
-      if (this.state.oneClicked === true){
+    this._checkForEmpty();
+      if (this.state.oneClicked === false){
         this.setState({number: this.state.number+1});
+        selected.push('LunaBaetylus');
       }else{
         this.setState({number: this.state.number-1});
+        for (var i = 0; i < selected.length; i++){
+          if (selected[i] === 'LunaBaetylus'){
+            selected.splice(i, 1);
+            console.log(selected);
+          }
+        };
       };
   },
 
   onChosenTwo: function(event){
     this.setState({twoClicked: !this.state.twoClicked});
-      if (this.state.twoClicked === true){
+    this._checkForEmpty();
+      if (this.state.twoClicked === false){
         this.setState({number: this.state.number+1});
+        selected.push('Yiran Tao');
       }else{
         this.setState({number: this.state.number-1});
+        for (var i = 0; i < selected.length; i++){
+          if (selected[i] === 'Yiran Tao'){
+            selected.splice(i, 1);
+            console.log(selected);
+          }
+        };
       };
   },
 
   onChosenThree: function(event){
     this.setState({threeClicked: !this.state.threeClicked});
-      if (this.state.threeClicked === true){
+    this._checkForEmpty();
+      if (this.state.threeClicked === false){
         this.setState({number: this.state.number+1});
+        selected.push('Shibo Wang');
       }else{
         this.setState({number: this.state.number-1});
+        for (var i = 0; i < selected.length; i++){
+          if (selected[i] === 'Shibo Wang'){
+            selected.splice(i, 1);
+            console.log(selected);
+          }
+        };
       };
   },
 
   onChosenFour: function(event){
     this.setState({fourClicked: !this.state.fourClicked});
-      if (this.state.fourClicked === true){
+    this._checkForEmpty();
+      if (this.state.fourClicked === false){
         this.setState({number: this.state.number+1});
+        selected.push('Peking Wang');
       }else{
         this.setState({number: this.state.number-1});
+        for (var i = 0; i < selected.length; i++){
+          if (selected[i] === 'Peking Wang'){
+            selected.splice(i, 1);
+            console.log(selected);
+          }
+        };
       };
   },
 
@@ -342,6 +469,7 @@ var MainPage = React.createClass({
   onPressOutFirst: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '0.5 Hour'});
+    this.setState({timeChosen: 0.5});
   },
 
   onPressInSecond: function(){
@@ -354,6 +482,7 @@ var MainPage = React.createClass({
   onPressOutSecond: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '1 Hour'});
+    this.setState({timeChosen: 1});
   },
 
   onPressInThird: function(){
@@ -366,6 +495,7 @@ var MainPage = React.createClass({
   onPressOutThird: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '2 Hours'});
+    this.setState({timeChosen: 2});
   },
 
   onPressInForth: function(){
@@ -378,6 +508,7 @@ var MainPage = React.createClass({
   onPressOutForth: function(){
     this.setState({estimateTimeSelected: !this.state.estimateTimeSelected});
     this.setState({timeText: '3 Hours'});
+    this.setState({timeChosen: 3});
   },
 
   onPressInCarer: function(event){
@@ -392,9 +523,6 @@ var MainPage = React.createClass({
 
 
   onPressCarer: function(event){
-    console.log('to Carer');
-    this.setState({carerClicked: !this.state.carerClicked});
-    
     Animated.timing(this.state.sliderPosition, {
       toValue: 52.5, 
       duration: 200,
@@ -413,33 +541,31 @@ var MainPage = React.createClass({
       easing: Easing.linear, 
     }).start();
 
-    if ((this.state.carerClicked === false && this.state.descriptionDisplay === 0)){
-      this.setState({descriptionDisplay: 1});
-      this.setState({shelterClicked: false});
-      Animated.timing(this.state.descriptionHeight, {
-        toValue: 60, 
-        duration: 100,
-        easing: Easing.linear, 
-      }).start();      
-    }else if(this.state.carerClicked === true && this.state.descriptionDisplay === 1){
-      this.setState({descriptionDisplay: 0});
-      this.setState({shelterClicked: true});
-      Animated.timing(this.state.descriptionHeight, {
-        toValue: 0, 
-        duration: 100,
-        easing: Easing.linear, 
-      }).start();       
-    }else if(this.state.carerClicked === true && this.state.descriptionDisplay === 0){
-      this.setState({shelterClicked: true});
-    }else if(this.state.carerClicked === false && this. state.descriptionDisplay === 1){
-      this.setState({shelterClicked: false});
-    };
-    
+    this.setState({shelterClicked: false});
+    if (this.state.carerClicked === false && this.state.onShelter === true){
+      this.setState({carerClicked: true});
+      this.setState({onShelter: false});
+    }else if(this.state.carerClicked === true && this.state.onShelter === false){
+      this.setState({carerClicked: false});
+      this.setState({onShelter: false});
+      if (this.state.descriptionDisplay === 1){
+        this.foldDescription();
+      }else if(this.state.descriptionDisplay === 0){
+        this.displayDescription();
+      }
+    }else if(this.state.carerClicked === false && this.state.onShelter === false){
+      this.setState({carerClicked: true});
+      this.setState({onShelter: false});
+      if (this.state.descriptionDisplay === 1){
+        this.foldDescription();
+      }else if(this.state.descriptionDisplay === 0){
+        this.displayDescription();
+      }
+    }
+   
   },
 
-  onPressShelter: function(event){
-    console.log('carerClicked' + this.state.carerClicked);
-    this.setState({shelterClicked: !this.state.shelterClicked});
+  onPressShelter: function(event){    
     Animated.timing(this.state.sliderPosition, {
         toValue: 202.5, 
         duration: 200,
@@ -458,28 +584,74 @@ var MainPage = React.createClass({
         easing: Easing.linear, 
     }).start();
 
-    if (this.state.shelterClicked === true){
-      this.setState({descriptionDisplay: 1});
-      this.setState({carerClicked: true});
-      Animated.timing(this.state.descriptionHeight, {
-        toValue: 60, 
-        duration: 100,
-        easing: Easing.linear, 
-      }).start();   
-    }else if(this.state.shelterClicked === false){
-      this.setState({descriptionDisplay: 0});
-      this.setState({carerClicked: false});
-      Animated.timing(this.state.descriptionHeight, {
-        toValue: 0, 
-        duration: 100,
-        easing: Easing.linear, 
-      }).start();
-    };
+    this.setState({carerClicked: false});
+    if (this.state.shelterClicked === false && this.state.onShelter === true){
+      this.setState({shelterClicked: true});
+      if (this.state.descriptionDisplay === 1){
+        this.foldDescription();
+      }else if(this.state.descriptionDisplay === 0){
+        this.displayDescription();
+      }
+    }else if(this.state.shelterClicked === true && this.state.onShelter === true){
+      this.setState({shelterClicked: false});
+      if (this.state.descriptionDisplay === 1){
+        this.foldDescription();
+      }else if(this.state.descriptionDisplay === 0){
+        this.displayDescription();
+      }
+    }else if(this.state.onShelter === false){
+      this.setState({onShelter: true});
+    }
     
   },
 
-	render() {
-		return( 
+  displayDescription: function(){
+    this.setState({descriptionDisplay: 1});
+    Animated.timing(this.state.descriptionHeight, {
+        toValue: 60, 
+        duration: 100,
+        easing: Easing.linear, 
+    }).start(); 
+  },
+
+  foldDescription: function(){
+    this.setState({descriptionDisplay: 0});
+    Animated.timing(this.state.descriptionHeight, {
+        toValue: 0, 
+        duration: 100,
+        easing: Easing.linear, 
+    }).start();   
+  },
+
+  onPressSearch: function(){
+    Actions.search({lng: this.state.coordinate.longitude, lat: this.state.coordinate.latitude});
+    navigator.geolocation.clearWatch(this.watchID);
+    //this.setState({numberSelectHeight: 0});
+    //this.setState({drawerClosed: true});
+    //this._drawer.close();
+    this.timer && clearTimeout(this.timer);
+  },
+
+  onPressPickUp: function(){
+    if (selected.length === 0 || this.state.timeChosen === 0){
+      AlertIOS.alert(
+        'Service info not completed!',
+        'Please check selected dogs and time!'
+      );
+    }else{
+      Actions.confirm({
+        lat: this.state.coordinate.latitude, 
+        lng: this.state.coordinate.longitude, 
+        location: this.state.locationText, 
+        service: {onShelter: this.state.onShelter, time: 10}, 
+        infoData: selected, 
+        time: this.state.timeChosen,
+        paymentType: 2});
+    }
+  },
+
+  render() {
+    return( 
       <Drawer
         ref={(ref) => this._drawer = ref}
         type="overlay"
@@ -510,6 +682,7 @@ var MainPage = React.createClass({
             region = {this.state.mapRegion}
             maxDelta = {0.9}
             onRegionChange = {this.regionChange}
+            onRegionChangeComplete = {this.onRegionChangeComplete}
           />
 
         <View style = {styles.TopBarContainer}>
@@ -564,9 +737,9 @@ var MainPage = React.createClass({
           }}>DESCRIPTION</Animated.Text>
           <ScrollView style={{marginTop: 2, marginLeft: 24, height: 10}}>
             <Animated.View style= {{flexDirection: 'row'}}>
-              <Animated.Text style = {[styles.descriptionText, {marginLeft: this.state.shelterTextLeft}]}>Designed By LunaBaetylus Studio London.{"\n"}This is AlwaysAround Shelter
+              <Animated.Text style = {[styles.descriptionText, {marginLeft: this.state.shelterTextLeft, opacity: this.state.descriptionDisplay}]}>Designed By LunaBaetylus Studio London.{"\n"}This is AlwaysAround Shelter
               </Animated.Text>
-              <Animated.Text style = {[styles.descriptionText, {marginLeft: this.state.carerTextLeft}]}>Designed By LunaBaetylus Studio London.{"\n"}This is AlwaysAround Carer.
+              <Animated.Text style = {[styles.descriptionText, {marginLeft: this.state.carerTextLeft, opacity: this.state.descriptionDisplay}]}>Designed By LunaBaetylus Studio London.{"\n"}This is AlwaysAround Carer.
               </Animated.Text>
             </Animated.View>
           </ScrollView>
@@ -602,31 +775,34 @@ var MainPage = React.createClass({
         </TouchableOpacity>
 
         <View style = {styles.optionsContainer}>
-            <TouchableOpacity style = {styles.selectDogNumber}
+            <View style = {styles.selectDogNumber}>
+              <TouchableOpacity style = {{flexDirection : 'row'}}
                   onPress = {this.onDogNumberClicked}
-                  activeOpacity = {0.8}>
+                  activeOpacity = {1}>
                 <Image style = {{
                      marginTop: 11,
                      marginLeft: 11, 
                      }} 
                      source = {this.state.dogNumberSelected? require('../ios/down.png'): require('../ios/up.png')}/>
                   <View style={{height: 46, width: 128, justifyContent: 'center', flexDirection: 'column'}}>
-                    <Animated.Text style = {[styles.optionText, {color: this.state.optionTextColor}]}>{this.state.numberText}</Animated.Text>
+                    <Text style = {[styles.optionText, {color: this.state.optionTextColor}]}>{this.state.numberText}</Text>
                   </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity style = {styles.selectTime} 
-              onPress = {this.onEstimateTimeClicked}
-              activeOpacity = {0.8}>
-              <Image style = {{
-                marginLeft: 11,
-                marginTop: 11,
-                }} 
-                source = {this.state.estimateTimeSelected? require('../ios/down.png'): require('../ios/up.png')}/>
-              <View style={{height: 46, width: 128, justifyContent: 'center', flexDirection: 'row'}}>
-                <Animated.Text style = {styles.optionText}>{this.state.timeText}</Animated.Text>
-              </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
+            </View>
+            <View style = {styles.selectTime} >
+              <TouchableOpacity style = {{flexDirection : 'row'}}
+                onPress = {this.onEstimateTimeClicked}
+                activeOpacity = {1}>
+                <Image style = {{
+                  marginLeft: 11,
+                  marginTop: 11,
+                  }} 
+                  source = {this.state.estimateTimeSelected? require('../ios/down.png'): require('../ios/up.png')}/>
+                <View style={{height: 46, width: 128, justifyContent: 'center', flexDirection: 'row'}}>
+                  <Text style = {styles.optionText}>{this.state.timeText}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
         </View>
 
         <Animated.View style = {[styles.timeSelectContainer, {height: this.state.timeSelectHeight}, {opacity: this.state.timeSelectOpacity}]}>
@@ -721,7 +897,7 @@ var MainPage = React.createClass({
 
         <View style = {styles.pickUpLocationContainer}>
           <TouchableOpacity style = {{marginLeft: 0, marginTop: 0, height: 34, flexDirection: 'row', alignItems: 'center'}} activeOpacity = {1.0}
-            onPress = {Actions.search}>
+            onPress = {this.onPressSearch}>
             <Image style = {{marginLeft: 0 , width: 20, height: 20, resizeMode: 'stretch', opacity: 0.8}}
                 source = {require('../ios/Oval.png')}/>
             <View style = {{marginTop: 0, marginLeft: -40, width: 375, height: 34}}>
@@ -737,18 +913,24 @@ var MainPage = React.createClass({
             </View>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style = {styles.pickUpButton} opacity = {0.9}>
+        <TouchableOpacity style = {styles.pickUpButton} opacity = {0.9}
+          onPressIn = {this.onPressPickUp}>
           <Image style = {{marginTop: 5, marginLeft: 0, width: 337, opacity: 0.9}}
             source = {require('../ios/pick_up.png')}/>
         </TouchableOpacity>
+          <ActivityIndicator
+            style = {[styles.indicator]}
+            animating={this.state.isLoading}
+            //hidden='true'
+            size='small'/>
       </View>
     </Drawer>
-	)}
-	
+  )}
+  
 });
 
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
   container: {
     position: 'absolute',
     top: 0,
@@ -987,7 +1169,8 @@ var styles = React.StyleSheet.create({
     height: 46,
     backgroundColor: 'transparent',
     //backgroundColor: 'white',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    //opacity: 0.8,
   },
 
   pickUpPadding: {
@@ -1033,12 +1216,12 @@ var styles = React.StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 6,
     shadowRadius: 0.6,
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.4,
     shadowColor: 'gray',
     shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
     justifyContent: 'space-around',
-    opacity: 0.8
+    opacity: 0.9
   }, 
 
   timeSelectContainer:{
@@ -1050,12 +1233,12 @@ var styles = React.StyleSheet.create({
     borderRadius: 6,
     backgroundColor: 'white',
     shadowRadius: 0.6,
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.4,
     shadowColor: 'gray',
     shadowOffset: {width: 0, height: 0},
     flexDirection: 'column',
     justifyContent: 'space-around',
-    opacity: 0.8
+    opacity: 0.9
   },
 
   selectDogNumber:{
@@ -1064,14 +1247,14 @@ var styles = React.StyleSheet.create({
     borderRadius: 6,
     backgroundColor: 'white',
     width: 163,
-    flexDirection: 'row',
+    //flexDirection: 'row',
     shadowRadius: 0.6,
     shadowOpacity: 0.2,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0}, 
     flexDirection: 'row',
     justifyContent: 'center',
-    opacity: 0.8
+    opacity: 0.9
   },
 
   selectTime:{
@@ -1080,13 +1263,13 @@ var styles = React.StyleSheet.create({
     borderRadius: 6,
     backgroundColor: 'white',
     width: 163,
-    flexDirection:'row',
+    //flexDirection:'row',
     shadowRadius: 0.6,
     shadowOpacity: 0.2,
     shadowColor: 'black',
     shadowOffset: {width: 0, height: 0},
     justifyContent: 'center',
-    opacity: 0.8
+    opacity: 0.9
   },
 
   optionText:{
@@ -1137,6 +1320,16 @@ var styles = React.StyleSheet.create({
     borderColor: '#62C6C6',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+
+  indicator: {
+    position: 'absolute',
+    top: 572,
+    left: 174.5,
+    justifyContent: 'center',
+    height: 25,
+    width: 25,
+    //backgroundColor: 'gray'
   }
 
 });

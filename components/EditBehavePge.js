@@ -143,102 +143,102 @@ export default class EditBehaviours extends Component{
         	</View>
         	<Text style = {[styles.sectionTitle, {marginTop: 20}]}>The Dog</Text>
         	<View style = {{marginTop: 10, marginLeft: 19, height: 1, width: 375, backgroundColor: 'white'}}/>
-          	<View style= {styles.checkBoxCol}>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressOne.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Is in season</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressOne.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceOne}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressTwo.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Is child-friendly</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressTwo.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceTwo}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressThree.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Pulls on the lead</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressThree.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceThree}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressFour.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Barks</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressFour.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceFour}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressFive.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Digs</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressFive.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceFive}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressSix.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Jumps on people</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressSix.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceSix}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressSeven.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Is micro-chipped</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressSeven.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceSeven}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
-          	<View style= {styles.checkBoxCol}>
+          	</TouchableOpacity>
+
+          	<TouchableOpacity style= {styles.checkBoxCol}
+              onPress = {this.onPressEight.bind(this)}
+              activeOpacity = {1}>
             	<Text style = {styles.infoText}>Has ID Tags</Text>
               	<View style = {styles.checkBoxStyle}>
-                	<TouchableOpacity 
-                  		style = {styles.checkBox}
-                  		onPress = {this.onPressEight.bind(this)}
-                  		activeOpacity = {1}>            
+                	<View style = {styles.checkBox}>            
                   	<Image style = {styles.checkImage}
                       	source = {this.state.sourceEight}/>
-                	</TouchableOpacity>
+                	</View>
             	</View>
-          	</View>
+          	</TouchableOpacity>
           	<View style = {{marginTop: 10, marginLeft: 19, height: 1, width: 375, backgroundColor: 'white'}}/>
 	        <TouchableOpacity style = {styles.buttonSave}
 	          activeOpacity = {0.8}>
@@ -325,7 +325,7 @@ var styles = StyleSheet.create({
     width: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#B6B6B6',
+    borderColor: '#62C6C6',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white'

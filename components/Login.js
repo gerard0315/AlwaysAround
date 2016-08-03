@@ -1,11 +1,12 @@
 'use strict';
-
-var React = require('react-native');
-var Dimensions = require('Dimensions');
+import React, {Component, propTypes} from 'react';
+//import {StyleSheet, Text, View, TouchableOpacity, Image, Navigator, ListView, TextInput, Animated, Easing, ScrollView} from 'react-native';
+//var React = require('react-native');
+//var Dimensions = require('Dimensions');
 var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
 
-var {
+import {
   StyleSheet,
   View,
   Text,
@@ -17,7 +18,8 @@ var {
   ScrollView,
   DeviceEventEmitter,
   StatusBar,
-} = React;
+  Dimensions
+} from 'react-native';
 
 var LoginPage = React.createClass({
 
@@ -392,7 +394,7 @@ var LoginPage = React.createClass({
 });
 
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
 	container: {
     flexDirection: 'column',
     flex: 1,

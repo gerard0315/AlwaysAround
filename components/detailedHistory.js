@@ -1,9 +1,9 @@
 'use strict';
 import {Actions} from 'react-native-router-flux';
-var moment = require('moment');
-
-import React, {
-  Component,
+import moment from 'moment';
+import React, {Component, PropTypes} from 'react';
+import {
+  //Component,
   StyleSheet,
   Text,
   View,
@@ -14,16 +14,16 @@ import React, {
   ListView,
   TextInput,
   ScrollView,
-  PropTypes,
+  //PropTypes,
 } from 'react-native';
 
 
 export default class DetailedHistory extends Component{
     static propTypes = {
-    	title: PropTypes.string.isRequired,
-    	clientData: PropTypes.array.isRequired,
-    	driver: PropTypes.object.isRequired,
-    	index: PropTypes.number.isRequired
+    	title: React.PropTypes.string.isRequired,
+    	clientData: React.PropTypes.array.isRequired,
+    	driver: React.PropTypes.object.isRequired,
+    	index: React.PropTypes.number.isRequired
     }; 
 
     constructor(props){

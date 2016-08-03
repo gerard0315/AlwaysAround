@@ -1,9 +1,9 @@
 'use strict';
 
 import {Actions} from 'react-native-router-flux';
-
-import React, {
-  Component,
+import React, {Component, PropTypes} from 'react';
+import {
+  //Component,
   StyleSheet,
   Text,
   View,
@@ -14,7 +14,7 @@ import React, {
   ListView,
   TextInput,
   ScrollView,
-  PropTypes,
+  //import React, {Component, PropTypes} from 'react';PropTypes,
   Modal,
 } from 'react-native';
 import Share from 'react-native-share';

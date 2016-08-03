@@ -53,38 +53,37 @@ export default class ImageCropping extends Component{
 	      first: 1,
 	    };
 
-		CameraRoll.getPhotos(fetchParams)
-		      .then((data) => {
-		          // console.log(data);
-		          this.setState({
-		            photoSource: {uri: data.edges[0].node.image.uri }
+		this.timer = setTimeout(
+      		() => {		
+	      		CameraRoll.getPhotos(fetchParams)
+			      .then((data) => {
+			          // console.log(data);
+			          this.setState({
+			            photoSource: {uri: data.edges[0].node.image.uri }
 
-		          });
-		          this.setState({
-		          	source: data.edges[0].node.image.uri
-		          });
-		      })
-		      .catch((error) => console.log('getPhotos error: ' + error.message))
-		      .done(() => {
-		        console.log(this.state.source);
-		        console.log('done');
-		      });
+			          });
+			          this.setState({
+			          	source: data.edges[0].node.image.uri
+			          });
+			      })
+			      .catch((error) => console.log('getPhotos error: ' + error.message))
+			      .done(() => {
+			        console.log(this.state.source);
+			        console.log('done');
+			      });
+		  },
+      	100
+    	);
+
+
 	}
 
 	componentWillUnmount(){
 		this.setState({photoSource: null});
+		this.timer && clearTimeout(this.timer);
 	}
 
 	onPressSave(){
-		//console.log(this.state.source);
-		/*
-		var cropData = this.state.ImgCropData;
-		RCTImageEditingManager.cropImage(this.state.source,
-			cropData, 
-			this.onSuccess.bind(this), 
-			(error) => {
-        		console.warn(error)
-      	});*/
 
 		ReactNativeImageCropping
 		    .cropImageWithUrlAndAspect(this.state.source, ReactNativeImageCropping.AspectRatioSquare)

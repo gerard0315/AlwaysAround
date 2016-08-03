@@ -1,11 +1,11 @@
 'use strict';
 
-var React = require('react-native');
-var {AppRegistry, Navigator, StyleSheet,Text,View} = React;
+import React from 'react';
+import {AppRegistry, Navigator, StyleSheet,Text,View} from 'react-native';
 import {Scene, Reducer, Router, Switch, TabBar, Modal, Schema, Actions} from 'react-native-router-flux'
 import AlwaysAroundApp from './AlwaysAround.js';
 //import LoginPage from './components/LoginPage.js';
-import LoginPage from './components/Login.js'
+//import LoginPage from './components/Login.js'
 import MainPage from './components/MainPage.js';
 //import AddDog from './components/newDogPage.js';
 import MyDogs from './components/dogsPage.js';
@@ -23,11 +23,9 @@ import CameraView from './components/Camera.js';
 import CameraRollPage from './components/CameraRollPageView.js';
 import ImageCropping from './components/ImageCrop.js';
 import EditDog from './components/editDogPage.js';
-
-
-var {
-  AppRegistry
-} = React;
+import ConfirmationPage from './components/confirmPage.js';
+import SelectPaymentPage from './components/chosePayment.js';
+import InServicePage from './components/InService.js';
 
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
@@ -60,6 +58,9 @@ class AlwaysAround extends React.Component{
                     <Scene key='cameraRoll' component = {CameraRollPage} panHandlers = {null}/>
                     <Scene key='crop' component = {ImageCropping} panHandlers = {null}/>
                     <Scene key='editDogs' component = {EditDog} panHandlers = {null}/>
+                    <Scene key='confirm' component = {ConfirmationPage} panHandlers ={null}/>
+                    <Scene key='selectPayment' component = {SelectPaymentPage} panHandlers ={null}/>
+                    <Scene key='inService' component = {InServicePage} panHandlers = {null}/>
 	            </Scene>
             </Scene>
         </Router>;

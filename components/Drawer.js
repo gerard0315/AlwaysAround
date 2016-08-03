@@ -1,8 +1,8 @@
 'use strict';
 import {Actions} from 'react-native-router-flux';
-
-import React, {
-  Component,
+import React, {Component, propTypes} from 'react';
+import {
+  //Component,
   StyleSheet,
   MapView,
   Text,
@@ -22,7 +22,7 @@ import React, {
 
 var ControlPanel = React.createClass({
 	propTypes: {
-    	closeDrawer: PropTypes.func.isRequired
+    	closeDrawer: React.PropTypes.func.isRequired
   	},
 
 	getInitialState: function(){
@@ -245,7 +245,7 @@ var ControlPanel = React.createClass({
 	)}
 });
 
-var styles = React.StyleSheet.create({
+var styles = StyleSheet.create({
 	menuContainer:{
     flexDirection: 'column',
     flex: 1,
