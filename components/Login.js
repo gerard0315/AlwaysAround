@@ -1,10 +1,8 @@
 'use strict';
 import React, {Component, propTypes} from 'react';
-//import {StyleSheet, Text, View, TouchableOpacity, Image, Navigator, ListView, TextInput, Animated, Easing, ScrollView} from 'react-native';
-//var React = require('react-native');
-//var Dimensions = require('Dimensions');
-var windowSize = Dimensions.get('window');
 import {Actions} from 'react-native-router-flux';
+import Storage from 'react-native-storage';
+import { AsyncStorage } from 'react-native';
 
 import {
   StyleSheet,
@@ -18,8 +16,11 @@ import {
   ScrollView,
   DeviceEventEmitter,
   StatusBar,
-  Dimensions
+  Dimensions,
+  AlertIOS,
 } from 'react-native';
+
+let windowSize = Dimensions.get('window');
 
 var LoginPage = React.createClass({
 
@@ -27,16 +28,17 @@ var LoginPage = React.createClass({
 	  return {
 	    username: '',
 	    password: '',
-      needToRegister: true,
-      loginHide: false,
-      registerHide: true,
-      firstVist: true,
+      needToRegister: false,
+      loginHide: true,
+      registerHide: false,
+      firstVist: false,
         
       topBarOpacity: new Animated.Value(0),
       logoSlidePosition: new Animated.Value(219),
       loginSlideUpPosition: new Animated.Value(400),
       loginSlideHorizontalPosition: new Animated.Value(0),
       orLineSlideUpPosition: new Animated.Value(11),
+      lineOpacity: 1,
 
       registerSlideHoriziontalPosition: new Animated.Value(-500),
       firstName: '',
@@ -50,37 +52,35 @@ var LoginPage = React.createClass({
   },
 
   componentDidMount: function(){
-
     StatusBar.setHidden(false, null);
+    this.setState({lineOpacity: 1});
+    this.setState({needToRegister: false});
+    Animated.timing(this.state.topBarOpacity, {
+        toValue: 1,
+        duration: 400,
+     }).start();
 
-      Animated.timing(this.state.topBarOpacity, {
-          toValue: 1,
-          duration: 400,
+
+    Animated.timing(this.state.logoSlidePosition, {
+        toValue: 60, // 目标值
+        duration: 400,
+        delay: 400,
+        easing: Easing.linear, // 动画时间
+      }).start();
+      
+    Animated.timing(this.state.loginSlideUpPosition, {
+        toValue: 60, // 目标值
+        duration: 400,
+        delay: 400,
+        easing: Easing.linear, // 动画时间
       }).start();
 
-
-      Animated.timing(this.state.logoSlidePosition, {
-          toValue: 60, // 目标值
-          duration: 400,
-          delay: 400,
-          easing: Easing.linear, // 动画时间
-        }).start();
-      
-      Animated.timing(this.state.loginSlideUpPosition, {
-          toValue: 60, // 目标值
-          duration: 400,
-          delay: 400,
-          easing: Easing.linear, // 动画时间
-        }).start();
-
-      Animated.timing(this.state.loginSlideHorizontalPosition, {
-          toValue: 19, // 目标值
-          duration: 0,
-          //delay: 400,
-          easing: Easing.linear, // 动画时间
-        }).start();
-
-
+    Animated.timing(this.state.loginSlideHorizontalPosition, {
+        toValue: 19, // 目标值
+        duration: 0,
+        //delay: 400,
+        easing: Easing.linear, // 动画时间
+      }).start();
   },
 
 
@@ -91,7 +91,6 @@ var LoginPage = React.createClass({
         y: 20,
       }
     });
-
   },
 
   textInputBlur(event){
@@ -104,11 +103,111 @@ var LoginPage = React.createClass({
   },
 
   onPressNext: function(){
-    Actions.home(); 
+    console.log(this.state.needToRegister);
+    if (this.state.needToRegister === false){   
+      console.log(this.state.username);
+      console.log(this.state.password);                                                                        
+      fetch("http://alwaysaround.me:8081/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "email": this.state.username,
+          "password": this.state.password
+        }) 
+       // "email="+this.state.username+"&password="+this.state.password
+      }).then((response) => response.json())
+        .then((responseData)=> {
+          console.log(responseData);
+          console.log(responseData.data.user);
+          if(responseData.status.code === 2004){
+            //console.log('SUCCESS');
+            try {
+              storage.save({
+                  key: 'loginState',  
+                  rawData: { 
+                    userid: this.state.username,
+                    first_name: responseData.data.user.first_name,
+                    last_name: responseData.data.user.last_name,
+                    phone_no: responseData.data.user.phone_no,
+                    token: responseData.data.token,
+                  },
+                expires: null
+              });
+              storage.save({
+                key: 'dogslist',
+                rawData:{
+                  dogs: responseData.data.user.pets
+                },
+                expies: null
+              });
+              Actions.home({data:{
+                firstName: responseData.data.user.first_name,
+                lastName: responseData.data.user.last_name,
+                token: responseData.data.token,
+                //pets:responseData.data.user.pets
+              }});
+            } catch (error) {
+              console.log(error);
+              AlertIOS.alert(
+                error.message
+                );
+            }
+          }else if(responseData.status.code === 2003){
+            AlertIOS.alert(
+              'Incorrect Password',
+            );
+          }else if(responseData.status.code === 2002){
+            AlertIOS.alert(
+              'Email Is Not Registered',
+            );
+          }else if(responseData.status.code === 2014){
+            AlertIOS.alert(
+              'Email Already Registered',
+            );
+          }else{
+            AlertIOS.alert(
+              'Unknown Error'
+            );
+          };
+          
+        }).done(); 
+    }else if(this.state.needToRegister === true){
+      console.log("registering");
+      Actions.verify({data: {phoneNumber: this.state.phoneNumber}});
+      
+      fetch("http://alwaysaround.me:8081/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body:JSON.stringify({
+          "first_name": this.state.firstName,
+          "last_name": this.state.lastName,
+          "email": this.state.registerEmail,
+          "password": this.state.registerPassword,
+          "phone_no": this.state.phoneNumber
+        })
+      }).then((response) => response.json())
+        .then((responseData)=> {
+          console.log(responseData);
+          if(responseData.status.code === 2001){
+            Actions.verify({data: {phoneNumber: this.state.phoneNumber}});
+          }else{
+            AlertIOS.alert("ERROR!!");
+          }
+          
+        }).done();
+        //Actions.verify({data: {phoneNumber: this.state.phoneNumber}});
+        
+    }
+    
   },
 
+
   switchScene: function(){
-    this.setState({needToRegister: !this.state.needToRegister});
+    console.log("REGISTER?" + this.state.needToRegister);
     if (this.state.needToRegister === false){
       Animated.timing(this.state.loginSlideHorizontalPosition, {
           toValue: 600, // 目标值
@@ -137,11 +236,15 @@ var LoginPage = React.createClass({
           delay: 200,
           easing: Easing.linear, // 动画时间
         }).start();
+      this.setState({lineOpacity: 0});
 
       this.setState({
           username: '',
           password: '',
       });
+      this.setState({needToRegister: !this.state.needToRegister});
+
+
     }else if((this.state.needToRegister === true)){
       Animated.timing(this.state.loginSlideHorizontalPosition, {
           toValue: 19, // 目标值
@@ -178,8 +281,15 @@ var LoginPage = React.createClass({
           phoneNumber: '',
           registerPassword: '',
       });
-    };
 
+      this.setState({needToRegister: !this.state.needToRegister});
+
+      this.timer = setTimeout(
+        () => {
+          this.setState({lineOpacity: 1});
+        }, 300);
+
+    };
   },
 
   onUserNameInput: function(event){
@@ -211,14 +321,14 @@ var LoginPage = React.createClass({
   },
 
 	render: function() {
-
 		return(
 			<ScrollView style={styles.container} scrollEnabled={false} contentOffset = {this.state.contentOffset}>
 				<Image style={styles.bg} source={require('../ios/BG.png')} />
+
         <Animated.View style = {[styles.loginRegitser, {opacity: this.state.topBarOpacity}]}>
 				  <TouchableOpacity style = {styles.leftButtonContainer}
               			onPress={this.switchScene}>
-                    <Text style = {styles.leftButton}>{(this.state.needToRegister) ?  "NEW USER":"EXISTING USER" }</Text>
+                    <Text style = {styles.leftButton}>{(this.state.needToRegister) ?  "EXISTING USER":"NEW USER" }</Text>
           </TouchableOpacity>
           <TouchableOpacity style = {styles.rightButtonContainer}
                     onPress={this.onPressNext}>
@@ -228,6 +338,7 @@ var LoginPage = React.createClass({
         <Animated.View style={[styles.logoContainer, {marginTop: this.state.logoSlidePosition}]}>
           <Image source={require('../ios/logo.png')}/>
         </Animated.View>
+
         <Animated.View style = {[styles.loginContainer, {marginTop: this.state.loginSlideUpPosition}, {marginLeft: this.state.loginSlideHorizontalPosition}]}>
           <View style = {styles.loginInputsContainer}>
             <Text style = {styles.emailText}>Email</Text>
@@ -237,7 +348,7 @@ var LoginPage = React.createClass({
               keyboardType = {'email-address'}
               />
           </View>
-          <View style = {styles.lineContainer}/>
+          <View style = {[styles.lineContainer, {opacity: this.state.lineOpacity}]}/>
           <View style = {styles.loginInputsContainer}>
             <Text style = {styles.passwordText}>Password</Text>
             <TextInput style = {styles.passwordInput}
@@ -398,7 +509,6 @@ var styles = StyleSheet.create({
 	container: {
     flexDirection: 'column',
     flex: 1,
-      //backgroundColor: '#F58690',
     },
 
     bg: {
@@ -448,7 +558,7 @@ var styles = StyleSheet.create({
     },
 
     loginContainer:{
-      marginLeft: 19,
+      //marginLeft: 19,
       marginRight: 19,
       marginTop: 56,
       height: 73,
@@ -465,8 +575,8 @@ var styles = StyleSheet.create({
       backgroundColor: '#B6B6B6',
       width: 337,
       height: 1,
-      alignSelf: 'center',
-      justifyContent: 'center'
+      //alignSelf: 'center',
+      //justifyContent: 'center'
     },
 
     loginInputsContainer:{

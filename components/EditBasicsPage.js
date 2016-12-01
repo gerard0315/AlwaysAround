@@ -1,8 +1,11 @@
 'use strict'
 import React, {Component, PropTypes} from 'react';
 import {Actions} from 'react-native-router-flux';
-import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS, TextInput} from 'react-native';
+import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS, TextInput, CameraRoll} from 'react-native';
 import SimplePicker from 'react-native-simple-picker';
+import Storage from 'react-native-storage';
+import { AsyncStorage } from 'react-native';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const optionYears = ['2016', '2015', '2014', '2013', '2012', '2011', '2010'];
 const optionSizes = ['Small, 0-20lb (0-10kg)', 'Medium, 21-40lb (10-20kg)', 'Large, 41-80lb (20-40kg)', 'Extra Large, 81lb and above (40kg and above)']
@@ -10,12 +13,14 @@ const optionSizes = ['Small, 0-20lb (0-10kg)', 'Medium, 21-40lb (10-20kg)', 'Lar
 export default class EditBasics extends Component{
     static propTypes = {
         data: React.PropTypes.object.isRequired,
+        onNext: React.PropTypes.func,
+        onChosenPic: React.PropTypes.func,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-        avatarSource: require('../ios/default.png'),
+        avatarSource: "",
         maleBgColor: '#62C6C6',
         femaleBgColor: 'white',
         maleTextColor: 'white',
@@ -23,43 +28,65 @@ export default class EditBasics extends Component{
         source_v: null,
         source_s: null,
         source_f: null,
-        name: this.props.data.Name,
-        gender: this.props.data.Gender,
-        breed: this.props.data.Breed,
-        yearOfBirth: this.props.data.YoB,
-        dogSize: this.props.data.Size,   
-        _Vaccination: this.props.data.Vacination,
-        _Spay: this.props.data.Spayed,
-        _Friendly: this.props.data.Friendly,
+        name: this.props.data.name,
+        gender: this.props.data.gender,
+        breed: this.props.data.breed,
+        yearOfBirth: this.props.data.yob,
+        dogSize: this.props.data.size,   
+        _Vaccination: this.props.data.vac_uptodate,
+        _Spay: this.props.data.spayed,
+        _Friendly: this.props.data.friendly_to_dogs,
+        description: "",
         selectedYearValue: null,
         selectedYoB: false,
         selectedSizeValue: null,
         selectedSize: false,
+        token: "",
+        genderText: "",
+        n: 0,
+        disNextButton: true,
     	};
   	}
 
+    componentDidMount(){
+
+    }
+
     componentWillMount(){
-      if (this.state.gender === 'Male'){
+      if (this.state.gender === 'male'){
         this.setState({male: true});
         
-      }else if(this.state.gender === 'Female'){
+      }else if(this.state.gender === 'female'){
         this.setState({male: false});
+      }else{
+        this.setState({male: true});
       }
 
       if (this.state._Vaccination === false){
         this.setState({source_v: require('../ios/BLANK_ICON.png')});
       }else if(this.state._Vaccination === true){
         this.setState({source_v: require('../ios/check_green.png')});
+      }else{
+        this.setState({_Vaccination: false})
+        this.setState({source_v: require('../ios/BLANK_ICON.png')});
       }
+
       if (this.state._Spay === false){
         this.setState({source_s: require('../ios/BLANK_ICON.png')});
       }else if(this.state._Spay === true){
         this.setState({source_s: require('../ios/check_green.png')});
+      }else{
+        this.setState({_Spay: false})
+        this.setState({source_s: require('../ios/BLANK_ICON.png')});
       }
+
       if (this.state._Friendly === false){
         this.setState({source_f: require('../ios/BLANK_ICON.png')});
       }else if(this.state._Friendly === true){
         this.setState({source_f: require('../ios/check_green.png')});
+      }else{
+        this.setState({_Friendly: false})
+        this.setState({source_f: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.yearOfBirth === null){
@@ -69,57 +96,169 @@ export default class EditBasics extends Component{
         this.setState({selectedYoB: true});
       }
 
-      if (this.state.dogSize === null){
+      if (this.state.dogSize === ""){
         this.setState({selectedSizeValue: "Dog's Size*"});
       }else{
         this.setState({selectedSizeValue: this.state.dogSize});
         this.setState({selectedSize: true});
       }
 
+      if(this.props.data.avatar === ""){
+        this.setState({avatarSource: require('../ios/default.png')});
+      }else{
+        this.setState({avatarSource: {uri: "http://alwaysaround.me:8081/public/img/" + this.props.data.avatar}})
+      }
+
     }
   
     onPressV(event){
-      this.setState({ _Vaccination: !this.state._Vaccination});
-      this.setState({ source_v: (this.state._Vaccination) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
-      //console.log(this.state._Vaccination);
+      console.log("Vacination is:" + this.state._Vaccination);
+      
+      if(this.state._Vaccination === true){
+        console.log("changing to FALSE");
+        this.setState({source_v: require('../ios/BLANK_ICON.png')});
+        this.setState({ _Vaccination: false})
+      }else{
+        console.log("changing to TRUE");
+        this.setState({source_v: require('../ios/check_green.png')});
+        this.setState({ _Vaccination: true});
+      }
+      //this.setState({ source_v: (this.state._Vaccination) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
     }
 
     onPressS(event){
-      this.setState({ _Spay: !this.state._Spay});
-      this.setState({ source_s: (this.state._Spay) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
-          console.log(this.state.dogName);
-          console.log('name above');
+      if(this.state._Spay === true){
+        console.log("changing to FALSE");
+        this.setState({source_s: require('../ios/BLANK_ICON.png')});
+        this.setState({ _Spay: false})
+      }else{
+        console.log("changing to TRUE");
+        this.setState({source_s: require('../ios/check_green.png')});
+        this.setState({ _Spay: true});
+      }
+      //this.setState({ _Spay: !this.state._Spay});
+      //this.setState({ source_s: (this.state._Spay) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
     }
 
     onPressF(event){
-      this.setState({ _Friendly: !this.state._Friendly});
-      this.setState({ source_f: (this.state._Friendly) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state._Friendly === true){
+        console.log("changing to FALSE");
+        this.setState({source_f: require('../ios/BLANK_ICON.png')});
+        this.setState({ _Friendly: false})
+      }else{
+        console.log("changing to TRUE");
+        this.setState({source_f: require('../ios/check_green.png')});
+        this.setState({ _Friendly: true});
+      }
+      //this.setState({ _Friendly: !this.state._Friendly});
+      //this.setState({ source_f: (this.state._Friendly) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
       //console.log(this.state._Friendly);
     }
 
     onPressMale(){
       this.setState({male: true});
+      this.setState({genderText: 'male'});
     }
 
     onPressFemale(){
       this.setState({male: false});
+      this.setState({genderText: 'female'});
+    }
+
+    onChangeDescription(event){
+      this.setState({description: event.nativeEvent.text});
+    }
+
+    onChangenName(event){
+      this.setState({name: event.nativeEvent.text});
+    }
+
+    onChangenBreed(event){
+      this.setState({breed: event.nativeEvent.text});
+    }
+
+    onPressSave(){
+      var tempSize = this.state.selectedSizeValue.split("(");
+      var sizeText = tempSize[0];
+      var label = 1;
+      var genderText = ""
+      if (this.state.male === true){
+        genderText = "male";
+      }else{
+        genderText = "female";
+      }
+
+      var basic= {
+          name: this.state.name,
+          description: this.state.description,
+          gender: genderText,
+          yob: Number(this.state.selectedYearValue),
+          breed: this.state.breed,
+          vac_uptodate: this.state._Vaccination,
+          spayed: this.state._Spay,
+          friendly_to_dogs: this.state._Friendly,
+          size: sizeText}
+
+      this.props.onNext(label, basic);
+
+    }
+
+    onPressAvatar(){
+      ImagePicker.openPicker({
+        width: 500,
+        height: 500,
+        cropping: true
+      }).then(image => {
+        //console.log(image.path);
+        this.setState({avatarSource: {uri: image.path}});
+        this.props.onChosenPic(image.path);
+      });
+    }
+
+    renderSaveButton(){
+      console.log("checking render");
+      if (this.state.name != "" && this.state.breed != "" && this.state.selectedSize != false && this.state.selectedYoB != false){
+        //this.setState({activeNextButton: false});
+        return(
+          <TouchableOpacity 
+            activeOpacity = {0.8}
+            disabled = {false}
+            onPress = {this.onPressSave.bind(this)}>
+            <Image source = {require('../ios/next.png')}/>
+          </TouchableOpacity>
+          )
+      }else{
+        console.log("no data render gray");
+        //this.setState({activeNextButton: true});
+        return(
+          <TouchableOpacity 
+            activeOpacity = {0.8}
+            disabled = {false}
+            onPress = {this.onPressSave.bind(this)}>
+            <Image source = {require('../ios/nect_incom.png')}/>
+          </TouchableOpacity>
+          )
+      }
     }
 
     render(){
+      console.log("rendering");
       return(
       <View style = {styles.container}>
         <View style = {styles.shadow}/>
         <Image style = {styles.bg} source = {require('../ios/BG.png')}/>
         <View style = {{marginTop: 0, marginLeft: 0, width: 375, height: 5, backgroundColor: 'transparent'}}/>
         <View style = {styles.avatarName}>
-          <TouchableOpacity style = {styles.avatarContainer}>
+          <TouchableOpacity style = {styles.avatarContainer}
+            onPress = {this.onPressAvatar.bind(this)}>
             <Image style = {styles.avatar} source = {this.state.avatarSource}/>
           </TouchableOpacity>
           <View style = {styles.nameInputContainer}>
             <TextInput style = {[styles.infoInput, {marginLeft: 10, color: '#727272'}]}
               value = {this.state.name}
               placeholder = {"Dog's Name*"}
-              placeholderColor= {'#B6B6B6'}/>
+              placeholderColor= {'#B6B6B6'}
+              onChange = {this.onChangenName.bind(this)}/>
           </View>          
         </View>
         <View style = {styles.genderChoice}>
@@ -139,7 +278,8 @@ export default class EditBasics extends Component{
             <TextInput style = {[styles.infoInput, {marginLeft: 10, color: '#727272',}]}
               value = {this.state.breed}
               placeholder = {"Breed*"}
-              placeholderColor= {'#B6B6B6'}/>
+              placeholderColor= {'#B6B6B6'}
+              onChange = {this.onChangenBreed.bind(this)}/>
         </View>
         <View style = {styles.infoInputContainer}>
             <Text style = {[styles.infoInput, {backgroundColor: 'transparent', marginLeft: -165, color: (this.state.selectedYoB)? '#727272':'#B6B6B6'}]} onPress = {() => {this.refs.pickerYear.show();}}>{this.state.selectedYearValue}</Text>
@@ -188,11 +328,13 @@ export default class EditBasics extends Component{
             multiline = {true}
             placeholder = " Briefly Describe Your Dog"
             placeholderTextColor = '#B6B6B6'
+            value = {this.state.description}
+            onChange = {this.onChangeDescription.bind(this)}
             />
-        <TouchableOpacity style = {styles.buttonSave}
-          activeOpacity = {0.8}>
-          <Image source = {require('../ios/save.png')}/>
-        </TouchableOpacity>
+
+        <View style = {styles.buttonSave}>
+          {this.renderSaveButton()}
+        </View>
 
         <SimplePicker
           ref={'pickerYear'}
@@ -295,9 +437,10 @@ var styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'SanFranciscoDisplay-Medium',
     //color: '#727272',
-    //marginLeft: 10,
+    //paddingLeft: 10,
     height: 20,
     width: 150,
+    //width: 300,
     borderRadius: 2,
     //backgroundColor: 'red'
   },
@@ -403,6 +546,8 @@ var styles = StyleSheet.create({
     left: 19,
     right: 19,
     bottom: 10,
+    borderRadius: 6,
+    backgroundColor: 'white'
   },
 
   dropdown: {

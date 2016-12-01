@@ -1,7 +1,7 @@
 'use strict'
 
 import React, {Component, PropTypes} from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import ScrollableTabView from 'react-native-scrollable-tab-view';
 import Dimensions from 'Dimensions';
 import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS} from 'react-native';
@@ -12,6 +12,7 @@ import HealthPage from './health.js';
 export default class DogDetails extends Component{
     static propTypes = {
         Data: React.PropTypes.object.isRequired,
+        token: React.PropTypes.string,
     }; 
 
     constructor(props){
@@ -20,33 +21,41 @@ export default class DogDetails extends Component{
 
     	};
   	}
+    
+    onBack(){
+      Actions.myDogs({type: ActionConst.BACK});
+    }
 
-	render(){
-		return(
-    	<View style = {styles.container}>
-	      <View style = {styles.topBarContainer}>
-	        <TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-	          onPress = {Actions.pop}>
-	          <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
-	            source = {require('../ios/goBack.png')}/>
-	        </TouchableOpacity>
-	        <Text style = {styles.topBarText}>{this.props.Data.Basics.Name}</Text>
-	      </View>
-	      	<View style = {styles.tabBarPadding}/>
-			<ScrollableTabView
-            tabBarPosition = 'overlayTop'
-            tabBarUnderlineColor = '#FCC31B'
-            tabBarBackgroundColor = '#EA4D4E'
-		     	  tabBarActiveTextColor = '#FCC31B'
-		      	tabBarInactiveTextColor = 'white'
-		      	tabBarTextStyle = {styles.tabBarText}>
-     		<BasicsPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'transparent'}} tabLabel='Basics'/>
-				<BehavioursPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Behaviours'/>
-				<HealthPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'white'}} tabLabel='Health'/>
-			</ScrollableTabView>
-	    </View>
-			)
-	}
+    componentDidMount(){
+      console.log('token is: ' + this.props.token)
+    }
+
+  	render(){
+  		return(
+      	<View style = {styles.container}>
+  	      <View style = {styles.topBarContainer}>
+  	        <TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
+  	          onPress = {this.onBack}>
+  	          <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
+  	            source = {require('../ios/goBack.png')}/>
+  	        </TouchableOpacity>
+  	        <Text style = {styles.topBarText}>{this.props.Data.basic.name}</Text>
+  	      </View>
+  	      	<View style = {styles.tabBarPadding}/>
+  			<ScrollableTabView
+              tabBarPosition = 'overlayTop'
+              tabBarUnderlineColor = '#FCC31B'
+              tabBarBackgroundColor = '#EA4D4E'
+  		     	  tabBarActiveTextColor = '#FCC31B'
+  		      	tabBarInactiveTextColor = 'white'
+  		      	tabBarTextStyle = {styles.tabBarText}>
+       		<BasicsPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'transparent'}} token = {this.props.token} tabLabel='Basics'/>
+  				<BehavioursPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'white'}} token = {this.props.token} tabLabel='Behaviours'/>
+  				<HealthPage data ={this.props.Data} style = {{marginTop: 24, backgroundColor: 'white'}} token = {this.props.token} tabLabel='Health'/>
+  			</ScrollableTabView>
+  	    </View>
+  			)
+  	}
 
 }
 

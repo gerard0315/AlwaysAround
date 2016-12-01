@@ -1,6 +1,8 @@
 'use strict';
 import {Actions} from 'react-native-router-flux';
 import React, {Component, propTypes} from 'react';
+import Storage from 'react-native-storage';
+import { AsyncStorage } from 'react-native';
 import {
   //Component,
   StyleSheet,
@@ -17,12 +19,12 @@ import {
   TouchableHighlight,
   StatusBar,
   ScrollView,
-  PropTypes,
 } from 'react-native';
 
 var ControlPanel = React.createClass({
 	propTypes: {
-    	closeDrawer: React.PropTypes.func.isRequired
+    	closeDrawer: React.PropTypes.func.isRequired,
+      data: React.PropTypes.object.isRequired,
   	},
 
 	getInitialState: function(){
@@ -44,6 +46,8 @@ var ControlPanel = React.createClass({
         settingsSource: require('../ios/settings.png'),
 	      helpColor: '#EA4D4E',
 	      helpTextColor: 'white',
+        userFirstName: "",
+        token: null
 	  };
 	},
 
@@ -62,7 +66,7 @@ var ControlPanel = React.createClass({
   openMyDogs: function(){
     StatusBar.setHidden(false, null);
     this.props.closeDrawer();
-    Actions.myDogs();
+    Actions.myDogs({data: this.props.data});
   },
 
   onPressInHistory: function(){
@@ -132,9 +136,10 @@ var ControlPanel = React.createClass({
   },
 
   openSettings: function(){
+    console.log("here" + this.props.userFirstName);
     StatusBar.setHidden(false, null);
-    this.props.closeDrawer();
-    Actions.settings();
+    //this.props.closeDrawer();
+    Actions.settings({data: this.props.data});
   },
 	
 	render(){
@@ -142,7 +147,7 @@ var ControlPanel = React.createClass({
           <View style = {styles.menuContainer}>
             <View style = {styles.avatarContainer}>
               <Image style = {styles.avatar}
-                source = {{uri: 'http://facebook.github.io/react/img/logo_og.png'}}
+                source = {{uri:'http://36.media.tumblr.com/c1ab83d6816fb7302a230d5ce9580446/tumblr_inline_o3bwh2h8z81sitizh_540.jpg'}}
                 />
               <View style = {{justifyContent: 'center', marginLeft: 15}}>
                 <Text style = {{
@@ -150,7 +155,7 @@ var ControlPanel = React.createClass({
                   fontFamily: 'SanFranciscoDisplay-Medium',
                   color: 'white',
                   textAlign: 'center'
-                  }}>Gerard</Text>
+                  }}>{this.props.data.firstName}</Text>
                 </View>
             </View>
             <Animated.View style={{height: 10, marginTop: 0, marginLeft: 0, backgroundColor: '#EA4D4E'}}/>

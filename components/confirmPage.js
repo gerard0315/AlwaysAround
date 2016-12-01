@@ -1,5 +1,5 @@
 'use strict';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import MapView from 'react-native-maps';
 import React, {Component, propTypes} from 'react';
 import {
@@ -244,6 +244,7 @@ export default class ConfirmationPage extends Component{
         delay: 5,
         easing: Easing.linear, // 动画时间
       }).start();
+
       this.animation();
       this.setState({title: '   Requsting'});
       this.setState({isRequesting: true});
@@ -251,7 +252,21 @@ export default class ConfirmationPage extends Component{
       this.timer = setTimeout(
           () => {
             this.setState({title: 'Confirmation'});
-            this.setState({isRequesting: false}); 
+            this.setState({isRequesting: false});
+            this.setState({showBackbutton: 1}); 
+            Animated.timing(this.state.requstingSlide, {
+              toValue: -150, // 目标值
+              duration: 10,
+              delay: 1,
+              easing: Easing.linear, // 动画时间
+            }).start();
+
+            Animated.timing(this.state.showRequesting, {
+              toValue: 0, // 目标值
+              duration: 10,
+              delay: 1,
+              easing: Easing.linear, // 动画时间
+            }).start();           
             Actions.inService({service: this.props.service, lng: this.props.lng, lat: this.props.lat, paymentType: this.props.paymentType, location: this.props.location})}, 
           5000); 
 
@@ -292,8 +307,6 @@ export default class ConfirmationPage extends Component{
   }
 
   componentWillUnmount(){
-    this.setState({title: 'Confirmation'});
-    this.setState({isRequesting: false}); 
     this.timer && clearTimeout(this.timer);
   }
 
@@ -342,7 +355,10 @@ export default class ConfirmationPage extends Component{
         time: this.props.time,
         paymentType: this.props.paymentType});
   }
-  
+
+  onBack(){
+    Actions.home({type: ActionConst.BACK});
+  }
 
   render(){
     return(
@@ -354,7 +370,7 @@ export default class ConfirmationPage extends Component{
           />
         <View style = {styles.TopBarContainer}>
         <Animated.View style ={{marginLeft: 19, marginTop: 35, height: 16, width: 16, opacity: this.state.showBackbutton}}>
-          <TouchableOpacity style = {{flex: 1}} onPress = {Actions.pop} disable = {this.state.isRequesting}>
+          <TouchableOpacity style = {{flex: 1}} onPress = {this.onBack} disable = {this.state.isRequesting}>
             <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
               source = {require('../ios/goBack.png')}/>
           </TouchableOpacity>

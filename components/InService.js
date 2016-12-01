@@ -1,9 +1,11 @@
 'use strict';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import MapView from 'react-native-maps';
 import React, {Component, propTypes} from 'react';
 import ControlPanel from './Drawer.js';
 import Drawer from 'react-native-drawer';
+import Communications from 'react-native-communications';
+
 import {
   StyleSheet,
   Text,
@@ -19,7 +21,8 @@ import {
   StatusBar,
   ScrollView,
   ActivityIndicator,
-  Dimensions
+  Dimensions,
+  Modal,
 } from 'react-native';
 
 var detail = [
@@ -92,24 +95,13 @@ export default class InServicePage extends Component{
       isShelter: this.props.service.onShelter,
       estTime: this.props.service.time,
       serviceType: null,
-      //dogNumber: this.props.infoData.length,
-      existSecond: false,
-      existThird: false,
-      existForth: false,
-      nameContainerHeight: new Animated.Value(0),
-      displayName: false,
-      displayNameOpacity: new Animated.Value(0),
-      confirmInfoSlide: new Animated.Value(19),
-      requstingSlide: new Animated.Value(-150),
-      showRequesting: new Animated.Value(0),
-      title: 'Confirmation',
-      isRequesting: false,
-      showBackbutton: new Animated.Value(1),
-      //lastFourDigit: 0,
       cardIcon: null,
-      slider: new Animated.Value(120),
+      cancelSlide: new Animated.Value(112),
       flag: false,
       drawerOpacity: 0,
+      modalVisible: false,
+      title: 'Service En Route',
+      titleOffSet: 70,
     };
   }
 
@@ -136,6 +128,20 @@ export default class InServicePage extends Component{
 
   componentDidMount(){
     this.setState({drawerOpacity: 1});
+    this.timer = setTimeout(
+        () => {
+      this.setState({title: "We're Waiting For You"});
+      this.setState({titleOffSet: 50});
+      Animated.timing(this.state.cancelSlide, {
+        toValue: 375, // 目标值
+        duration: 100,
+        easing: Easing.linear, // 动画时间
+      }).start();
+    }, 10000);
+  }
+
+  componentWillUnmount(){
+    this.timer && clearTimeout(this.timer);
   }
 
   openDrawer(){
@@ -168,11 +174,31 @@ export default class InServicePage extends Component{
     this.setState({drawerOpacity: 0});
     this.timer = setTimeout(
         () => {
-      Actions.pop();
+      Actions.home({type: ActionConst.RESET});
     }, 5);
   }
 
+  onDismiss(){
+    this._setModalVisible(false);
+  }
+
+  _setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
+
+  onPressCall(){
+    this._setModalVisible(true);
+  }
+
+  callDriver(){
+    this._setModalVisible(false);
+    Communications.phonecall('07957050343', true);
+  }
+
   render(){
+    var modalBackgroundStyle = {
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    };
     return(
       <View style = {styles.container}>
       <Drawer
@@ -199,6 +225,28 @@ export default class InServicePage extends Component{
           main: {opacity:(2-ratio)/2 }
         })}
         >
+        <Modal animationType={'fade'}
+              transparent={true}
+              visible={this.state.modalVisible}
+              onRequestClose={() => {this._setModalVisible(false)}}>
+              <View style = {[styles.modalContainer, modalBackgroundStyle]}>
+                <TouchableOpacity style = {styles.dismissPaddingTop} onPress = {() => {this._setModalVisible(false)}}>
+                </TouchableOpacity>
+                <View style = {styles.callModal}>
+                  <TouchableOpacity style = {{marginTop: 0, marginLeft: 0, height: 42, width: 260, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}
+                    onPress = {this.callDriver.bind(this)}> 
+                    <Text style = {[styles.modalText, {color: '#62C6C6'}]}>CALL</Text>
+                  </TouchableOpacity>
+                  <View style = {{height: 1, marginLeft: 0, marginTop: 0, width: 260, backgroundColor: '#727272'}}/>
+                  <TouchableOpacity style = {{marginTop: 0, marginLeft: 0, height: 42, width: 260, backgroundColor: 'transparent', justifyContent: 'center', alignItems: 'center'}}
+                    onPress = {() => {this._setModalVisible(false)}}> 
+                    <Text style = {[styles.modalText, {color: '#727272'}]}>CANCEL</Text>
+                  </TouchableOpacity>
+                </View>
+                <TouchableOpacity style = {styles.dismissPaddingBottom} onPress = {() => {this._setModalVisible(false)}}>
+                </TouchableOpacity>
+              </View>
+        </Modal>
           <MapView
               style={styles.map}
               //showsUserLocation={true}
@@ -215,21 +263,24 @@ export default class InServicePage extends Component{
             </TouchableOpacity>
             <Text style = {{
                 marginTop: 30,
-                marginLeft: 70,
+                marginLeft: this.state.titleOffSet,
                 color: 'white',
                 fontSize: 20,
                 fontFamily: 'SanFranciscoDisplay-Medium',
                 backgroundColor: 'transparent',
-            }}>Service En Route</Text>
+            }}>{this.state.title}</Text>
           </View>
           <View style = {styles.selectService}>
-          <View style = {styles.serviceDetail}>
-            <Text style = {[styles.serviceType, {color: '#FFC927'}]}>{this.state.serviceType}</Text>
-            <Text style = {[styles.estimatedTime, {color: '#FFC927'}]}>{this.state.estTime + ' min'}</Text>
-            <Image style = {{height: 35, marginTop: 2, alignSelf: 'center'}}
-              source = {this.state.serviceImage}/>
+            <View style = {styles.serviceDetail}>
+              <Text style = {[styles.serviceType, {color: '#FFC927'}]}>{this.state.serviceType}</Text>
+              <Text style = {[styles.estimatedTime, {color: '#FFC927'}]}>{this.state.estTime + ' min'}</Text>
+              <Image style = {{height: 35, marginTop: 2, alignSelf: 'center'}}
+                source = {this.state.serviceImage}/>
+            </View>
+            <View style = {styles.platePadding}>
+              <Text style = {styles.plateNumber}>FG64XUL</Text>
+            </View>
           </View>
-        </View>
         <View style = {{
           position: 'absolute',
           top: 295.5,
@@ -239,6 +290,36 @@ export default class InServicePage extends Component{
           width: 50
           }}>
           <Image style = {{marginTop:0, marginLeft: 0, width: 50, height: 50, resizeMode: 'stretch'}} source = {require('../ios/MapMarker.png')}/>
+        </View>
+        <Animated.View style = {[styles.cancelInfo, {left: this.state.cancelSlide}]}>
+          <Text style = {styles.cancelText}>{"FREE CANCELATION" + "\n" + "IN 5 MINUTES"}</Text>
+        </Animated.View>
+        <View style = {styles.driverInfo}>
+          <View style = {styles.driverAvatar}>
+          </View>
+          <View style = {styles.ratingBox}>
+            <Text style = {styles.rating}>4.4</Text>
+            <View style = {{marginLeft: 0, width:1, height: 12, backgroundColor: '#727272'}}/>
+            <Image style = {{marginTop: 0, marginLeft: 1, width: 10, height: 10, resizeMode: 'stretch', alignSelf: 'center'}} source = {require('../ios/Star.png')}/>
+          </View>
+          <View style = {styles.infoDriver}>
+            <View style = {{marginLeft: 0, marginTop: 0, width: 92, height: 46, justifyContent: 'center'}}>
+              <Text style = {styles.infoText}>Baetylus</Text>
+            </View>
+            <View style = {{marginLeft: 0, height: 26, width: 1, backgroundColor: '#727272'}}/>
+            <TouchableOpacity style = {{marginLeft: 0, marginTop: 0, width: 71, height: 46, justifyContent: 'center'}} onPress = {this.onPressCall.bind(this)}>
+              <Text style = {styles.infoText}>Contact</Text>
+            </TouchableOpacity>
+            <View style = {{marginLeft: 0, height: 26, width: 1, backgroundColor: '#727272'}}/>
+          <TouchableOpacity style = {{marginTop: 0, marginLeft: 0, width: 120, height: 46, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}} activeOpacity = {0.9}
+            >
+            <Image style = {{marginTop: 0, marginLeft: 0, height: 20, width: 34}}
+              source = {this.state.cardIcon}/>
+            <Text style = {[styles.infoText, {color: '#727272', marginLeft: 6}]}>{detail[this.props.paymentType - 1].detail.card_number.substr(detail[this.props.paymentType - 1].detail.card_number.length - 4)}</Text>
+            <Image style = {{marginTop: 0, marginLeft: 6, height: 8, width: 13, resizeMode: 'stretch'}}
+              source = {require('../ios/payment_down.png')}/>
+          </TouchableOpacity>
+          </View>
         </View>
         <View style = {styles.pickUpPadding}/>
         <View style = {styles.pickUpLocationContainer}>
@@ -325,6 +406,7 @@ var styles = StyleSheet.create({
     right: 0,
     height: 100,
     alignItems: 'center',
+    justifyContent: 'center',
     opacity: 0.95,
     shadowRadius: 0.6,
     shadowOpacity: 0.2,
@@ -337,8 +419,16 @@ var styles = StyleSheet.create({
     height: 95,
     width: 120,
     flexDirection: 'column',
-    justifyContent: 'center',
+    //justifyContent: 'center',
     //backgroundColor: 'white'
+  },
+
+  plateNumber:{
+    textAlign: 'center',
+    fontSize: 12,
+    fontFamily: 'SanFranciscoDisplay-Regular',
+    color: '#727272',
+    backgroundColor: 'transparent',
   },
 
   serviceType: {
@@ -353,6 +443,20 @@ var styles = StyleSheet.create({
     paddingTop: -1,
     fontFamily: 'SanFranciscoDisplay-Regular',
     textAlign: 'center'
+  },
+
+  platePadding:{
+    position: 'absolute',
+    bottom: 4,
+    left: 159,
+    height: 14,
+    width: 57,
+    borderRadius: 1,
+    backgroundColor: 'white',
+    shadowRadius: 0.8,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
   },
 
   pickUpPadding: {
@@ -389,5 +493,137 @@ var styles = StyleSheet.create({
     opacity: 0.95,
     //backgroundColor: 'white'
   },
+
+  driverInfo:{
+    position: 'absolute',
+    bottom: 110,
+    left: 19,
+    right: 19,
+    height: 52,
+    backgroundColor: 'transparent',
+    flexDirection: 'row'
+  },
+
+  driverAvatar:{
+    marginTop: 0, 
+    marginLeft: 0,
+    height: 46,
+    width: 46,
+    borderRadius: 23,
+    backgroundColor: 'white',
+
+  },
+
+  infoDriver:{
+    marginTop: 6, 
+    marginLeft: 6,
+    height: 46,
+    width: 285,
+    borderRadius: 6,
+    shadowRadius: 0.8,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    backgroundColor: 'white',
+    opacity: 0.8,
+    flexDirection: 'row',
+    shadowOffset: {width: 0, height: 0},
+    alignItems: 'center'
+  },
+
+  cancelInfo:{
+    position: 'absolute',
+    bottom: 162,
+    height: 46,
+    width: 151,
+    backgroundColor: '#62C6C6',
+    borderRadius: 2,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  cancelText:{
+    fontFamily: 'SanFranciscoDisplay-Medium',
+    fontSize: 14,
+    flexWrap: 'wrap',
+    //paddingTop: 5,
+    //paddingLeft: 10,
+    color: 'white',
+    backgroundColor: 'transparent',
+    textAlign: 'center'
+  },
+
+  infoText:{
+    fontFamily: 'SanFranciscoDisplay-Regular',
+    fontSize: 16,
+    color: '#727272',
+    textAlign: 'center'
+  },
+
+  ratingBox:{
+    position: 'absolute',
+    bottom: 0,
+    height: 12,
+    width: 34,
+    left: 6,
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    borderRadius: 1,
+    shadowRadius: 0.8,
+    shadowOpacity: 0.2,
+    shadowColor: 'black',
+    shadowOffset: {width: 0, height: 0},
+  },
+
+  rating:{
+    fontSize: 10,
+    fontFamily: 'SanFranciscoDisplay-Regular',
+    color: '#727272',
+    width: 21,
+    textAlign: 'center'
+  },
+
+  modalContainer:{
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,       
+  },
+
+  dismissPaddingTop:{
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    right: 0,
+    height: 291,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  dismissPaddingBottom:{
+    position: 'absolute',
+    left: 0,
+    top: 291+ 85,
+    right: 0,
+    height: 291,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  callModal:{
+    width: 260,
+    height: 85,
+    borderRadius: 6,
+    backgroundColor: 'white',
+    alignSelf: 'center',
+    flexDirection: 'column'
+  },
+
+  modalText:{
+    fontSize: 18,
+    fontFamily: 'SanFranciscoDisplay-Medium',
+    textAlign: 'center'
+  }
 
 });

@@ -8,18 +8,19 @@ import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, Lis
 export default class HealthPage extends Component{
     static propTypes = {
         data: React.PropTypes.object.isRequired,
+        token: React.PropTypes.string,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-    		onMeds: this.props.data.Health.OnMeds,
-    		allergies: this.props.data.Health.Allergies,
-    		vetName: this.props.data.Health.Veterinary.Name,
-    		vetAddress: this.props.data.Health.Veterinary.Address,
-    		vetPhone: this.props.data.Health.Veterinary.Phone,
-    		insuName: this.props.data.Health.Insurance.Name,
-    		insuNumber: this.props.data.Health.Insurance.Number,
+    		onMeds: this.props.data.health.medication,
+    		allergies: this.props.data.health.allergies,
+    		vetName: this.props.data.health.veterinary.name,
+    		vetAddress: this.props.data.health.veterinary.addr,
+    		vetPhone: this.props.data.health.veterinary.phone,
+    		insuName: this.props.data.health.insurance.name,
+    		insuNumber: this.props.data.health.insurance.number,
     	};
   	}
 
@@ -77,7 +78,7 @@ export default class HealthPage extends Component{
     		<View style = {styles.sectionDivider}/>
     		<TouchableOpacity style = {styles.butonEdit}
     			activeOpacity = {0.8}
-    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 2, data: this.props.data})}>
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 2, data: this.props.data, operation: 'update', token: this.props.token})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
     	</View>

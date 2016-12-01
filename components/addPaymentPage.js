@@ -1,5 +1,5 @@
 'use strict';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import React, {Component, PropTypes} from 'react';
 import {
   //Component,
@@ -101,12 +101,16 @@ export default class AddPaymentPage extends Component{
 		this.setState({ccv: event.nativeEvent.text});	
 	}
 
+	onBack(){
+		Actions.myDogs({type: ActionConst.BACK});
+	}
+
 	render(){
 		return(
 		<ScrollView style = {styles.container} scrollEnabled={false}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>

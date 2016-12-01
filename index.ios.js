@@ -20,12 +20,13 @@ import PromotionsPage from './components/Promotions.js';
 import SettingsPage from './components/Settings.js';
 import EditAccount from './components/editAccount.js';
 import CameraView from './components/Camera.js';
-import CameraRollPage from './components/CameraRollPageView.js';
-import ImageCropping from './components/ImageCrop.js';
+//import CameraRollPage from './components/CameraRollPageView.js';
+//import ImageCropping from './components/ImageCrop.js';
 import EditDog from './components/editDogPage.js';
 import ConfirmationPage from './components/confirmPage.js';
 import SelectPaymentPage from './components/chosePayment.js';
 import InServicePage from './components/InService.js';
+import verifyPage from './components/verifyPage.js'
 
 const reducerCreate = params=>{
     const defaultReducer = Reducer(params);
@@ -42,6 +43,7 @@ class AlwaysAround extends React.Component{
             <Scene key="modal" component={Modal} >
                 <Scene key="root" hideNavBar={true}>
 	                <Scene key="choose" component={AlwaysAroundApp} initial={true}/>
+                    <scene key="verify" component={verifyPage} panHandlers={null} />
 	                <Scene key="home" component={MainPage} panHandlers={null} />
                     <Scene key="myDogs" component={MyDogs} panHandlers={null} />
                     <Scene key="dogDetails" component={DogDetails} panHandlers = {null}/>
@@ -55,8 +57,8 @@ class AlwaysAround extends React.Component{
                     <Scene key="settings" component = {SettingsPage} panHandlers = {null}/>
                     <Scene key="editAccount" component = {EditAccount} panHandlers = {null}/>
                     <Scene key="camera" component = {CameraView} panHandlers = {null}/>
-                    <Scene key='cameraRoll' component = {CameraRollPage} panHandlers = {null}/>
-                    <Scene key='crop' component = {ImageCropping} panHandlers = {null}/>
+                    {/*<Scene key='cameraRoll' component = {CameraRollPage} panHandlers = {null}/>*/}
+                    {/*<Scene key='crop' component = {ImageCropping} panHandlers = {null}/>*/}
                     <Scene key='editDogs' component = {EditDog} panHandlers = {null}/>
                     <Scene key='confirm' component = {ConfirmationPage} panHandlers ={null}/>
                     <Scene key='selectPayment' component = {SelectPaymentPage} panHandlers ={null}/>

@@ -1,10 +1,6 @@
 package com.alwaysaround;
 
 import com.facebook.react.ReactActivity;
-import com.oblador.vectoricons.VectorIconsPackage;
-import cl.json.RNSharePackage;
-import com.airbnb.android.react.maps.MapsPackage;
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
 
 public class MainActivity extends ReactActivity {
 

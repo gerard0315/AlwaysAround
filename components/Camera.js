@@ -1,6 +1,6 @@
 'use strict';
 import React, { Component } from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import {
   Dimensions,
   StyleSheet,
@@ -11,11 +11,16 @@ import {
 import Camera from 'react-native-camera';
 
 export default class CameraView extends Component{
+
+  onBack(){
+    Actions.editAccount({type: ActionConst.BACK});
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <View style = {styles.topBar}>
-          <Text style = {styles.cancelText} onPress = {Actions.pop}>Cancel</Text>
+          <Text style = {styles.cancelText} onPress = {this.onBack}>Cancel</Text>
           <Text style = {styles.topBarText}>PHOTO</Text>
         </View>
         <Camera
@@ -38,8 +43,12 @@ export default class CameraView extends Component{
     this.camera.capture()
       .then((data) => console.log(data))
       .catch(err => console.error(err));
+
+        this.timer = setTimeout(
+          () => { 
     Actions.crop();
-  }
+      }, 100);
+    }
 }
 
 const styles = StyleSheet.create({

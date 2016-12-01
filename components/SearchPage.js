@@ -1,5 +1,5 @@
 'use strict';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 
 import React, {Component, propTypes} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Image, Navigator, ListView, TextInput, Animated, Easing, ScrollView} from 'react-native';
@@ -311,6 +311,12 @@ export default class SearchPage extends Component{
 			console.log('collpase keyboard');
 		};
 	}
+
+	onBack(){
+		Actions.home({
+			//text:,
+			type: ActionConst.BACK});
+	}
 	
 
 	render(){
@@ -318,7 +324,7 @@ export default class SearchPage extends Component{
 		<ScrollView style = {styles.container} scrollEnabled ={false}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>
@@ -475,7 +481,7 @@ var styles = StyleSheet.create({
 	google:{
 		position: 'absolute',
 		alignSelf: 'center',
-		bottom: 10,
+		bottom: 60,
 		left: 130,
 		height: 15,
 		width: 118,

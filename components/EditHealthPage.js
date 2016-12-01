@@ -7,18 +7,19 @@ import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, Lis
 export default class EditHealth extends Component{
     static propTypes = {
         data: React.PropTypes.object.isRequired,
+        onSubmit: React.PropTypes.func,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-            onMeds: this.props.data.OnMeds,
-            allergies: this.props.data.Allergies,
-            vetName: this.props.data.Veterinary.Name,
-            vetAddress: this.props.data.Veterinary.Address,
-            vetPhone: this.props.data.Veterinary.Phone,
-            insuName: this.props.data.Insurance.Name,
-            insuNumber: this.props.data.Insurance.Number,        
+            onMeds: this.props.data.medication,
+            allergies: this.props.data.allergies,
+            vetName: this.props.data.veterinary.name,
+            vetAddress: this.props.data.veterinary.addr,
+            vetPhone: this.props.data.veterinary.phone,
+            insuName: this.props.data.insurance.name,
+            insuNumber: this.props.data.insurance.number,        
 
     	}
     }
@@ -49,6 +50,23 @@ export default class EditHealth extends Component{
 
     onChangeInsuNumber(event){
         this.setState({ insuNumber : event.nativeEvent.text});
+    }
+
+    onPressSave(){
+        var health = {
+            "medication": this.state.onMeds,
+            "allergies": this.state.allergies,
+            "insurance": {
+              "name": this.state.insuName,
+              "number": this.state.insuNumber
+            },
+            "veterinary": {
+              "name": this.state.vetName,
+              "addr": this.state.vetAddress,
+              "phone": this.state.vetPhone
+            }
+        }
+        this.props.onSubmit(health);
     }
 
     render(){
@@ -108,7 +126,8 @@ export default class EditHealth extends Component{
                     onChange = {this.onChangeInsuNumber.bind(this)}/>
             </View>
             <TouchableOpacity style = {styles.buttonSave}
-              activeOpacity = {0.8}>
+              activeOpacity = {0.8}
+              onPress = {this.onPressSave.bind(this)}>
               <Image source = {require('../ios/save.png')}/>
             </TouchableOpacity>
 

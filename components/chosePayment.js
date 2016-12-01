@@ -112,6 +112,7 @@ export default class SelectPaymentPage extends Component{
         infoData: this.props.infoData, 
         time: this.props.time,
         paymentType: _row + 1,
+        type: ActionConst.RESET,
     	});		
 	}
 

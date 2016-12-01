@@ -1,5 +1,5 @@
 'use strict';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import moment from 'moment';
 import React, {Component, PropTypes} from 'react';
 import {
@@ -14,7 +14,6 @@ import {
   ListView,
   TextInput,
   ScrollView,
-  //PropTypes,
 } from 'react-native';
 
 
@@ -86,12 +85,16 @@ export default class DetailedHistory extends Component{
 		this.setState({card_info: this.props.clientData[this.props.index].payment_info.card});
 	}
 
+	onBack(){
+		Actions.history({type: ActionConst.BACK});
+	}
+
 	render(){
 		return (
 		<View style = {styles.container}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>

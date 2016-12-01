@@ -1,6 +1,6 @@
 'use strict';
 import React, {Component, PropTypes} from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 
 import {
   StyleSheet,
@@ -94,7 +94,7 @@ export default class PaymentPage extends Component{
 	}
 
 	onPressCell(_row){
-		Actions.editPayment({cardDetail:detail[_row].detail});		
+		Actions.editPayment({cardDetail:detail[_row].detail, type: ActionConst.PUSH});		
 	}
 
 
@@ -116,12 +116,20 @@ export default class PaymentPage extends Component{
 			)
 	}
 
+	onBack(){
+		Actions.home({type: ActionConst.BACK});
+	}
+
+	onPressAdd(){
+		Actions.addPayment({type: ActionConst.PUSH});
+	}
+
 	render(){
 		return (
 		<View style = {styles.container}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>
@@ -134,7 +142,7 @@ export default class PaymentPage extends Component{
           	</View>
           	<TouchableOpacity style = {[styles.cellsContainer, {height:50, flexDirection: 'row', alignItems: 'center'}]}
           		activeOpacity = {0.9}
-          		onPress = {Actions.addPayment}>
+          		onPress = {this.onPressAdd}>
 				<Image style = {{marginLeft: 19, height: 20, width: 34, resizeMode: 'stretch'}}
 						source = {require('../ios/add.png')}/>
           		<Text style = {[styles.cardNumber, {color: '#EA4D4E'}]}>Add Payment</Text>

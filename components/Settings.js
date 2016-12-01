@@ -1,6 +1,8 @@
 'use strict'
 import React, {Component, PropTypes} from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
+import Storage from 'react-native-storage';
+import { AsyncStorage } from 'react-native'
 import {StyleSheet, TextInput, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, TabBarIOS} from 'react-native';
 
 class ModalView extends React.Component{
@@ -30,6 +32,25 @@ class ModalView extends React.Component{
     	Actions.editAccount();
     }
 
+    onSignOutPressed(){
+    	
+    	storage.clearMapForKey('dogslist');
+    	storage.clearMapForKey('loginState');
+    	storage.remove({
+    		key: 'dogslist'
+		});
+
+    	storage.remove({
+    		key: 'loginState',
+		});
+		
+		storage.clearMap();
+    	this.props.closeModal()
+
+    	Actions.choose();
+    }
+
+
 	render(){
 	    var modalBackgroundStyle = {
 	      backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -51,7 +72,7 @@ class ModalView extends React.Component{
 	          			</TouchableOpacity>
 	          			<View style = {{height: 43, width: 1, marginLeft: 0, marginTop: 0, backgroundColor: '#B6B6B6'}}/>
 	          			<TouchableOpacity style = {{marginLeft: 0, marginTop: 0, width: 150, height: 43, justifyContent: 'center'}}
-	          				onPress= {this.props.closeModal}>
+	          				onPress= {this.onSignOutPressed.bind(this)}>
 	          				<Text style = {[styles.alertChoice, {color: '#727272'}]}>SIGN OUT</Text>
 	          			</TouchableOpacity>
 	          		</View>
@@ -99,12 +120,13 @@ class ModalView extends React.Component{
 
 export default class SettingsPage extends Component{
     static propTypes = {
+    	data: React.PropTypes.object.isRequired,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-    		username: 'Luna Baetylus',
+    		username: this.props.data.firstName + " " + this.props.data.lastName,
     		location_1: '1 Killick Way',
     		location_2: null,
         	modalVisible: false,
@@ -142,6 +164,10 @@ export default class SettingsPage extends Component{
 		this._setModalVisible(false);
 	}
 
+	onBack(){
+	    Actions.home({type: ActionConst.BACK});
+	}
+
   	render(){
   		return(
 		<ScrollView style = {styles.container} scrollEnabled = {false}>
@@ -155,7 +181,7 @@ export default class SettingsPage extends Component{
 	        </Modal>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>

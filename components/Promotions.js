@@ -1,6 +1,6 @@
 'use strict';
 
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import React, {Component, PropTypes} from 'react';
 import {
   //Component,
@@ -39,12 +39,17 @@ export default class PromotionsPage extends Component{
 
 	onShare() {
 	    Share.open({
-	      share_text: "Hola mundo",
-	      share_URL: "http://google.cl",
-	      title: "Share Link"
+			title: "React Native",
+      		message: "Hola mundo",
+      		url: "http://facebook.github.io/react-native/",
+      		subject: "Share Link" //  for email
 	    },(e) => {
 	      console.log(e);
 	    });
+	}
+
+	onBack(){
+		Actions.home({type: ActionConst.BACK});
 	}
 
 	render(){
@@ -76,7 +81,7 @@ export default class PromotionsPage extends Component{
 	        </Modal>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>

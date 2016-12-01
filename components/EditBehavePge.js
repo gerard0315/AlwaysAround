@@ -7,20 +7,21 @@ import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, Lis
 export default class EditBehaviours extends Component{
     static propTypes = {
         data: React.PropTypes.object.isRequired,
+        onNext: React.PropTypes.func,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-        commands: this.props.data.Commands,
-    		isInSeason: this.props.data.InSeason,
-    		isChildFriendly: this.props.data.Child_friendly,
-    		pullsOnLead: this.props.data.Pulls,
-    		bark: this.props.data.Barks,
-    		digs: this.props.data.Digs,
-    		jumps: this.props.data.Jumps,
-    		isChipped: this.props.data.Chipped,
-    		hasIDTag: this.props.data.IDtag,
+        commands: this.props.data.commands,
+    		isInSeason: this.props.data.is_in_season,
+    		isChildFriendly: this.props.data.friendly_to_child,
+    		pullsOnLead: this.props.data.pulls,
+    		bark: this.props.data.barks,
+    		digs: this.props.data.digs,
+    		jumps: this.props.data.jumps_on_people,
+    		isChipped: this.props.data.is_chipped,
+    		hasIDTag: this.props.data.has_id_tag,
 
     		sourceOne: null,
     		sourceTwo: null,
@@ -37,95 +38,159 @@ export default class EditBehaviours extends Component{
       if (this.state.isInSeason === true){
         this.setState({sourceOne: require('../ios/check_green.png')});
       }else{
+        this.setState({isInSeason: false});
         this.setState({sourceOne: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.isChildFriendly === true){
         this.setState({sourceTwo: require('../ios/check_green.png')});
       }else{
+        this.setState({isChildFriendly: false});
         this.setState({sourceTwo: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.pullsOnLead === true){
         this.setState({sourceThree: require('../ios/check_green.png')});
       }else{
+        this.setState({pullsOnLead: false});
         this.setState({sourceThree: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.bark === true){
         this.setState({sourceFour: require('../ios/check_green.png')});
       }else{
+        this.setState({bark: false});
         this.setState({sourceFour: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.digs === true){
         this.setState({sourceFive: require('../ios/check_green.png')});
       }else{
+        this.setState({digs: false});
         this.setState({sourceFive: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.jumps === true){
         this.setState({sourceSix: require('../ios/check_green.png')});
       }else{
+        this.setState({jumps: false});
         this.setState({sourceSix: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.isChipped === true){
         this.setState({sourceSeven: require('../ios/check_green.png')});
       }else{
+        this.setState({isChipped: false});
         this.setState({sourceSeven: require('../ios/BLANK_ICON.png')});
       }
 
       if (this.state.hasIDTag === true){
         this.setState({sourceEight: require('../ios/check_green.png')});
       }else{
+        this.setState({hasIDTag: false});
         this.setState({sourceEight: require('../ios/BLANK_ICON.png')});
       }
 
     }
 
     onPressOne(event){
-		this.setState({ isInSeason: !this.state.isInSeason});
-      	this.setState({ sourceOne: (this.state.isInSeason) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.isInSeason === true){
+        this.setState({sourceOne: require('../ios/BLANK_ICON.png')});
+        this.setState({isInSeason: false});
+      }else{
+        this.setState({sourceOne: require('../ios/check_green.png')});
+        this.setState({isInSeason: true});
+      }
     }
 
     onPressTwo(event){
-		this.setState({ isChildFriendly: !this.state.isChildFriendly});
-      	this.setState({ sourceTwo: (this.state.isChildFriendly) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.isChildFriendly === true){
+        this.setState({sourceTwo: require('../ios/BLANK_ICON.png')});
+        this.setState({isChildFriendly: false});
+      }else{
+        this.setState({sourceTwo: require('../ios/check_green.png')});
+        this.setState({isChildFriendly: true});
+      }
     }
 
     onPressThree(event){
-		this.setState({ pullsOnLead: !this.state.pullsOnLead});
-      	this.setState({ sourceThree: (this.state.pullsOnLead) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.pullsOnLead === true){
+        this.setState({sourceThree: require('../ios/BLANK_ICON.png')});
+        this.setState({pullsOnLead: false});
+      }else{
+        this.setState({sourceThree: require('../ios/check_green.png')});
+        this.setState({pullsOnLead: true});
+      }
     }
 
     onPressFour(event){
-		this.setState({ bark: !this.state.bark});
-      	this.setState({ sourceFour: (this.state.bark) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.bark === true){
+        this.setState({sourceFour: require('../ios/BLANK_ICON.png')});
+        this.setState({bark: false});
+      }else{
+        this.setState({sourceFour: require('../ios/check_green.png')});
+        this.setState({bark: true});
+      }
     }
 
     onPressFive(event){
-		this.setState({ digs: !this.state.digs});
-      	this.setState({ sourceFive: (this.state.digs) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.digs === true){
+        this.setState({sourceFive: require('../ios/BLANK_ICON.png')});
+        this.setState({digs: false});
+      }else{
+        this.setState({sourceFive: require('../ios/check_green.png')});
+        this.setState({digs: true});
+      }
     }
 
     onPressSix(event){
-		this.setState({ jumps: !this.state.jumps});
-      	this.setState({ sourceSix: (this.state.jumps) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.jumps === true){
+        this.setState({sourceSix: require('../ios/BLANK_ICON.png')});
+        this.setState({jumps: false});
+      }else{
+        this.setState({sourceSix: require('../ios/check_green.png')});
+        this.setState({jumps: true});
+      }
     }
 
     onPressSeven(event){
-		this.setState({ isChipped: !this.state.isChipped});
-      	this.setState({ sourceSeven: (this.state.isChipped) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.isChipped === true){
+        this.setState({sourceSeven: require('../ios/BLANK_ICON.png')});
+        this.setState({isChipped: false});
+      }else{
+        this.setState({sourceSeven: require('../ios/check_green.png')});
+        this.setState({isChipped: true});
+      }
     }
 
     onPressEight(event){
-		this.setState({ hasIDTag: !this.state.hasIDTag});
-      	this.setState({ sourceEight: (this.state.hasIDTag) ? require('../ios/check_green.png'): require('../ios/BLANK_ICON.png')});
+      if(this.state.hasIDTag === true){
+        this.setState({sourceEight: require('../ios/BLANK_ICON.png')});
+        this.setState({hasIDTag: false});
+      }else{
+        this.setState({sourceEight: require('../ios/check_green.png')});
+        this.setState({hasIDTag: true});
+      }
     }
 
     onChangeCommands(event){
       this.setState({commands: event.nativeEvent.text});
+    }
+
+    onPressSave(){
+      var label = 2;
+      var behaviours = {
+        commands: this.state.commands,
+        "is_in_season": this.state.isInSeason,
+        "friendly_to_child": this.state.isChildFriendly,
+        "pulls": this.state.pullsOnLead,
+        "digs": this.state.digs,
+        "barks": this.state.barks,
+        "jumps_on_people": this.state.jumps,
+        "is_chipped": this.state.isChipped,
+        "has_id_tag": this.state.hasIDTag      
+      }
+      this.props.onNext(label, behaviours);
     }
 
     render(){
@@ -241,8 +306,10 @@ export default class EditBehaviours extends Component{
           	</TouchableOpacity>
           	<View style = {{marginTop: 10, marginLeft: 19, height: 1, width: 375, backgroundColor: 'white'}}/>
 	        <TouchableOpacity style = {styles.buttonSave}
-	          activeOpacity = {0.8}>
-	          <Image source = {require('../ios/save.png')}/>
+	          activeOpacity = {0.8}
+            onPress = {this.onPressSave.bind(this)}
+            >
+	          <Image source = {require('../ios/next.png')}/>
 	        </TouchableOpacity>
         </View>
     )

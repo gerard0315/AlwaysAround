@@ -11,15 +11,15 @@ export default class BehavioursPage extends Component{
     constructor(props){
     	super(props);
     	this.state = {
-	      commands: this.props.data.Behaviours.Commands,
-	      inSeason: this.props.data.Behaviours.InSeason,
-	      childFriendly: this.props.data.Behaviours.Child_friendly,
-	      digs: this.props.data.Behaviours.Digs,
-	      jumps: this.props.data.Behaviours.Jumps,
-	      chipped: this.props.data.Behaviours.Chipped,
-	      pulls: this.props.data.Behaviours.Pulls,
-	      bark: this.props.data.Behaviours.Barks,
-	      idTag: this.props.data.Behaviours.IDtag,
+	      commands: this.props.data.behaviours.commands,
+	      inSeason: this.props.data.behaviours.is_in_season,
+	      childFriendly: this.props.data.behaviours.friendly_to_child,
+	      digs: this.props.data.behaviours.digs,
+	      jumps: this.props.data.behaviours.jumps_on_people,
+	      chipped: this.props.data.behaviours.is_chipped,
+	      pulls: this.props.data.behaviours.pulls,
+	      bark: this.props.data.behaviours.barks,
+	      idTag: this.props.data.behaviours.has_id_tag,
     	};
   	}
 
@@ -53,7 +53,7 @@ export default class BehavioursPage extends Component{
     		<Tag data = {this.state.idTag}/>
     		<TouchableOpacity style = {styles.butonEdit}
     			activeOpacity = {0.8}
-    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 1, data: this.props.data})}>
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 1, data: this.props.data, operation: 'update', token: this.props.token})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
     	</View>
@@ -87,6 +87,7 @@ class InSeason extends React.Component{
 class ChildFriendly extends React.Component{
     static propTypes = {
         data: React.PropTypes.bool.isRequired,
+        token: React.PropTypes.string,
     }; 
 
 	render(){

@@ -1,6 +1,6 @@
 'use strict'
 import React, {Component, PropTypes} from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import {StyleSheet, TextInput, Text, View, TouchableOpacity, Image, Navigator, ListView, TouchableHighlight, ScrollView, Modal, CameraRoll} from 'react-native';
 
 export default class EditAccount extends Component{
@@ -33,8 +33,17 @@ export default class EditAccount extends Component{
     }
 
     onPressFromLib(){
-        Actions.cameraRoll();
+        //Actions.cameraRoll();
         this._setModalVisible(false);
+        ImagePicker.openPicker({
+            width: 500,
+            height: 500,
+            cropping: true
+        }).then(image => {
+            //console.log(image.path);
+            this.setState({avatarSource: {uri: image.path}});
+            this.props.onChosenPic(image.path);
+        });
     }
 
     onInputFirstName(event){
@@ -55,6 +64,10 @@ export default class EditAccount extends Component{
 
     onDismiss(){
         this._setModalVisible(false);
+    }
+
+    onBack(){
+        Actions.settings({type: ActionConst.BACK});
     }
 
     render(){
@@ -87,7 +100,7 @@ export default class EditAccount extends Component{
                 source = {require('../ios/BG.png')}/>
             <View style = {styles.topBarContainer}>
                 <TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-                    onPress = {Actions.pop}>
+                    onPress = {this.onBack}>
                     <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
                         source = {require('../ios/goBack.png')}/>
                 </TouchableOpacity>

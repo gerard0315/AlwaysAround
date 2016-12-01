@@ -1,6 +1,6 @@
 'use strict';
 import React, {Component, PropTypes} from 'react';
-import {Actions} from 'react-native-router-flux';
+import {Actions, ActionConst} from 'react-native-router-flux';
 import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, ListView, ScrollView} from 'react-native';
 import moment from 'moment';
 
@@ -200,12 +200,16 @@ export default class HistoryPage extends Component{
 		}*/
 	}
 
+	onBack(){
+		Actions.home({type: ActionConst.BACK});
+	}
+
 	render(){
 		return (
 		<View style = {styles.container}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {this.onBack}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>

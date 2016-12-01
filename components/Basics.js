@@ -7,20 +7,21 @@ import {StyleSheet, MapView, Text, View, TouchableOpacity, Image, Navigator, Lis
 export default class BasicsPage extends Component{
     static propTypes = {
         data: React.PropTypes.object.isRequired,
+        token: React.PropTypes.string,
     }; 
 
     constructor(props){
     	super(props);
     	this.state = {
-        	name: this.props.data.Basics.Name,
-        	gender: this.props.data.Basics.Gender,
-      		breed: this.props.data.Basics.Breed,
-      		birth: this.props.data.Basics.YoB,
-      		size: this.props.data.Basics.Size,
-	      	vacinated: this.props.data.Basics.Vacination,
-	  		spayed: this.props.data.Basics.Spayed,
-	      	friendly: this.props.data.Basics.Friendly,
-
+        	name: this.props.data.basic.name,
+        	gender: this.props.data.basic.gender,
+      		breed: this.props.data.basic.breed,
+      		birth: this.props.data.basic.yob,
+      		size: this.props.data.basic.size,
+	      	vacinated: this.props.data.basic.vac_uptodate,
+	  		spayed: this.props.data.basic.spayed,
+	      	friendly: this.props.data.basic.friendly_to_dogs,
+	      	picUrl: "http://alwaysaround.me:8081/public/img/" + this.props.data.basic.avatar,
     	};
   	}
 
@@ -36,7 +37,7 @@ export default class BasicsPage extends Component{
     		</View>
     		<View style = {styles.dogPicContainer}>
 	    		<Image style = {styles.dogPic}
-	    			source = {require('../ios/dog_pic.png')}/>
+	    			source = {{uri: this.state.picUrl}}/>
     		</View>
     		<Text style = {styles.sectionIntro}>{"Describe your dog briefly..."}</Text>
     		<View style = {[styles.sectionDivider, {marginTop: 10}]}/>
@@ -65,7 +66,7 @@ export default class BasicsPage extends Component{
     		<Friendly data = {this.state.friendly}/>
     		<TouchableOpacity style = {styles.buttonEdit}
     			activeOpacity = {0.8}
-    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 0, data: this.props.data})}>
+    			onPress = {()=>Actions.editDogs({title: 'Edit Dog', initialPage: 0, data: this.props.data, operation: 'update', token: this.props.token})}>
     			<Image source = {require('../ios/edit.png')}/>
     		</TouchableOpacity>
 	    </View>
