@@ -28,7 +28,9 @@ var AlwaysAroundApp = React.createClass({
 				firstName: "",
 				token: "",
 				lastName: "",
-				pets: []
+				pets: [],
+				url: "",
+				phone_no: "",
 	    	};
   	},
 
@@ -46,6 +48,8 @@ var AlwaysAroundApp = React.createClass({
 				this.setState({lastName: ret.last_name});
 				this.setState({pets: ret.pets})
 				this.setState({currentRoute: "LOGIN_FOUND"});
+				this.setState({url: ret.avatar});
+				this.setState({phone_no: ret.phone_no})
 
 				this.setState({render: true});
 			}).catch(err => {
@@ -73,8 +77,11 @@ var AlwaysAroundApp = React.createClass({
 	        	token: this.state.token,
 	        	firstName: this.state.firstName,
 	        	lastName: this.state.lastName,
+	        	avatar: this.state.url,
 	        	pets: this.state.pets,
-	        }}/>
+	        	phone_no: this.state.phone_no,
+	        	email: this.state.email
+	        }} searchResult = {false}/>
 	      default:
 	        return (<View style = {{backgroundColor: "#EA4D4E"}}/>)
 	    }

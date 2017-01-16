@@ -124,7 +124,7 @@ export default class EditDog extends Component{
       console.log("pic uri is " + uri);
       let data = new FormData()
       if (uri) {
-        data.append('user', {uri: uri, name: 'image.jpg', type: 'image/jpg'});
+        data.append('pet', {uri: uri, name: 'image.jpg', type: 'image/jpg'});
       }
       const config = {
         method: 'POST',
@@ -136,11 +136,11 @@ export default class EditDog extends Component{
         body: data,
       }
 
-      fetch("http://alwaysaround.me:8081/api/user/avatar-upload", config).then((response) => response.json())
+      fetch("http://alwaysaround.me:8081/api/pet/avatar-upload/", config).then((response) => response.json())
         .then((res)=>{
           console.log(res);
-          if (res.status.code === 2015){
-            this.setState({avatar: res.data});
+          if (res.status.code === 2122){
+            this.setState({avatar: res.data.url});
           }else{
               AlertIOS.alert("ERROR!!" + res.status.msg);          
           }

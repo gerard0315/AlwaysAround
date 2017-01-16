@@ -151,7 +151,7 @@ export default class MyDogs extends Component{
         console.log("responing");
         return res.json()
       }).then(response=>{
-        //console.log(response)
+        console.log(response)
         return response.data
       }).then(parsedData =>{
         for (var i = 0; i < parsedData.length; i++){
@@ -230,7 +230,7 @@ export default class MyDogs extends Component{
     var breed = rowData.basic.breed;
     var old = this.state.nowYear - yob; 
     var token = this.props.data.token;
-    var picUri =  "http://alwaysaround.me:8081/public/img/" + rowData.basic.avatar;
+    var picUri =  rowData.basic.avatar;
     var swipeoutBtns = [
         {
           text: 'Delete',

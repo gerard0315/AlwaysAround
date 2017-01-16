@@ -24,9 +24,57 @@ import {
 
 
 export default class InServicePage extends Component{
+  static propTypes = {
+        service: React.PropTypes.object.isRequired,
+        location: React.PropTypes.string.isRequired,
+        lng: React.PropTypes.number.isRequired,
+        lat: React.PropTypes.number.isRequired,
+        infoData: React.PropTypes.array.isRequired,
+        time: React.PropTypes.number.isRequired,
+        paymentType: React.PropTypes.number.isRequired,
+    }; 
+
+  constructor(props){
+    super(props);
+    this.state= {
+      mapRegion:{
+        latitude: this.props.lat,
+        longitude: this.props.lng,
+        latitudeDelta: 0.008,
+        longitudeDelta: 0.008,
+      },
+      serviceImage: null,
+      isShelter: this.props.service.onShelter,
+      estTime: this.props.service.time,
+      serviceType: null,xs
+      dogNumber: this.props.infoData.length,
+      existSecond: false,
+      existThird: false,
+      existForth: false,
+      nameContainerHeight: new Animated.Value(0),
+      displayName: false,
+      displayNameOpacity: new Animated.Value(0),
+      confirmInfoSlide: new Animated.Value(19),
+      requstingSlide: new Animated.Value(-150),
+      showRequesting: new Animated.Value(0),
+      title: 'Confirmation',
+      isRequesting: false,
+      showBackbutton: new Animated.Value(1),
+      //lastFourDigit: 0,
+      cardIcon: null,
+      slider: new Animated.Value(120),
+      flag: false,
+    };
+  }
+
+  componentWillMount(){
+    console.log("in service main");
+  }
+
   render(){
     return(
         <View style = {styles.container}>
+        {/*
           <MapView
               style={styles.map}
               //showsUserLocation={true}
@@ -36,7 +84,8 @@ export default class InServicePage extends Component{
 
           <View style = {styles.TopBarContainer}>
             <TouchableOpacity style={styles.toolbarButton}
-                  onPress={this.openDrawer}>
+                  //onPress={this.openDrawer}
+                  >
                   <Image style = {{resizeMode: 'stretch'}}
                     source = {require('../ios/Shape.png')}
                     />
@@ -50,6 +99,7 @@ export default class InServicePage extends Component{
                 backgroundColor: 'transparent',
             }}>Service En Route</Text>
           </View>
+        */}
         </View>
     )}
 }

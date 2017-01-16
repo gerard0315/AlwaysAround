@@ -9,6 +9,7 @@ class ModalView extends React.Component{
 	static propTypes = {
 		closeModal: React.PropTypes.func.isRequired,
 		data: React.PropTypes.object.isRequired,
+		toEdit: React.PropTypes.func.isRequired,
     };
 
     constructor(props){
@@ -19,7 +20,7 @@ class ModalView extends React.Component{
   	}
 
     componentWillMount(){
-    	console.log(this.props.data.data);
+    	console.log(this.props.data);
     	console.log("jhahahahahah");
     }
 
@@ -29,7 +30,8 @@ class ModalView extends React.Component{
 
     toEdit(){
     	this.props.closeModal();
-    	Actions.editAccount();
+    	//console.log("transiting to edit "+ this.props.data);
+    	this.props.toEdit();
     }
 
     onSignOutPressed(){
@@ -134,6 +136,10 @@ export default class SettingsPage extends Component{
     	};
   	}
 
+  	componentWillMount(){
+  		console.log(this.props.data);
+  	}
+
   	onLocationOneChange(event){
   		this.setState({ location_1 : event.nativeEvent.text});
   	}
@@ -168,6 +174,10 @@ export default class SettingsPage extends Component{
 	    Actions.home({type: ActionConst.BACK});
 	}
 
+	onToEdit(){
+		Actions.editAccount({data: this.props.data});
+	}
+
   	render(){
   		return(
 		<ScrollView style = {styles.container} scrollEnabled = {false}>
@@ -177,7 +187,7 @@ export default class SettingsPage extends Component{
 	          visible={this.state.modalVisible}
 	          onRequestClose={() => {this._setModalVisible(false)}}
 	          >
-	        	<ModalView data = {{data: this.state.modalId}} closeModal = {this.closeModal.bind(this)}/>
+	        	<ModalView data = {{data: this.state.modalId}} closeModal = {this.closeModal.bind(this)} toEdit = {this.onToEdit.bind(this)}/>
 	        </Modal>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
@@ -188,7 +198,7 @@ export default class SettingsPage extends Component{
 				<Text style = {styles.topBarText}>Settings</Text>
 			</View>
 			<Image style = {styles.avatar}
-				source = {{uri:'http://36.media.tumblr.com/c1ab83d6816fb7302a230d5ce9580446/tumblr_inline_o3bwh2h8z81sitizh_540.jpg'}}/>
+				source = {{uri:this.props.data.avatar}}/>
 			<Text style = {styles.userName}>{this.state.username}</Text>
 			<Text style = {styles.editText} onPress = {this.onEditAcc.bind(this)}>EDIT ACCOUNT</Text>
 			<View style = {{marginTop: 15, marginLeft: 0, marginRight: 0, height: 30, backgroundColor: '#EA4D4E', justifyContent: 'center'}}>

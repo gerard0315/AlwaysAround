@@ -2,6 +2,7 @@
 import {Actions, ActionConst} from 'react-native-router-flux';
 import MapView from 'react-native-maps';
 import React, {Component, propTypes} from 'react';
+import io from "socket.io-client";
 import {
   StyleSheet,
   //MapView,
@@ -79,6 +80,7 @@ export default class ConfirmationPage extends Component{
         infoData: React.PropTypes.array.isRequired,
         time: React.PropTypes.number.isRequired,
         paymentType: React.PropTypes.number.isRequired,
+        data: React.PropTypes.object.isRequired,
     }; 
 
 
@@ -116,6 +118,7 @@ export default class ConfirmationPage extends Component{
   }
 
   componentWillMount(){
+    console.log("in confirm " + JSON.stringify(this.props.data));
     if(this.state.isShelter === false){
       this.setState({serviceType: 'AA Carer'});
       this.setState({serviceImage: require('../ios/AA_Carer.png')});
@@ -266,8 +269,10 @@ export default class ConfirmationPage extends Component{
               duration: 10,
               delay: 1,
               easing: Easing.linear, // 动画时间
-            }).start();           
-            Actions.inService({service: this.props.service, lng: this.props.lng, lat: this.props.lat, paymentType: this.props.paymentType, location: this.props.location})}, 
+            }).start(); 
+            console.log(" to service");          
+            Actions.inService({data: this.props.data, service: this.props.service, lng: this.props.lng, lat: this.props.lat, paymentType: this.props.paymentType, location: this.props.location})
+          }, 
           5000); 
 
     }else if(this.state.isRequesting === true){
@@ -342,7 +347,7 @@ export default class ConfirmationPage extends Component{
 
   onPressSearch(event){
       //console.log('open search');
-     Actions.search({lng: this.props.lng, lat: this.props.lat});
+     Actions.search({lng: this.props.lng, lat: this.props.lat, data: this.props.data});
   }
 
   onPressSelectPayment(){
@@ -353,11 +358,13 @@ export default class ConfirmationPage extends Component{
         service: this.props.service, 
         infoData: this.props.infoData, 
         time: this.props.time,
-        paymentType: this.props.paymentType});
+        paymentType: this.props.paymentType,
+        data: this.props.data});
   }
 
   onBack(){
-    Actions.home({type: ActionConst.BACK});
+    //console.log("on back : " + this.props.data);
+    Actions.home({data: this.props.data, type: ActionConst.RESET});
   }
 
   render(){
@@ -370,7 +377,7 @@ export default class ConfirmationPage extends Component{
           />
         <View style = {styles.TopBarContainer}>
         <Animated.View style ={{marginLeft: 19, marginTop: 35, height: 16, width: 16, opacity: this.state.showBackbutton}}>
-          <TouchableOpacity style = {{flex: 1}} onPress = {this.onBack} disable = {this.state.isRequesting}>
+          <TouchableOpacity style = {{flex: 1}} onPress = {this.onBack.bind(this)} disable = {this.state.isRequesting}>
             <Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
               source = {require('../ios/goBack.png')}/>
           </TouchableOpacity>

@@ -80,6 +80,7 @@ export default class InServicePage extends Component{
         lng: React.PropTypes.number.isRequired,
         lat: React.PropTypes.number.isRequired,
         paymentType: React.PropTypes.number.isRequired,
+        data: React.PropTypes.object.isRequired,
     }; 
 
   constructor(props){
@@ -205,7 +206,7 @@ export default class InServicePage extends Component{
         ref={(ref) => this._drawer = ref}
         type="overlay"
         captureGestures={true}
-        content={<ControlPanel closeDrawer={this.closeDrawer.bind(this)}/>}
+        content={<ControlPanel closeDrawer={this.closeDrawer.bind(this)} data = {this.props.data}/>}
         //disabled = {true}
         captureGestures = {true}
         onOpen = {this.onDrawerOpen.bind(this)}

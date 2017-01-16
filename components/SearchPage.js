@@ -2,6 +2,7 @@
 import {Actions, ActionConst} from 'react-native-router-flux';
 
 import React, {Component, propTypes} from 'react';
+import Qs from 'qs';
 import {StyleSheet, Text, View, TouchableOpacity, Image, Navigator, ListView, TextInput, Animated, Easing, ScrollView} from 'react-native';
 
 var seacrhListImage = {
@@ -14,6 +15,7 @@ var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var preset = ['Aldgate Tower','Russel Square','Oxford Circle','Soho London'];
 var test = [];
 var auto = [];
+var coordination = [];
 var placeIDs = [];
 //var _results = ['test'];
 
@@ -29,6 +31,8 @@ export default class SearchPage extends Component{
     static propTypes = {
         lng: React.PropTypes.number.isRequired,
         lat: React.PropTypes.number.isRequired,
+        route: React.PropTypes.string.isRequired,
+        data: React.PropTypes.object.isRequired,
     }; 
 
 
@@ -61,6 +65,7 @@ export default class SearchPage extends Component{
 	}*/
 
 	componentWillMount(){
+		console.log(this.props.route)
 		var result = [];
 		var _request = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" + this.props.lat + "," + this.props.lng + "&key=AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g";
 		//console.log(_request);
@@ -68,9 +73,11 @@ export default class SearchPage extends Component{
 			.then((response) => response.json())
 			.then((responseData) => {
 				for (var i = 0; i < 5; i ++){
+					console.log(responseData.results[i].geometry.location);
 					var address = responseData.results[i].formatted_address;
 					var _add = address.split(", ");
 					test.push(_add[0]);
+					coordination.push(responseData.results[i].geometry.location);
 				};
 				this.setState({dataSourceNearby: ds.cloneWithRows(test)});
 			})
@@ -87,7 +94,7 @@ export default class SearchPage extends Component{
 			return (
 		        <TouchableOpacity
 		        	activeOpacity = {0.9}
-		        	onPressIn = {this.onPressAddress.bind(this)}>
+		        	onPressIn = {this.onPressAddress.bind(this, rowData, rowID)}>
 		          <View>
 		            <View style={styles.row}>
 		              <Image style={styles.thumb} source={seacrhListImage.historyIcon} />
@@ -106,7 +113,7 @@ export default class SearchPage extends Component{
 			return (
 		        <TouchableOpacity
 		        	activeOpacity = {0.9}
-		        	onPressIn = {this.onPressAddress.bind(this)}>
+		        	onPressIn = {this.onPressAddress.bind(this, rowData, rowID)}>
 		          <View>
 		            <View style={styles.row}>
 		              <Image style={styles.thumb} source={seacrhListImage.currentLocation} />
@@ -122,7 +129,7 @@ export default class SearchPage extends Component{
 	}
 
 	_renderRowAuto = (rowData: string, sectionID: number, rowID: number) => {
-
+			console.log("rendering search");
 			return (
 		        <TouchableOpacity
 		        	activeOpacity = {0.2}
@@ -151,24 +158,42 @@ export default class SearchPage extends Component{
 	      delay: 1000,
 	      easing: Easing.linear, // 动画时间
 	    }).start();
-		console.log(this.state.latlng.lat);
-		console.log(this.state.latlng.lng);
-	    Actions.pop({toLat: this.state.latlng.lat, toLng: this.state.latlng.lng});
+	    
+		console.log(lat);
+		console.log(lng);
+	    //Actions.refresh({toLat: this.state.latlng.lat, toLng: this.state.latlng.lng});
+	     
+	     Actions.home({ 
+	    	serviceMapRegion: {
+		        latitude: lat,
+		        longitude: lng,
+		        latitudeDelta: 0.01,
+		        longitudeDelta: 0.01,
+		    },
+		    data: this.props.data,
+		    type: ActionConst.RESET,
+		    searchResult: true,
+		});
+		
 	    console.log('done');
 	}
 
-	onPressAddress(){
-		console.log('HIIIIII');
+	onPressAddress(rowData, rowID){
+		console.log("latlng is " + JSON.stringify(coordination[rowID]));
+		console.log('H');
+		//Actionsc.home({mao})
+		this.passDataToMain(coordination[rowID].lat, coordination[rowID].lng);
 	}
 
-	onPressInAddress(){
-		console.log('presssssssssss');
+	onPressInAddress(rowID){
+		console.log(rowID);
 	}
 
 	onPressOutAddress(rowID){
 		console.log('ouuuuuuuuut');
 		var placeID = placeIDs[rowID];
 		this.getLocation(placeID);
+		//console.log("latlng is " + coordination[rowID]);
 	}
 
 	getLocation(placeID){
@@ -181,52 +206,62 @@ export default class SearchPage extends Component{
 			.then((responseData) => {
 				_lat = responseData.results[0].geometry.location.lat;
 				_lng = responseData.results[0].geometry.location.lng;
+				console.log("lat is " + _lat + " lng is " + _lng);
 				this.setState({
 					latlng:{
 						lat: _lat,
 						lng: _lng,
 					}
 				});
-			})
-			.done((_lat, _lng)=>this.passDataToMain(_lat, _lng));		
+			}).done();		
 	}
 
 	onChangeSearch(event){
 		//this.textInputFocus();
 		auto = [];
 		placeIDs = [];
+		coordination = [];
 		this.setState({searchText: event.nativeEvent.text});
-		if(this.state.searchText === ''){
-			console.log('null');
-		}else{
-			var _request = "https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=" + encodeURI(this.state.searchText) +"&key=AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g";
-			fetch(_request, {method: "GET"})
-			      .then((response) => response.json())
-			      .then((responseData) => {
-			      	//console.log(responseData);
-			      
-			      	if (responseData.status === 'ZERO_RESULTS'){
-			      		console.log('zerooooooooooo');
-			      	}else{
-				        for (var i = 0; i < 5; i ++){
-				        	if (typeof responseData.predictions === 'undefined'){
-				        		console.log('response error');
-				        	}else{
-								var address = responseData.predictions[i].terms[0].value;
-								var id = responseData.predictions[i].place_id;
-								auto.push(address);
-								placeIDs.push(id);
-							}
-				        };
-				        console.log(placeIDs);
-				      	this.setState({dataSourceAuto: ds.cloneWithRows(auto)});
-			      	};
-					
-			      }).catch((e) =>
-			      	console.log(e)
-			      )
-			      .done();
-		  }
+		console.log("auto is" + auto)
+		this.timer = setTimeout(
+	      () => {
+
+				if(this.state.searchText === ''){
+					console.log('null');
+				}else{
+					var _request = "https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=" + encodeURI(this.state.searchText) +"&key=AIzaSyBOsVygPS8F4LxR87UUMEMZ-PRx-7Erx7g";
+					fetch(_request, {method: "GET"})
+					      .then((response) => response.json())
+					      .then((responseData) => {
+					      	//console.log(responseData);
+					      
+					      	if (responseData.status === 'ZERO_RESULTS'){
+					      		console.log('zerooooooooooo');
+					      	}else{
+						        for (var i = 0; i < 5; i ++){
+						        	if (typeof responseData.predictions === 'undefined'){
+						        		console.log('response error');
+						        	}else{
+						        		console.log(responseData);
+										var address = responseData.predictions[i].terms[0].value;
+										var id = responseData.predictions[i].place_id;
+										auto.push(address);
+										placeIDs.push(id);
+										//coordination.push
+									}
+						        };
+						        console.log(placeIDs);
+						      	this.setState({dataSourceAuto: ds.cloneWithRows(auto)});
+					      	};
+							
+					      }).catch((e) =>
+					      	console.log(e)
+					      )
+					      .done();
+				  }
+
+	      }, 
+	    10);
 		}
 
 	onPressRecent(){
@@ -286,6 +321,7 @@ export default class SearchPage extends Component{
 	componentWillUnmount(){
 		test = [];
 		auto = [];
+		coordination = [];
 	}
 
 	textInputFocus(){

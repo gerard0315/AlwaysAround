@@ -7,6 +7,7 @@ import ControlPanel from './Drawer.js';
 import Qs from 'qs';
 import Storage from 'react-native-storage';
 import { AsyncStorage } from 'react-native';
+import io from "socket.io-client";
 import {
   StyleSheet,
   Text,
@@ -33,6 +34,8 @@ var src = "https://maps.googleapis.com/maps/api/js?key=" + key+ "&libraries=plac
 var selected = [];
 var pets = [];
 var {height, width} = Dimensions.get('window');
+var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwic2VsZWN0ZWQiOnt9LCJnZXR0ZXJzIjp7fSwicG9wdWxhdGVkIjp7InBldHMiOnsidmFsdWUiOlsiNTgxN2U2OGQ2NDRiZDg5ZDQ0Y2NiMjIzIiwiNTgxNzk0ZmViYjViNjQ5MzcyODRlMTQ1IiwiNTgzMGY5OGZhZWVkZjU0NDIyY2Q3MzlmIiwiNTgzMGZhMjZhZWVkZjU0NDIyY2Q3M2EwIiwiNTgzMGZjNWJhZWVkZjU0NDIyY2Q3M2ExIiwiNTgzMGZkNDlhZWVkZjU0NDIyY2Q3M2EyIiwiNTg1NzEzNTg5YjQwODUwYmU3NzE3NWY3Il0sIm9wdGlvbnMiOnsicGF0aCI6InBldHMiLCJzZWxlY3QiOiJiYXNpYy5uYW1lIiwiX2RvY3MiOnsiNTgyZTM3NWU4OWQ2MmExZGUwY2U4OTVlIjpbIjU4MTdlNjhkNjQ0YmQ4OWQ0NGNjYjIyMyIsIjU4MTc5NGZlYmI1YjY0OTM3Mjg0ZTE0NSIsIjU4MzBmOThmYWVlZGY1NDQyMmNkNzM5ZiIsIjU4MzBmYTI2YWVlZGY1NDQyMmNkNzNhMCIsIjU4MzBmYzViYWVlZGY1NDQyMmNkNzNhMSIsIjU4MzBmZDQ5YWVlZGY1NDQyMmNkNzNhMiIsIjU4NTcxMzU4OWI0MDg1MGJlNzcxNzVmNyJdfSwiaXNWaXJ0dWFsIjpmYWxzZX19fSwid2FzUG9wdWxhdGVkIjpmYWxzZSwiYWN0aXZlUGF0aHMiOnsicGF0aHMiOnsicGFzc3dvcmQiOiJpbml0IiwiZW1haWwiOiJpbml0IiwicGV0cyI6ImluaXQiLCJ1cGRhdGVkQXQiOiJpbml0IiwiY3JlYXRlZF9hdCI6ImluaXQiLCJhdmF0YXIiOiJpbml0IiwiX192IjoiaW5pdCIsImFjdGl2YXRlZCI6ImluaXQiLCJwaG9uZV9ubyI6ImluaXQiLCJmaXJzdF9uYW1lIjoiaW5pdCIsImxhc3RfbmFtZSI6ImluaXQiLCJfaWQiOiJpbml0In0sInN0YXRlcyI6eyJpZ25vcmUiOnt9LCJkZWZhdWx0Ijp7fSwiaW5pdCI6eyJ1cGRhdGVkQXQiOnRydWUsImNyZWF0ZWRfYXQiOnRydWUsImF2YXRhciI6dHJ1ZSwiX192Ijp0cnVlLCJwZXRzIjp0cnVlLCJhY3RpdmF0ZWQiOnRydWUsInBob25lX25vIjp0cnVlLCJmaXJzdF9uYW1lIjp0cnVlLCJsYXN0X25hbWUiOnRydWUsInBhc3N3b3JkIjp0cnVlLCJlbWFpbCI6dHJ1ZSwiX2lkIjp0cnVlfSwibW9kaWZ5Ijp7fSwicmVxdWlyZSI6e319LCJzdGF0ZU5hbWVzIjpbInJlcXVpcmUiLCJtb2RpZnkiLCJpbml0IiwiZGVmYXVsdCIsImlnbm9yZSJdfSwiZW1pdHRlciI6eyJkb21haW4iOm51bGwsIl9ldmVudHMiOnt9LCJfZXZlbnRzQ291bnQiOjAsIl9tYXhMaXN0ZW5lcnMiOjB9fSwiaXNOZXciOmZhbHNlLCJfZG9jIjp7InBldHMiOlt7Il9pZCI6IjU4MzBmYzViYWVlZGY1NDQyMmNkNzNhMSJ9LHsiX2lkIjoiNTgzMGZkNDlhZWVkZjU0NDIyY2Q3M2EyIiwiYmFzaWMiOnsibmFtZSI6IlBla2luZyJ9fSx7Il9pZCI6IjU4NTcxMzU4OWI0MDg1MGJlNzcxNzVmNyIsImJhc2ljIjp7Im5hbWUiOiJZaXJhbiJ9fV0sInVwZGF0ZWRBdCI6IjIwMTYtMTItMThUMjI6NTM6MTIuODA4WiIsImNyZWF0ZWRfYXQiOiIyMDE2LTEyLTE4VDIyOjUzOjEyLjgwOFoiLCJhdmF0YXIiOiJodHRwOi8vcmVzLmNsb3VkaW5hcnkuY29tL2Fsd2F5c2Fyb3VuZC9pbWFnZS91cGxvYWQvdjE0ODIwMTg5Mzkvc2ZoNGx0a2ZrbmI3c3lzNmh5dW0ucG5nIiwiX192Ijo1LCJhY3RpdmF0ZWQiOmZhbHNlLCJwaG9uZV9ubyI6MTIzMTIzNCwiZmlyc3RfbmFtZSI6InlpcmFuIiwibGFzdF9uYW1lIjoidGFvIiwicGFzc3dvcmQiOiIkMmEkMDUkVFZDUUtYNEd5eFo3MTM5R29oeHU3dU1LRTBHUzhhY3Y3SWFjTzI5eEVzWUg1a2JCNE1Ea08iLCJlbWFpbCI6Inl0MjQ4N0Bjb2x1bWJpYS5lZHUiLCJfaWQiOiI1ODJlMzc1ZTg5ZDYyYTFkZTBjZTg5NWUifSwiX3ByZXMiOnsiJF9fb3JpZ2luYWxfc2F2ZSI6W251bGwsbnVsbCxudWxsLG51bGxdLCIkX19vcmlnaW5hbF92YWxpZGF0ZSI6W251bGxdLCIkX19vcmlnaW5hbF9yZW1vdmUiOltudWxsXX0sIl9wb3N0cyI6eyIkX19vcmlnaW5hbF9zYXZlIjpbXSwiJF9fb3JpZ2luYWxfdmFsaWRhdGUiOltdLCIkX19vcmlnaW5hbF9yZW1vdmUiOltdfSwiaWF0IjoxNDgzMTE1NTk2LCJleHAiOjE0ODU3MDc1OTZ9.WW_Kra4jTD2nxw1xqTNCq664gzT6fmS8Ea7kciuKQLM";
+
 
 var MainPage = React.createClass({
   watchID: (null: ?number),
@@ -40,12 +43,18 @@ var MainPage = React.createClass({
   getDefaultProps: function() {
     return {
         data: null,
-        serviceMapRegion: null,
+        serviceMapRegion: {
+          latitude: 0,
+          longitude: 0,
+          //latitudeDelta: 0.01,
+          //longitudeDelta: 0.01,
+        },
     };
   },
 
   propTypes: {
-      data: React.PropTypes.object,
+      data: React.PropTypes.object.isRequired,
+      searchResult: React.PropTypes.bool.isRequired,
   },
 
   getInitialState: function() {
@@ -82,12 +91,19 @@ var MainPage = React.createClass({
       dogNumberSelected: false,
       estimateTimeSelected: false,
 
-      mapRegion: {
+      /*mapRegion: {
         latitude: 0,
         longitude: 0,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
 
+      },
+      */
+      mapRegion:{
+        latitude: this.props.serviceMapRegion.latitude,
+        longitude: this.props.serviceMapRegion.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
       },
       
       userLocation:{
@@ -124,6 +140,7 @@ var MainPage = React.createClass({
       userFirstName: '',
       petNumber: 0,
       pet: [],
+      disableButton: true,
     };
   },
 
@@ -164,44 +181,57 @@ var MainPage = React.createClass({
     //console.log("IN MAIN PAGE "+ this.props.data.token)
     StatusBar.setHidden(false, null);
     this.timer = setTimeout(
-      () => {     
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              var initialPosition = JSON.stringify(position);
-              this.setState({initialPosition});
-              //console.log(initialPosition);
-            },
-            (error) => alert(error.message),
-            {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
-          );
-          this.watchID = navigator.geolocation.watchPosition((position) => {
-            var lastPosition = JSON.stringify(position);
-            this.setState({lastPosition});
-            var longitude = parseFloat(position.coords.longitude);
-            var latitude = parseFloat(position.coords.latitude);
-            this.setState({longitude});
-            this.setState({latitude});
-            
-            this.setState({
-              
-              mapRegion:{
-                longitude: position.coords.longitude,
-                latitude: position.coords.latitude,
-                latitudeDelta: 0.008,
-                longitudeDelta: 0.008,
-              },
-            });
+      () => {
 
-            this.setState({userLocation: this.state.mapRegion})
-            
-            if(this.state.mapRegion.longitude != 0){
-              //console.log("in willmount");
-              this._requestNearby();
-            }else{
-              //console.log('getting ready!!');
-            }
-            
-          });
+        if(this.props.searchResult === false){
+            navigator.geolocation.getCurrentPosition(
+              (position) => {
+                var initialPosition = JSON.stringify(position);
+                this.setState({initialPosition});
+                //console.log(initialPosition);
+              },
+              (error) => alert(error.message),
+              {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+            );
+            this.watchID = navigator.geolocation.watchPosition((position) => {
+              var lastPosition = JSON.stringify(position);
+              this.setState({lastPosition});
+              var longitude = parseFloat(position.coords.longitude);
+              var latitude = parseFloat(position.coords.latitude);
+              this.setState({longitude});
+              this.setState({latitude});
+              
+              this.setState({
+                
+                mapRegion:{
+                  longitude: position.coords.longitude,
+                  latitude: position.coords.latitude,
+                  latitudeDelta: 0.008,
+                  longitudeDelta: 0.008,
+                },
+              });
+
+              this.setState({userLocation: this.state.mapRegion})
+              
+              if(this.state.mapRegion.longitude != 0){
+                //console.log("in willmount");
+                this._requestNearby();
+              }else{
+                //console.log('getting ready!!');
+              }
+              
+            });
+          }else if(this.props.searchResult === true){
+            this.setState({    
+                mapRegion:{
+                  longitude: this.props.serviceMapRegion.latitude,
+                  latitude: this.props.serviceMapRegion.longitude,
+                  latitudeDelta: 0.008,
+                  longitudeDelta: 0.008,
+                },
+              });
+          }
+
       },
       1000
     );
@@ -216,6 +246,34 @@ var MainPage = React.createClass({
     //console.log("stored pets list: " + this.state.petNumber);
 
     //this.setState({button: temp});
+    //this.socketTest(this.props.data.token);
+  },
+
+  socketTest: function(_token){
+    console.log("connecting socket");
+    var ioUser = io.connect("http://alwaysaround.me:8081/commonroom", {
+                          'force new connection': true
+                        });
+     
+    ioUser.on('connect', function () {
+      console.log('[User CommonRoom] Connected');
+      ioUser
+        .emit('authenticate', {token: _token}) //send the jwt
+        .on('authenticated', function () {
+          console.log("authenticated!!!");
+
+        })
+        .on('unauthorized', function(err) {
+          console.log("unauthorized: " + JSON.stringify(err.data));
+        })
+    });
+
+    ioUser.emit('initUser', "user Online");
+
+    ioUser.on('updateDriverListLoc', function(data) {
+       console.log('[Drivers LocChanged]:');
+      console.log(data);
+    });
   },
 
   _requestNearby: function(){
@@ -288,8 +346,10 @@ var MainPage = React.createClass({
             maxDelta = {0.9}
             onRegionChange = {this.regionChange}
             onRegionChangeComplete = {this.onRegionChangeComplete}
+            loadingEnabled = {true}
             loadingIndicatorColor="#666666"
             loadingBackgroundColor="#eeeeee"
+            //cacheEnabled = {true}
           />
         );
       } else {
@@ -372,6 +432,7 @@ var MainPage = React.createClass({
         delay: 80,
         easing: Easing.linear, // 动画时间
       }).start();
+      this.setState({disableButton: false});
   },
 
   closeNameSelector: function(event){
@@ -389,6 +450,7 @@ var MainPage = React.createClass({
       duration: 10,
       easing: Easing.linear, // 动画时间
     }).start();
+    this.setState({disableButton: true});
   },
 
   openTimeSelector: function(){
@@ -687,7 +749,7 @@ var MainPage = React.createClass({
   },
 
   onPressSearch: function(){
-    Actions.search({lng: this.state.mapRegion.longitude, lat: this.state.mapRegion.latitude});
+    Actions.search({lng: this.state.mapRegion.longitude, lat: this.state.mapRegion.latitude, route: "main", data: this.props.data});
     navigator.geolocation.clearWatch(this.watchID);
     //this.setState({numberSelectHeight: 0});
     //this.setState({drawerClosed: true});
@@ -696,6 +758,7 @@ var MainPage = React.createClass({
   },
 
   onPressPickUp: function(){
+    console.log(this.props.data);
     if (selected.length === 0 || this.state.timeChosen === 0){
       AlertIOS.alert(
         'Service info not completed!',
@@ -710,7 +773,9 @@ var MainPage = React.createClass({
         service: {onShelter: this.state.onShelter, time: 10}, 
         infoData: selected, 
         time: this.state.timeChosen,
-        paymentType: 2});
+        paymentType: 2,
+        data: this.props.data,
+      });
     }
   },
 
@@ -907,7 +972,8 @@ var MainPage = React.createClass({
         <Animated.View style = {[styles.numberSelectContainer, {height: this.state.numberSelectHeight}, {opacity: this.state.numberOpacity}]}>         
           { this.state.pet[0] ? 
             (<View style = {{borderRadius: 6, height: 28, width: 140}} >
-              <TouchableOpacity onPress = {this.onChosenOne.bind(null, pets[0].basic.name)} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
+              <TouchableOpacity onPress = {this.onChosenOne.bind(null, pets[0].basic.name)} 
+                disabled = {this.state.disableButton} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
               <View style = {styles.nameOptionContainer}>
                 <View style = {[styles.checkBoxBorderName, {backgroundColor: this.state.chosenOne? '#62C6C6': 'transparent'}]}>
                     <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
@@ -920,7 +986,8 @@ var MainPage = React.createClass({
         }
         {this.state.pet[1] ? 
           (<View style = {{borderRadius: 6, height: 28, width: 140}} >
-              <TouchableOpacity onPress = {this.onChosenTwo.bind(null, pets[1].basic.name)} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
+              <TouchableOpacity onPress = {this.onChosenTwo.bind(null, pets[1].basic.name)} 
+                disabled = {this.state.disableButton} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
               <View style = {styles.nameOptionContainer}>
                 <View style = {[styles.checkBoxBorderName, {backgroundColor: this.state.chosenTwo? '#62C6C6': 'transparent'}]}>
                     <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
@@ -933,7 +1000,8 @@ var MainPage = React.createClass({
         }
         {this.state.pet[2] ? 
           (<View style = {{borderRadius: 6, height: 28, width: 140}} >
-              <TouchableOpacity onPress = {this.onChosenThree.bind(null, pets[2].basic.name)} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
+              <TouchableOpacity onPress = {this.onChosenThree.bind(null, pets[2].basic.name)} 
+                disabled = {this.state.disableButton} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
               <View style = {styles.nameOptionContainer}>
                 <View style = {[styles.checkBoxBorderName, {backgroundColor: this.state.chosenThree? '#62C6C6': 'transparent'}]}>
                     <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}
@@ -946,7 +1014,8 @@ var MainPage = React.createClass({
         }
         {this.state.pet[3] ? 
           (<View style = {{borderRadius: 6, height: 28, width: 140}} >
-              <TouchableOpacity onPress = {this.onChosenFour.bind(null, pets[3].basic.name)} activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
+              <TouchableOpacity disabled = {this.state.disableButton} onPress = {this.onChosenFour.bind(null, pets[3].basic.name)} 
+                activeOpacity={0.9} underlayColor = {'#CCCCCC'} >
               <View style = {styles.nameOptionContainer}>
                 <View style = {[styles.checkBoxBorderName, {backgroundColor: this.state.chosenThree? '#62C6C6': 'transparent'}]}>
                     <Image style = {{height: 8, width: 8, resizeMode: 'stretch'}}

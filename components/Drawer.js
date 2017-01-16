@@ -147,7 +147,7 @@ var ControlPanel = React.createClass({
           <View style = {styles.menuContainer}>
             <View style = {styles.avatarContainer}>
               <Image style = {styles.avatar}
-                source = {{uri:'http://36.media.tumblr.com/c1ab83d6816fb7302a230d5ce9580446/tumblr_inline_o3bwh2h8z81sitizh_540.jpg'}}
+                source = {{uri:this.props.data.avatar}}
                 />
               <View style = {{justifyContent: 'center', marginLeft: 15}}>
                 <Text style = {{

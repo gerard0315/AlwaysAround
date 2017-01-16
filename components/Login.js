@@ -106,14 +106,17 @@ var LoginPage = React.createClass({
     console.log(this.state.needToRegister);
     if (this.state.needToRegister === false){   
       console.log(this.state.username);
-      console.log(this.state.password);                                                                        
+      console.log(this.state.password);
+      var email = this.state.username;
+      var str = email.toLowerCase();
+      console.log(str);                                                                       
       fetch("http://alwaysaround.me:8081/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          "email": this.state.username,
+          "email":str,
           "password": this.state.password
         }) 
        // "email="+this.state.username+"&password="+this.state.password
@@ -132,6 +135,7 @@ var LoginPage = React.createClass({
                     last_name: responseData.data.user.last_name,
                     phone_no: responseData.data.user.phone_no,
                     token: responseData.data.token,
+                    avatar: responseData.data.user.avatar,
                   },
                 expires: null
               });
@@ -142,12 +146,16 @@ var LoginPage = React.createClass({
                 },
                 expies: null
               });
+              
               Actions.home({data:{
                 firstName: responseData.data.user.first_name,
                 lastName: responseData.data.user.last_name,
                 token: responseData.data.token,
+                avatar: responseData.data.user.avatar,
+                phone_no: responseData.data.user.phone_no,
                 //pets:responseData.data.user.pets
               }});
+              
             } catch (error) {
               console.log(error);
               AlertIOS.alert(

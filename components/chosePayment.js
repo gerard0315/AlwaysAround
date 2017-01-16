@@ -78,6 +78,7 @@ export default class SelectPaymentPage extends Component{
         infoData: React.PropTypes.array.isRequired,
         time: React.PropTypes.number.isRequired,
         paymentType: React.PropTypes.number.isRequired,
+        data: React.PropTypes.object.isRequired,
     }; 
 
   	constructor(props){
@@ -88,6 +89,7 @@ export default class SelectPaymentPage extends Component{
   	}
 
 	componentWillMount(){
+		console.log(" in payment ");
 		var len = detail.length;
 		console.log(len);
 		for (var i = 0; i< len; i ++){
@@ -103,8 +105,14 @@ export default class SelectPaymentPage extends Component{
 		};
 	}
 
+	componentWillUnmount(){
+		//this.setState({dataSource: []});
+		console.log("choose payment unmounted");
+	}
+
 	onPressCell(_row){
-      Actions.confirm({
+	  Actions.refresh({key: 'confirm', paymentType: _row + 1 });
+     /*Actions.confirm({
         lat: this.props.lat, 
         lng: this.props.lng, 
         location: this.props.location, 
@@ -112,8 +120,11 @@ export default class SelectPaymentPage extends Component{
         infoData: this.props.infoData, 
         time: this.props.time,
         paymentType: _row + 1,
-        type: ActionConst.RESET,
-    	});		
+        data: this.props.data,
+        type: ActionConst.REFRESH,
+    	});	
+    	*/
+    	
 	}
 
 
@@ -140,7 +151,7 @@ export default class SelectPaymentPage extends Component{
 		<View style = {styles.container}>
 			<View style = {styles.topBarContainer}>
 				<TouchableOpacity style ={{marginLeft: 19, marginTop: 16, height: 16, width: 16}}
-					onPress = {Actions.pop}>
+					onPress = {Actions.pop()}>
 					<Image style= {{marginLeft: 0, marginTop: 0, height: 16, width: 16, justifyContent: 'center'}}
 						source = {require('../ios/goBack.png')}/>
 				</TouchableOpacity>
